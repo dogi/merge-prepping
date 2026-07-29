@@ -10,7 +10,7 @@ any project into it — including **Claude Code on the web / cloud** sessions.
 .claude-plugin/marketplace.json          # marketplace catalog
 plugins/merge-prepping/
 ├── .claude-plugin/plugin.json           # plugin manifest
-└── skills/pr-prep/
+└── skills/title/
     ├── SKILL.md                         # skill definition
     └── references/
         └── title-corpus.md              # past titles, for nearest-precedent lookup
@@ -35,7 +35,7 @@ can discover it when the repo is added as a marketplace.
 /reload-plugins
 ```
 
-Then invoke: `/merge-prepping:pr-prep` (or just ask to "prep this PR" / "fix the
+Then invoke: `/merge-prepping:title` (or just ask to "prep this PR" / "fix the
 title" — the description auto-triggers it).
 
 ## Use it on Claude Code web / cloud

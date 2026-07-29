@@ -1,5 +1,5 @@
 ---
-name: pr-prep
+name: title
 description: Rewrite a pull request title into the myPlanet house style (`scope: smoother thing doing (fixes #N)`) and make sure a tracking issue is attached, creating one from the PR's current title when none exists. Use this whenever preparing, cleaning up, retitling, or getting a PR ready to merge in this repo — including when the user says "prep this PR", "fix the title", "massage the title", "does this need an issue?", or just points at a PR number or branch and asks to tidy it up. Also use it before opening a new PR, so the title is right the first time.
 ---
 
