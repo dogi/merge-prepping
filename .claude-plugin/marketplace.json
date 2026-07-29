@@ -1,0 +1,14 @@
+{
+  "name": "dogi",
+  "owner": {
+    "name": "dogi",
+    "email": "dogi@users.noreply.github.com"
+  },
+  "plugins": [
+    {
+      "name": "merge-prepping",
+      "source": "./plugins/merge-prepping",
+      "description": "Rewrite pull request titles into the myPlanet house style and make sure every PR carries a tracking issue."
+    }
+  ]
+}

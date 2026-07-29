@@ -1,0 +1,8 @@
+{
+  "name": "merge-prepping",
+  "description": "Adds a pr-prep skill: rewrite a PR title into `scope: smoother thing doing (fixes #N)` and attach a tracking issue when one is missing.",
+  "version": "1.0.0",
+  "author": {
+    "name": "dogi"
+  }
+}
