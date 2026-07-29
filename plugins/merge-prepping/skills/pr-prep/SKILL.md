@@ -98,70 +98,205 @@ ui/dashboard/BellDashboardFragment.kt   → dashboard: smoother bell reminding
 services/upload/PhotoUploader.kt        → sync: smoother photo uploading
 ui/health/HealthUsersAdapter.kt         → life: smoother health users item callback diffing
 ui/health/HealthExaminationAdapter.kt   → life: smoother health examination item callback diffing
+utils/DispatcherProvider.kt (+ manager) → sync: smoother upload immediate dispatcher providing
+repository/UserRepositoryImpl.kt        → sync: smoother user repository shelf batch uploading
+di/NetworkDependenciesEntryPoint.kt ✗   → all: less network dependencies entry point is more
 ```
 
-Pick the *principal* file first: the one the PR exists to change. Test files,
-generated files, `strings.xml`, and drive-by formatting are never the principal
-file. If the diff has no single centre, name the behaviour instead of a file —
-that is also how the `all:` titles read.
+This is why the frequency ranking of gerunds looks the way it does — it mirrors the
+class-suffix vocabulary of the codebase:
 
-Some suffixes carry their own verb, so the gerund is mechanical:
-
-| Suffix | Gerund |
+| Principal file | Gerund |
 |---|---|
-| `…Uploader` | `uploading` |
-| `…Adapter` | `item callback diffing` (or `…listing` when the change is the list itself) |
-| `…Manager` | `managing` |
-| `…Repository` / `…RepositoryImpl` | `caching` or `querying`, whichever the diff does |
-| `…ViewModel` | `scoping`, `loading`, or `state handling` |
+| `*Provider`, `*Module`, `*Logger`, `*Interceptor` | providing |
+| `*ViewModel` | **view** modelling (always both words — 24 uses, no bare `modelling`) |
+| anything under `app/src/test/` only | testing |
+| `*Adapter` — `DiffUtil` / `ItemCallback` changes | diffing |
+| `*Adapter` — binding, layout, anything else | adapting |
+| `*Uploader`, upload repositories | uploading |
+| `*Manager` | managing |
+| `*RepositoryImpl` reads, DAO queries | querying |
+| lazy init, memoisation, reuse of a computed value | caching |
 
-`…Fragment` and `…Activity` carry no verb of their own — name what the screen
-actually does, which is why `BellDashboardFragment` becomes `bell reminding` and
-not `bell fragmenting`. Same for a layout-only or `strings.xml`-only change: the
-gerund describes the change (`… layouting`, `… wording`).
+That `testing` row is worth its own note: **a diff touching only `app/src/test/`
+always ends in `testing`**, and the noun phrase names the class under test —
+`ServerUrlMapperTest.kt` → `all: smoother server url mapper testing`,
+`TagsRepositoryTest.kt` → `all: smoother tags repository database testing`. This
+holds for every one of the 11 `testing` commits in the last 200.
 
-Keep it short. Two to five words between `smoother` and the parens is the norm;
-if it is running longer, the noun phrase is carrying detail that belongs in the
-PR body.
+### Multi-file diffs: name them all
 
-## The tracking issue
+When the diff spans two or three files, the noun phrase **walks across all of
+them** — each contributes a word or two, in diff order — and only the gerund is
+picked, from whichever file's suffix best describes the change. Don't pick one file
+and drop the rest; that loses the information the title exists to carry.
 
-A PR without `(fixes #N)` is not ready, full stop. Resolve the number before
-touching the title:
+What a file contributes is its **layer word** — `repository`, `dao`, `utils` — not
+the entity it happens to be named after. The domain is already carried by the scope
+plus one feature word, so repeating the entity is noise, while the layer word tells
+a reader how deep the change goes. `VoicesRepositoryImpl.kt` + `NewsDao.kt` becomes
+**voices repository dao** — one feature word, then the two layers — not `voices news
+dao`. `News` is what the voices domain stores, so it adds nothing `voices` didn't
+already say.
 
-1. **Read the current title and body** for an existing reference — `(fixes #N)`,
-   `fixes #N`, `closes #N`, or a bare `#N`. If one is already there and points at
-   an open issue, reuse that number; just move it into the title in the exact
-   `(fixes #N)` spelling.
-2. **Search the open issues** for the thing this PR is about before creating
-   anything. Re-filing a duplicate is worse than a slightly-off match.
-3. **Only then create one.** Title the new issue from the PR's *current*
-   human-readable title — the issue is where prose is allowed, so it does not
-   need `smoother` grammar. Body: a sentence on the observed problem plus a link
-   to the PR.
+The reason those three layers keep their noun is that none of them has a natural
+gerund — nobody writes *repositorying* — so the gerund comes from the operation
+instead (`querying`, `uploading`, `deleting`, `marking`) and the layer stays a
+noun. That makes `repository` the most common word in the whole corpus after the
+scopes: 70 uses, plus 9 of `repositories` and 18 of `utils`.
 
-Then set the PR title to the house-style form ending in `(fixes #N)`. Change the
-title only — do not rewrite the PR body to add a `fixes` line, since the body
-plays no part in the squash commit message.
+The opposite holds wherever the suffix *does* supply the gerund. `Adapter`,
+`ViewModel`, `Manager`, `Provider`, `Fragment`, `Activity`, and `Worker` are
+converted, not repeated — which is why `fragment`, `activity`, and `worker` appear
+as nouns exactly zero times in 310 titles, and `adapter` and `module` just once
+each. Don't write `smoother courses adapter adapting`; write `smoother courses
+adapting`.
+
+```
+VoicesRepositoryImpl.kt + NewsDao.kt       → teams: smoother voices repository dao querying
+LoginSyncManager.kt + AuthUtils.kt         → sync: smoother login auth utils managing
+UploadManager.kt + DispatcherProvider.kt   → sync: smoother upload immediate dispatcher providing
+ChatHistoryAdapter + ChatShareTargetAdapter → chat: smoother history share target item adapting
+SharedPrefManager.kt + LoginActivity.kt    → login: smoother shared preferences credentials managing
+GuestLoginExtensions.kt + LoginActivity.kt → login: smoother guest extensions validating
+```
+
+Don't swerve away from a layer word just because a similar title already exists.
+Near-duplicates are fine and common here — the qualifier and the issue number
+distinguish them. Picking a less accurate word to look novel is the worse trade:
+`voices repository dao querying` sits happily alongside the earlier `voices
+repository querying`, and says more than a contrived alternative would.
+
+Read the second one closely, since it's the whole rule in miniature:
+`LoginSyncManager` contributes **login** (drop `Sync`, drop the `Manager` suffix),
+`AuthUtils` contributes **auth utils**, and `Manager` supplies the gerund
+**managing**. Every changed file is represented and nothing is invented.
+
+Other gerunds in circulation, for when no suffix rule applies:
+
+> handling · importing · coloring · scoping · linking · loading · requesting ·
+> filtering · deleting · viewing · sorting · searching · marking · listing ·
+> joining · inserting · fetching · creating · configuring · syncing · validating ·
+> binding · building · checking · finding · mapping · naming · notifying ·
+> posting · selecting · sharing · starting · updating
+
+Note `modelling` and `coloring` — the log is inconsistent about doubling, but those
+two spellings are the established ones.
+
+Aim for three to five words between the scope and the gerund. `all: smoother
+importing` is fine when the change genuinely is that broad; padding a narrow change
+with words it doesn't need is worse than being terse.
+
+For the `less ... is more` shape, the noun phrase names **the thing being removed**,
+not what remains: deleting `PagerAdapterDiffUtils` gives `all: less pager adapter
+diff utils is more`.
+
+For `bump`, backtick the full Gradle coordinate and use `*` for a family of
+artifacts: `` all: bump `org.jetbrains.kotlin:kotlin-*` to 2.4.10 (fixes #14767) ``.
+
+## Finding or creating the issue
+
+This is the half that's easy to get wrong, because the right move depends on who
+opened the PR.
+
+**A human contributor's PR usually already has an issue.** They filed it first, and
+it shows up in one of three places — check all three before concluding there isn't
+one:
+
+1. `(fixes #N)` already in the title
+2. `fixes #N` / `closes #N` / `resolves #N` in the body
+3. The branch name, which GitHub's "create branch from issue" button formats as
+   `<N>-slug` — e.g. `14932-task-deadline-notifications-silently-overwrite-each-other`
+
+If you find a number, reuse it. Confirm it's a real open issue in this repo rather
+than a stale or cross-repo reference before you build the title around it.
+
+**An agent-generated PR usually has no issue.** Jules, Copilot, and similar bots
+open PRs directly, with descriptive prose titles like `Refactor: Consolidate
+duplicate EntryPoints` and a body ending in *"PR created automatically by Jules
+for task …"*. Branch names look like `consolidate-entrypoints-1618928943660463448`.
+
+In that case, create the issue — and this is the key move: **the PR's current title
+becomes the issue title, verbatim.** That descriptive title is a perfectly good
+issue title and a poor commit subject, so it gets promoted rather than discarded.
+Nothing is lost when the PR title is then rewritten into house style.
+
+```
+before  PR #15048  "Refactor: Consolidate duplicate EntryPoints"      (no issue)
+        ↓ create issue #15143 titled "Refactor: Consolidate duplicate EntryPoints"
+after   PR #15048  "all: less network dependencies entry point is more (fixes #15143)"
+```
+
+Give the new issue a body describing the problem the PR solves — the PR's own
+description is the natural source. Don't paste the bot's automation footer or a
+CodeRabbit summary into it.
+
+Because the issue is created after the PR, its number will be *higher* than the PR
+number. That's expected and common here; it is not a sign you picked the wrong
+number.
 
 ## Procedure
 
-1. Identify the PR (number, branch, or "this one"). Fetch its title, body, and
-   changed files with additions/deletions.
-2. Pick the shape: `smoother` unless something named ceases to exist (`less …
-   is more`), or it is purely a dependency bump (`all: bump …`).
-3. Pick the scope from the centre of gravity of the diff.
-4. Build the noun phrase and gerund off the principal changed file.
-5. Resolve the issue number — find it, or create the issue.
-6. Update the PR title. Nothing else.
-7. Report the old title, the new title, and the issue you linked or created.
+1. Identify the PR. If the user gave a number, use it. Otherwise find the PR for
+   the current branch (`mcp__github__list_pull_requests` with `head`).
+2. Read it: `mcp__github__pull_request_read` with `method: "get"` for title, body,
+   branch and author, then `method: "get_files"` — **the file list is the primary
+   input to the title**, per the rule above. The old title is not; its only job is
+   to become the issue title. Agent-written titles in particular are consistently
+   vaguer than their diffs.
+3. Hunt for an existing issue in the three places above. Verify any hit with
+   `mcp__github__issue_read`.
+4. If there is none, create one with `mcp__github__issue_write` (`method: "create"`)
+   using the PR's current title.
+5. Compose the new title. Skim `references/title-corpus.md` for the nearest
+   precedent — matching an existing line beats inventing a phrasing.
+6. Apply it with `mcp__github__update_pull_request`.
+7. Report the before/after title and the issue number, saying whether you reused
+   an existing issue or opened a new one.
 
-## Before you call it done
+Step 4 creates a public issue and step 6 renames someone's PR. Both are visible to
+the whole project, so when the PR isn't the user's own, show the proposed title and
+issue first and get a nod before writing.
 
-- [ ] all lowercase, except identifiers inside backticks in a `bump` title
-- [ ] no `feat:` / `fix:` / `refactor:` / `chore:` prefix
-- [ ] no trailing period
-- [ ] no trailing `(#<pr number>)` — GitHub adds that itself
-- [ ] ends in exactly `(fixes #N)`: lowercase, space, `#`, digits, round parens
-- [ ] scope is one from the table, not invented
-- [ ] the noun phrase names what changed, not what the old title said
+## Also worth checking
+
+Every merged PR bumps the app version by one patch in `app/build.gradle`
+(`versionCode = 6249` / `versionName = "0.62.49"` → `6250` / `"0.62.50"`). If the
+PR touches app code and doesn't bump it, mention it — the release workflow tags off
+`versionName`, so a missing bump collides with the previous release. Read the
+current values off `master` rather than the branch, since a stale branch will have
+drifted behind.
+
+## Worked examples
+
+**Human PR, issue already filed.** PR #14933 by Okuro3499, branch
+`14932-task-deadline-notifications-silently-overwrite-each-other`, body `fixes
+#14932`. Issue exists — reuse it. Diff touches `TaskNotificationWorker` and
+`NotificationUtils`, and the subject is team task deadlines, so scope is `teams`.
+
+> `teams: smoother task notifying (fixes #14932)`
+
+**Agent PR, no issue.** PR #14990 titled `Refactor ChipCloudConfig in
+ResourcesAdapter`. No `fixes` anywhere, branch has a task-id suffix. Create issue
+#15079 with that exact title, then retitle. Diff is confined to `ui/resources/`.
+
+> `resources: smoother chip cloud configuring (fixes #15079)`
+
+**Refactor that deletes a lot but removes nothing.** PR #15040, Jules-authored,
+titled `Optimize Dispatchers in LoginSyncManager`, no issue. Create the issue from
+that title, then read the diff: `services/sync/LoginSyncManager.kt` (71+/81−) and
+`utils/AuthUtils.kt` (18+/25−). `services/sync/` fixes the scope. Both files feed
+the noun phrase; `Manager` gives the gerund. Net-negative, but nothing named is
+gone — so `smoother`, not `less`.
+
+> `sync: smoother login auth utils managing (fixes #15151)`
+
+**Deletion.** PR removes `NetworkDependenciesEntryPoint` and folds it into
+`ServiceDependenciesEntryPoint`; touches `di/` and `MainApplication.kt`, so `all`.
+Primarily a removal, so the `less` shape.
+
+> `all: less network dependencies entry point is more (fixes #15143)`
+
+**Dependency bump.**
+
+> `` all: bump `com.android.tools.build:gradle` to 9.3.1 (fixes #15078) ``

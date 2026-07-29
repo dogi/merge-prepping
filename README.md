@@ -11,8 +11,15 @@ any project into it — including **Claude Code on the web / cloud** sessions.
 plugins/merge-prepping/
 ├── .claude-plugin/plugin.json           # plugin manifest
 └── skills/pr-prep/
-    └── SKILL.md                         # skill definition
+    ├── SKILL.md                         # skill definition
+    └── references/
+        └── title-corpus.md              # past titles, for nearest-precedent lookup
 ```
+
+`references/title-corpus.md` is not committed yet — step 5 of the skill's
+procedure skims it for the nearest existing phrasing. Generate it from the
+myPlanet log (`git log --format=%s master`) and drop it in; until then the skill
+still works, it just composes titles from the rules alone.
 
 ## Hosting
 
@@ -69,8 +76,11 @@ Turns an arbitrary PR title into the shape every commit on `master` already has:
 all: bump `<coordinate>` to <version> (fixes #N)
 ```
 
-It picks the scope from where the diff's centre of gravity sits, reads the noun
-phrase and gerund off the principal changed file rather than the old title, and
-guarantees a tracking issue is linked — searching open issues first and creating
-one from the PR's current title only when nothing matches. `(fixes #N)` goes in
-the title, not the body, because the squash commit message *is* the PR title.
+It picks the scope from where the diff's centre of gravity sits, walks the noun
+phrase across every changed file (layer words, not entity names) and takes the
+gerund from the class suffix — reading all of that off the file list rather than
+the old title. The old title has one job: becoming the issue title when the PR
+arrived without an issue, which is the usual case for Jules- and Copilot-opened
+PRs. Human PRs normally already have a number in the title, the body, or the
+`<N>-slug` branch name. `(fixes #N)` goes in the title, not the body, because the
+squash commit message *is* the PR title.
