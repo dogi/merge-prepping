@@ -248,8 +248,21 @@ number.
    `mcp__github__issue_read`.
 4. If there is none, create one with `mcp__github__issue_write` (`method: "create"`)
    using the PR's current title.
-5. Compose the new title. Skim `references/title-corpus.md` for the nearest
-   precedent — matching an existing line beats inventing a phrasing.
+5. Compose the title. Skim `references/title-corpus.md` for the nearest
+   precedent — matching an existing line beats inventing a phrasing. When the
+   diff leaves a real choice open, present **two to four candidate titles**
+   with the AskUserQuestion tool, the diff-derived favourite first and marked
+   "(Recommended)", varying only the genuinely open axes — one candidate per
+   plausible value:
+   - **scope** — torn between a feature scope and `all:`, or in the
+     `sync`/`login` border zone: offer both
+   - **gerund** — `Adapter` diffs: `diffing` vs `adapting`; Flow work:
+     `flowing` vs `collecting`, by which side of the Flow dominates the diff
+   - **shape** — a borderline removal: offer the `less … is more` form as an
+     alternate
+   Never vary the noun-phrase mechanics or the `(fixes #N)` — those aren't
+   choices. When nothing is genuinely open, skip the menu and use the single
+   title.
 6. Apply it with `mcp__github__update_pull_request`.
 7. Report the before/after title and the issue number, saying whether you reused
    an existing issue or opened a new one.
