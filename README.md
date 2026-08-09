@@ -1,4 +1,4 @@
-# dogi — Claude Code plugin marketplace
+# prepping — Claude Code plugin marketplace
 
 A personal marketplace hosting `merge-prepping` (a PR title rewriter / tracking
 issue enforcer for the myPlanet house style). Maintain the skill here once; opt
@@ -31,7 +31,7 @@ can discover it when the repo is added as a marketplace.
 
 ```
 /plugin marketplace add dogi/merge-prepping
-/plugin install merge-prepping@dogi
+/plugin install merge-prepping@prepping
 /reload-plugins
 ```
 
@@ -49,7 +49,7 @@ allowlist covers):
 ```json
 {
   "extraKnownMarketplaces": {
-    "dogi": {
+    "prepping": {
       "source": {
         "source": "github",
         "repo": "dogi/merge-prepping"
@@ -57,7 +57,7 @@ allowlist covers):
     }
   },
   "enabledPlugins": {
-    "merge-prepping@dogi": true
+    "merge-prepping@prepping": true
   }
 }
 ```
