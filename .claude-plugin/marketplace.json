@@ -8,7 +8,7 @@
     {
       "name": "merge-prepping",
       "source": "./plugins/merge-prepping",
-      "description": "Rewrite pull request titles into the myPlanet house style and make sure every PR carries a tracking issue."
+      "description": "Rewrite pull request titles into the Open Learning Exchange house style and make sure every PR carries a tracking issue. Repo-dependent: ships reference packs for myplanet and planet."
     }
   ]
 }
