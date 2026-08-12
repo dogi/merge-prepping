@@ -1,4 +1,4 @@
-# Title corpus — the last 500 merged PRs
+# Title corpus — myplanet, the last 500 merged PRs
 
 Regenerated 2026-08-09 from the 500 most recent squash commits on `master`
 (`abc0dfd`, PR #15448 / issue #15449, back to `2bb4024`, PR #14167 / issue #14200).
@@ -10,6 +10,16 @@ Path shorthand: bare paths are under `app/src/main/java/org/ole/planet/myplanet/
 `test/` is `app/src/test/java/org/ole/planet/myplanet/`; `res/` is
 `app/src/main/res/`. `app/build.gradle` (the per-PR version bump, present in
 nearly every diff) is omitted.
+
+Regenerate with:
+
+```
+scripts/build-corpus.py --repo <checkout> --name myplanet \
+    --strip app/src/main/java/org/ole/planet/myplanet/ --skip app/build.gradle
+```
+
+The narrative sections below were written by hand on top of that output; keep
+them when you refresh the entries.
 
 ## What 500 PRs add to the 200-commit rules
 
