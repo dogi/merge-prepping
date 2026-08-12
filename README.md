@@ -10,10 +10,11 @@ scope table, the way the noun phrase comes off the diff, the gerund vocabulary
 and the per-PR version-bump file are not — so each repo gets its own reference
 pack and the skill picks one at step 0.
 
-| Repo | Pack | Stack |
-|---|---|---|
-| `open-learning-exchange/myplanet` | `references/myplanet/` | Kotlin / Android |
-| `open-learning-exchange/planet` | `references/planet/` | Angular / TypeScript |
+| Repo | Pack | Corpus | Stack |
+|---|---|---|---|
+| `open-learning-exchange/myplanet` | `references/myplanet/` | its own | Kotlin / Android |
+| `open-learning-exchange/planet` | `references/planet/` | its own | Angular / TypeScript |
+| `open-learning-exchange/myplanet-lite` | `references/myplanet-lite/` | borrows myplanet's | Kotlin / Android |
 
 ## Structure
 
@@ -23,6 +24,8 @@ references/
 ├── myplanet/
 │   ├── conventions.md                   # scopes, suffix→gerund mechanics, version bump
 │   └── title-corpus.md                  # 500 past titles + the files that produced them
+├── myplanet-lite/
+│   └── conventions.md                   # borrowing pack: myplanet's corpus + the deltas
 └── planet/
     ├── conventions.md
     └── title-corpus.md
@@ -49,12 +52,13 @@ containing the target path, and a loader will read the literal string
 ## How the skill picks a pack
 
 In order: the `owner/repo` of the PR it was handed → `git remote get-url origin`
-→ a fingerprint of the checkout (`app/build.gradle` + Kotlin sources → myplanet;
-`angular.json` + `src/app/` → planet).
+→ a fingerprint of the checkout (`angular.json` + `src/app/` → planet; the
+`lite` package segment + `build.gradle.kts` → myplanet-lite; otherwise
+myplanet).
 
-If none match, it says so up front rather than silently applying the other
-repo's scope table, falls back to the shared grammar plus the repo's own `git
-log`, and offers to add a pack.
+If none match, it says so up front rather than silently applying another repo's
+scope table, falls back to the shared grammar plus the repo's own `git log`, and
+offers to add a pack.
 
 ## Adding a repo
 
@@ -77,6 +81,13 @@ log`, and offers to add a pack.
 
 Nothing else in `SKILL.md` should need to change. If it does, what you are
 writing is probably shared grammar and belongs there rather than in the pack.
+
+**For a sibling of a repo already covered**, write a *borrowing* pack instead —
+name the corpus and conventions it inherits, override only the deltas, and skip
+the corpus entirely. `references/myplanet-lite/` is the worked example: two
+Kotlin/Android apps sharing all the phrase mechanics, differing on scopes, four
+suffix rows and the version-bump file. Keeping it thin means a fix to myplanet's
+mechanics reaches both.
 
 ## Hosting
 
@@ -142,14 +153,21 @@ Copilot-opened PRs. Human PRs normally already have a number in the title, the
 body, or the `<N>-slug` branch name. `(fixes #N)` goes in the title, not the
 body, because the squash commit message *is* the PR title.
 
-Where the two repos differ — and why the packs exist:
+Where the repos differ — and why the packs exist:
 
-|  | myplanet | planet |
-|---|---|---|
-| Noun phrase | mechanical, off the filenames (`*ViewModel` → view modelling) | descriptive, off the screen (`component` is a noun 3× in 500 titles) |
-| Fallback gerund | `handling` for Fragments/Activities, 27/500 | `handling` for anything, 86/500 |
-| Test diffs | `app/src/test/`-only always ends in `testing` | no spec-only PRs exist; specs ride along |
-| Style diffs | rare | ~a fifth of PRs; own vocabulary (`aligning`, `spacing`, `padding`) |
-| Issue link | `fixes` only | `fixes`, plus `connects` when the issue stays open |
-| Version bump | `app/build.gradle` | `package.json` |
-| Scopes not shared | `sync` | `manager`, `community` |
+|  | myplanet | planet | myplanet-lite |
+|---|---|---|---|
+| Noun phrase | mechanical, off the filenames | descriptive, off the screen (`component` is a noun 3× in 500 titles) | mechanical, as myplanet |
+| Scoped by | directory (`ui/teams/`, `services/sync/`) | directory (`src/app/*/`) | **class-name prefix** — the tree is flat |
+| Fallback gerund | `handling` for Fragments/Activities, 27/500 | `handling` for anything, 86/500 | as myplanet |
+| Top suffix | `*ViewModel` → view modelling, 40/500 | suffixes discarded | `*Extensions`, 32 files — takes **no** gerund; **zero** view models exist |
+| Test diffs | `app/src/test/`-only always ends in `testing` | no spec-only PRs exist; specs ride along | as myplanet, plus `androidTest/` |
+| Style diffs | rare | ~a fifth of PRs; own vocabulary (`aligning`, `spacing`, `padding`) | rare |
+| Issue link | `fixes` only | `fixes`, plus `connects` when the issue stays open | none practised yet — expect to open one per PR |
+| Version bump | `app/build.gradle` | `package.json` | `app/build.gradle.kts` |
+| Scopes absent | — | `sync` | `life`, `chat`, `community`, `enterprises`, `feedback` |
+
+myplanet-lite has **no house style in its log at all** — zero of the last 200
+titles link an issue, and they read like `🧹 [Code Health] Refactor
+loadNextCoursesPage in DashboardCoursePageActions (#1178)`. Running the skill
+there establishes the style rather than matching it, which its pack spells out.

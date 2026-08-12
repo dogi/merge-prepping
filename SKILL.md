@@ -17,23 +17,40 @@ phrase is derived, the gerund vocabulary and the per-PR version bump are all
 repo-specific and live in a pack under `references/`. Load the right one before
 composing anything.
 
-| Repo | Pack | Stack |
-|---|---|---|
-| `open-learning-exchange/myplanet` | `references/myplanet/` | Kotlin / Android |
-| `open-learning-exchange/planet` | `references/planet/` | Angular / TypeScript |
+| Repo | Pack | Corpus | Stack |
+|---|---|---|---|
+| `open-learning-exchange/myplanet` | `references/myplanet/` | its own | Kotlin / Android |
+| `open-learning-exchange/planet` | `references/planet/` | its own | Angular / TypeScript |
+| `open-learning-exchange/myplanet-lite` | `references/myplanet-lite/` | **borrows myplanet's** | Kotlin / Android |
 
-Each pack holds `conventions.md` (read it in full — it is short) and
-`title-corpus.md` (skim it for the nearest precedent at step 6 of the
-procedure).
+Each pack holds `conventions.md` (read it in full — it is short) and, unless it
+borrows one, `title-corpus.md` (skim it for the nearest precedent at step 6 of
+the procedure).
+
+A **borrowing pack** is thin on purpose: it names the corpus and conventions it
+inherits, then overrides only what actually differs. Read the pack first, then
+the file it points at. myplanet-lite borrows from myplanet — same language, so
+the phrase mechanics carry over whole — but overrides the scope table, four
+suffix rows and the version-bump file, and none of those substitutions are
+optional.
 
 Work out which repo you are in, in this order:
 
 1. **The PR you were given.** If the user named a PR or you resolved one, you
    already know its `owner/repo` from the tool call — use that.
 2. **The checkout.** `git remote get-url origin`.
-3. **Fingerprint.** `app/build.gradle` and `*.kt` under
-   `app/src/main/java/org/ole/planet/myplanet/` → myplanet. `angular.json` and
-   `src/app/` → planet.
+3. **Fingerprint.** `angular.json` and `src/app/` → planet. Otherwise, for the
+   two Kotlin repos, read the package root: `…/org/ole/planet/myplanet/lite/`
+   and a `build.gradle.kts` → myplanet-lite; `…/org/ole/planet/myplanet/` with
+   `ui/`, `repository/` and `services/` under it, and a Groovy
+   `app/build.gradle` → myplanet.
+
+**myplanet and myplanet-lite are easy to confuse and the packs are not
+interchangeable.** Both are Kotlin/Android under `org.ole.planet.myplanet`; lite
+adds one path segment. Getting it wrong hands lite myplanet's directory-keyed
+scope table, which matches none of its paths, and a `*ViewModel` gerund rule for
+classes that do not exist in it. Check the `lite` segment before you commit to a
+pack.
 
 **If none of them match a pack**, say so before you start — do not silently
 apply another repo's scope table, which is the one part of this skill that
@@ -48,7 +65,7 @@ Then offer to add a pack for that repo.
 
 ## The grammar
 
-Three shapes cover both repos' logs. All lowercase, no trailing period, no
+Three shapes cover the logs. All lowercase, no trailing period, no
 conventional-commit types (`feat:`, `fix:`, `refactor:` never appear).
 
 | Shape | When | myplanet | planet |
@@ -57,8 +74,12 @@ conventional-commit types (`feat:`, `fix:`, `refactor:` never appear).
 | `<scope>: less <noun phrase> is more (fixes #N)` | A named thing *ceases to exist* | 37/500 | 33/500 |
 | ``all: bump `<coordinate>` to <version> (fixes #N)`` | Dependency version bumps only — always `all:` in both logs | 12/500 | 10/500 |
 
+myplanet-lite has no column because it has no house-style log yet — running this
+skill there **establishes** the style rather than matching it. Its pack covers
+what that changes.
+
 **`smoother` is the default and it isn't close — around 90% of titles in both
-repos.** Reach for it unless you can point at the specific class, method, file,
+repos with a log to measure.** Reach for it unless you can point at the specific class, method, file,
 layout, or feature that is gone after the change. A net-negative diff is *not*
 the signal: a refactor that restructures code into a tidier shape deletes plenty
 of lines and is still `smoother`. Ask what the PR is *for*. If its purpose is
@@ -113,10 +134,12 @@ diffs.
 Beyond that the two repos diverge, and this is where using the wrong pack does
 the most damage:
 
-- **myplanet is mechanical.** The noun phrase is the principal changed file,
-  de-CamelCased and lowercased with its role suffix dropped; the gerund comes
-  from that suffix (`*ViewModel` → view modelling, `*Adapter` → diffing or
-  adapting, `*Manager` → managing). There is a full suffix table in its pack.
+- **The Kotlin repos are mechanical.** The noun phrase is the principal changed
+  file, de-CamelCased and lowercased with its role suffix dropped; the gerund
+  comes from that suffix (`*Adapter` → diffing or adapting, `*Manager` →
+  managing). There is a full suffix table in myplanet's pack, and myplanet-lite
+  amends four rows of it — including deleting `*ViewModel`, myplanet's single
+  most common gerund, because lite has no such classes.
 - **planet is descriptive.** Angular's `.component.ts` / `.service.ts` suffixes
   are thrown away — `component` appears as a noun 3 times in 500 titles. The
   path supplies the feature words and the rest of the phrase names what a user
@@ -146,7 +169,10 @@ What holds in both:
 ## Finding or creating the issue
 
 This is the half that's easy to get wrong, because the right move depends on who
-opened the PR. It works identically in both repos.
+opened the PR. The mechanics are the same everywhere; what differs is how often
+each branch fires. On myplanet and planet most human PRs arrive with an issue.
+On myplanet-lite **none do** — not one of the last 200 titles links one — so the
+create-an-issue branch is the normal path there, not the exception.
 
 **A human contributor's PR usually already has an issue.** They filed it first,
 and it shows up in one of three places — check all three before concluding there
@@ -218,8 +244,8 @@ the wrong number.
    title.
 7. Apply it with `mcp__github__update_pull_request`.
 8. Check the version bump the pack names (`app/build.gradle` on myplanet,
-   `package.json` on planet) and mention it if the PR touches app code without
-   bumping it.
+   `app/build.gradle.kts` on myplanet-lite, `package.json` on planet) and
+   mention it if the PR touches app code without bumping it.
 9. Report the before/after title and the issue number, saying which pack you
    used and whether you reused an existing issue or opened a new one.
 
@@ -229,10 +255,22 @@ title and issue first and get a nod before writing.
 
 ## Adding a repo
 
-To teach this skill a third repo, add `references/<repo>/conventions.md` and
+To teach this skill another repo, add `references/<repo>/conventions.md` and
 `references/<repo>/title-corpus.md`, then add a row to the table in step 0.
 Nothing else in this file should need to change — if it does, the thing you are
 writing is probably shared grammar and belongs here rather than in the pack.
+
+**If the new repo is a sibling of one already covered** — same language, same
+class-naming idiom — write a *borrowing* pack instead: name the corpus and
+conventions it inherits, then override only what differs, as
+`references/myplanet-lite/` does. Resist the urge to copy the parent pack and
+edit it; a borrowing pack that stays thin makes the differences legible, and a
+fix to the parent's mechanics reaches both.
+
+Be honest about what actually differs before you borrow. Two Kotlin/Android apps
+still diverged on scopes, four suffix rows and the version-bump file, and one of
+those — a `*ViewModel` rule for a codebase with no view models — would have
+produced confidently wrong titles on every PR.
 
 Build the corpus from the repo's own log: pair each squash-merged title with the
 files that produced it, strip the trailing `(#NNNN)` GitHub appends, group by
