@@ -71,11 +71,9 @@ offers to add a pack.
    ```
 
    It pairs each merged title with the files that produced it, groups by scope,
-   and prints the shape / scope / gerund league tables for the whole window and
-   for the last hundred merges side by side — plus a warning if the log changed
-   its mind about a convention partway through the window, which planet's did in
-   October 2025. Where the two windows disagree, the recent one is current
-   practice.
+   and prints the shape / scope / gerund league tables — plus a warning if the
+   log changed its mind about a convention partway through the window, which
+   planet's did in October 2025.
 
 2. Read the last ~50 PRs' "changed the title" timelines. The landed log records
    only the answers; the edits that got there are where the sharper rules are.

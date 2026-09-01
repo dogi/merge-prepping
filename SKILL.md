@@ -307,13 +307,13 @@ produced confidently wrong titles on every PR.
 Build the corpus from the repo's own log with `scripts/build-corpus.py`: it
 pairs each squash-merged title with the files that produced it, strips the
 trailing `(#NNNN)` GitHub appends, groups by scope, and reports the league
-tables both for the whole window and for the most recent hundred, so drift is
-visible. Note the per-PR version-bump file so it can be `--skip`ped. Then read
+tables. Note the per-PR version-bump file so it can be `--skip`ped. Then read
 the result and write `conventions.md` from what you actually see — scope league
 table, how the noun phrase is derived, the gerund vocabulary, and any point
 where the log changed its mind about a convention partway through the window.
-**Where the two windows disagree, the recent one wins**; on planet the corpus-wide
-gerund `handling` (91/500) had collapsed to 4 of the last 50.
+Then measure the tail of the log separately and compare: **where a recent window
+disagrees with the whole one, the recent window is current practice.** On planet
+the corpus-wide gerund `handling` (91/500) had collapsed to 4 of the last 50.
 
 The landed log only records the answers, though. The rejected drafts live in
 each PR's "changed the title" timeline, and reading the last ~50 of those is

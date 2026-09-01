@@ -11,7 +11,7 @@ The trailing `(#NNNN)` GitHub appends at squash time is stripped: what you see h
 Regenerate with:
 
 ```
-scripts/build-corpus.py --repo <checkout> --name planet --ref master --strip src/app/ --skip package.json --skip package-lock.json
+scripts/build-corpus.py --repo <checkout> --name planet --strip src/app/ --skip package.json --skip package-lock.json
 ```
 
 ## Shape of the window
@@ -19,21 +19,9 @@ scripts/build-corpus.py --repo <checkout> --name planet --ref master --strip src
 - **Shape shares:** `smoother` 458/500 (91%), `less … is more` 32, `bump` 9, other 1.
 - **Scope league table:** `all` 148 · `teams` 91 · `manager` 72 · `courses` 57 · `community` 25 · `dashboard` 22 · `actions` 20 · `resources` 20 · `chat` 16 · `life` 12 · `login` 10 · `mylife` 4 · `enterprises` 3.
 - **Gerund league table:** handling 91 · navigating 12 · filtering 11 · linting 10 · aligning 10 · formatting 9 · styling 8 · loading 8 · showing 7 · paginating 7 · linking 7 · creating 7 · building 7 · validating 6 · testing 5 · selecting 5 · hovering 4 · padding 4 · viewing 4 · spacing 4 · reporting 4 · routing 4 · removing 3 · confirming 3.
-- **Phrase length** (words between `smoother` and the stamp, gerund included): 1 word 29 · 2 words 135 · 3 words 207 · 4 words 77 · 5 words 8.
 - **Issue link:** `fixes` 468, `connects` 27, well-formed 494/500.
 - **Diff size:** 166/500 diffs touch a single file beyond the version bump, 329/500 touch three or fewer.
 - **⚠️ The gerund era starts 2025-10-14.** The trailing gerund is not uniform across this window: of the 350 `smoother` titles from 2025-10-14 onward, 343 end in one (98%) — but of the 108 before it, only 23 do (21%). Older titles stop at a bare noun phrase. **Take precedent from the recent half.** The older entries are kept because their scope and noun-phrase choices are still good evidence; their missing gerunds are not.
-
-### The last 100 on their own
-
-Conventions drift. Where these tables disagree with the 500-wide ones above, **the last 100 win** — they are what the maintainers are correcting titles *towards* right now.
-
-- **Scope, last 100:** `all` 35 · `teams` 28 · `courses` 9 · `resources` 8 · `actions` 5 · `life` 5 · `dashboard` 5 · `manager` 3 · `enterprises` 2.
-- **Gerund, last 100:** handling 19 · linting 7 · navigating 7 · hovering 4 · confirming 3 · validating 2 · formatting 2 · showing 2 · styling 2 · filtering 2 · testing 2 · saving 2 · deleting 2 · padding 2 · checking 1 · describing 1 · patching 1 · truncating 1 · previewing 1 · alerting 1 · pressuring 1 · indicating 1 · removing 1 · clearing 1.
-- **Distinct gerunds:** 53 across 97 titles here, against 112 across 368 over the whole window.
-- **Phrase length, last 100:** 1 word 4 · 2 words 18 · 3 words 44 · 4 words 30 · 5 words 2.
-- **Scopes absent from the recent window:** `login` · `community` · `chat` · `mylife` — present earlier, not lately. Still valid; just not evidence of current practice.
-
 - **Malformed or link-less titles in this window:**
   - `teams: smoother voices icon aligning (#9787)`
   - `login: smoother dialogs handling (#9796)`
@@ -114,9 +102,6 @@ Conventions drift. Where these tables disagree with the 500-wide ones above, **t
   ← feedback/feedback.directive.spec.ts, feedback/feedback.directive.ts
 - `all: smoother linting (connects #9082)`
   ← .eslintrc.json, eslint.config.mjs, app.component.ts, resources/resources-add.component.ts
-
-*— below here is older than the last 100 merges. —*
-
 - `all: smoother install configuration viewing (fixes #10024)`
   ← configuration/configuration.component.ts
 - `all: smoother agents assisting (fixes #10027)`
@@ -406,9 +391,6 @@ scope and noun-phrase precedent only, not the ending. —*
   ← teams/teams.scss
 - `teams: smoother surveys question options spacing (fixes #10049)`
   ← exams/exams-question.scss
-
-*— below here is older than the last 100 merges. —*
-
 - `teams: less submissions service import is more (fixes #10038)`
   ← submissions/submissions.service.ts
 - `teams: smoother header name button handling (fixes #10021)`
@@ -548,9 +530,6 @@ scope and noun-phrase precedent only, not the ending. —*
   ← manager-dashboard/reports/myplanet/myplanet-toolbar.component.html, manager-dashboard/reports/reports-detail.component.html, manager-dashboard/reports/reports-detail.scss, submissions/submissions.component.html
 - `manager: less reports chart button top margin is more (fixes #10131)`
   ← manager-dashboard/reports/reports-detail.scss
-
-*— below here is older than the last 100 merges. —*
-
 - `manager: smoother report date filtering (fixes #9956)`
   ← manager-dashboard/reports/myplanet/reports-myplanet.component.ts, manager-dashboard/reports/reports.utils.ts, teams/teams-view-finances.component.ts
 - `manager: less reports chart module is more (fixes #9946)`
@@ -714,9 +693,6 @@ scope and noun-phrase precedent only, not the ending. —*
   ← courses/courses.component.html, courses/courses.scss
 - `courses: smoother exams questions text handling (fixes #10053)`
   ← exams/exams-take/exams-take-widget.component.scss
-
-*— below here is older than the last 100 merges. —*
-
 - `courses: smoother cover image handling (fixes #10054)`
   ← courses/add-courses/courses-add.component.html, courses/add-courses/courses-add.component.ts, courses/add-courses/courses-add.scss, courses/view-courses/courses-view-detail.component.html, courses/view-courses/courses-view-detail.component.ts, +5 more
 - `courses: smoother exams survey creating (fixes #9662)`
@@ -887,9 +863,6 @@ scope and noun-phrase precedent only, not the ending. —*
   ← dashboard/dashboard.component.spec.ts, dashboard/dashboard.component.ts, vite.config.mts
 - `dashboard: less grid is more (fixes #10084)`
   ← dashboard/dashboard.scss
-
-*— below here is older than the last 100 merges. —*
-
 - `dashboard: smoother chat linking (fixes #10014)`
   ← chat/chat.component.ts, dashboard/dashboard-tile.component.html, dashboard/dashboard.component.ts
 - `dashboard: smoother button background handling (fixes #10000)`
@@ -941,9 +914,6 @@ scope and noun-phrase precedent only, not the ending. —*
   ← .github/workflows/planet.yml, karma.conf.js, src/test.ts
 - `actions: smoother workflows qemu node handling (fixes #10092)`
   ← .github/workflows/gateway.yml, .github/workflows/planet-db.yml, .github/workflows/planet.yml, AGENTS.md, README.md
-
-*— below here is older than the last 100 merges. —*
-
 - `actions: smoother docker gateway building (connects #9934)`
   ← .github/workflows/gateway.yml, CLAUDE.md, README.md, chatapi/README.md, chatapi/src/config/nano.config.ts, +27 more
 - `actions: less claude workflow is more (fixes #9139)`
@@ -997,9 +967,6 @@ scope and noun-phrase precedent only, not the ending. —*
   ← resources/view-resources/resources-menu.component.ts, resources/view-resources/resources-viewer.component.html, resources/view-resources/resources-viewer.component.spec.ts, resources/view-resources/resources-viewer.component.ts, resources/view-resources/resources-viewer.scss, +4 more
 - `resources: smoother pdf making (fixes #10091)`
   ← resources/resources-add.component.ts, shared/pdf.service.spec.ts, shared/pdf.service.ts, shared/zip-utils.ts, submissions/submissions.service.ts
-
-*— below here is older than the last 100 merges. —*
-
 - `resources: smoother downloading (fixes #10043)`
   ← resources/view-resources/resources-view.component.html
 - `resources: smoother creating (fixes #9967)`
@@ -1080,9 +1047,6 @@ scope and noun-phrase precedent only, not the ending. —*
   ← shared/avatar.component.spec.ts, shared/avatar.component.ts, users/users-achievements/users-achievements.component.html, users/users-achievements/users-achievements.component.ts, users/users-profile/users-profile.component.html, +2 more
 - `life: smoother personals resources title padding (fixes #10137)`
   ← resources/resources.component.html, resources/resources.scss
-
-*— below here is older than the last 100 merges. —*
-
 - `life: smoother achievements resume attaching (fixes #9782)`
   ← shared/couchdb.service.ts, shared/forms/file-input.component.ts, users/users-achievements/users-achievements-update.component.html, users/users-achievements/users-achievements-update.component.ts, users/users-achievements/users-achievements-update.scss, +4 more
 - `life: smoother achievements loading (fixes #8937)`
@@ -1146,9 +1110,6 @@ scope and noun-phrase precedent only, not the ending. —*
   ← teams/teams-reports.component.ts
 - `enterprises: smoother joining (fixes #10154)`
   ← shared/dialogs/dialogs-prompt.component.html, shared/dialogs/dialogs-prompt.component.ts, teams/teams-view.component.ts, teams/teams.component.html, teams/teams.component.ts, +1 more
-
-*— below here is older than the last 100 merges. —*
-
 - `enterprises: smoother finances pictures attaching (fixes #9966)`
   ← shared/couchdb.service.ts, shared/dialogs/dialogs-form.component.html, shared/dialogs/dialogs-form.component.ts, shared/dialogs/dialogs-form.service.ts, teams/teams-attachments.service.ts, +9 more
 
