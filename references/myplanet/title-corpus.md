@@ -1,1114 +1,1305 @@
 # Title corpus — myplanet, the last 500 merged PRs
 
-Regenerated 2026-08-09 from the 500 most recent squash commits on `master`
-(`abc0dfd`, PR #15448 / issue #15449, back to `2bb4024`, PR #14167 / issue #14200).
-Each line pairs the landed title with the changed files that produced it,
-because **the changed files are the primary input to the title** — skim for the
-nearest precedent by scope, then by the layer of the files you changed.
+Regenerated 2026-09-01 from the 500 most recent squash commits on `origin/master` (`32f9562`, PR #16641 / issue #16640, back to `9113e26`, PR #15363 / issue #15490).
+Each line pairs the landed title with the changed files that produced it — **the changed files are the primary input to the title**. Skim for the nearest precedent by scope, then by the area of the files you changed.
 
-Path shorthand: bare paths are under `app/src/main/java/org/ole/planet/myplanet/`;
-`test/` is `app/src/test/java/org/ole/planet/myplanet/`; `res/` is
-`app/src/main/res/`. `app/build.gradle` (the per-PR version bump, present in
-nearly every diff) is omitted.
+Path shorthand: bare paths are under `app/src/main/java/org/ole/planet/myplanet/`; everything else is written from the repo root.
+`test/` is `app/src/test/java/org/ole/planet/myplanet/`.
+`res/` is `app/src/main/res/`.
+Omitted from every entry: `app/build.gradle` — the per-PR version bump, present in nearly every diff.
+
+The trailing `(#NNNN)` GitHub appends at squash time is stripped: what you see here is what the PR title was.
 
 Regenerate with:
 
 ```
-scripts/build-corpus.py --repo <checkout> --name myplanet \
-    --strip app/src/main/java/org/ole/planet/myplanet/ --skip app/build.gradle
+scripts/build-corpus.py --repo <checkout> --name myplanet --ref origin/master --strip app/src/main/java/org/ole/planet/myplanet/ --rename app/src/test/java/org/ole/planet/myplanet/=test/ --rename app/src/main/res/=res/ --skip app/build.gradle
 ```
 
 The narrative sections below were written by hand on top of that output; keep
-them when you refresh the entries.
+them when you refresh the entries — the three-stage analysis in particular is
+not reproducible from `git log` alone (see the method note in it).
 
-## What 500 PRs add to the 200-commit rules
+## Shape of the window
 
-The grammar in SKILL.md was distilled from 200 commits; this corpus is 2.5× that
-window, and the rules hold. What the wider window sharpens or adds:
+- **Shape shares:** `smoother` 454/500 (90%), `less … is more` 38, `bump` 8, other 0.
+- **Scope league table:** `all` 127 · `sync` 71 · `teams` 69 · `courses` 67 · `resources` 41 · `actions` 28 · `life` 26 · `login` 23 · `dashboard` 17 · `enterprises` 14 · `community` 8 · `chat` 8 · `lifel` 1.
+- **Gerund league table:** modelling 65 · handling 40 · querying 34 · caching 33 · testing 17 · managing 16 · providing 12 · flowing 10 · filtering 8 · binding 7 · mapping 6 · uploading 6 · checking 6 · diffing 6 · landscaping 4 · inserting 4 · configuring 4 · importing 4 · injecting 4 · tagging 3 · selecting 3 · formatting 3 · deleting 3 · editing 3.
+- **Issue link:** `fixes` 500, `connects` 0, well-formed 500/500.
+- **Diff size:** 163/500 diffs touch a single file beyond the version bump, 363/500 touch three or fewer.
+- **Bare-noun-chain discipline:** of the 492 non-`bump` titles, 0 contain a function word (preposition, article, `and`) and 0 contain a hyphenated compound.
+- **Scopes used once or twice** (check each for a typo or a one-off invention): `lifel` 1.
+- **Space before the colon** (malformed): `community : smoother tab pager adapting (fixes #16308)`.
 
-- **Shape shares are stable.** `smoother` 445/500 (89%), `less … is more` 37
-  (7.4%), `bump` 12 (2.4%), broken 6. Nothing new to learn here — `smoother`
-  stays the default.
-- **Scope league table:** `all` 133, `teams` 76, `courses` 68, `sync` 55,
-  `resources` 51, `login` 28, `life` 26, `dashboard` 23, `chat` 21, `actions` 6,
-  `enterprises` 5, `community` 3, `feedback` 1. A `feedback:` scope exists
-  (missing from the SKILL.md table) — one use, for `FeedbackDao`/repository work.
-- **Gerund league table (top of 445 `smoother` titles):** modelling 40 ·
-  handling 27 · testing 27 · inserting 17 · providing 17 · caching 15 ·
-  managing 12 · diffing 11 · collecting 11 · adapting 10 · importing 10 ·
-  flowing 10 · querying 10. `modelling` is always the pair **view modelling**
-  (40 of 40; the log's single `modeling` is a typo — double-l is canonical).
-- **The Flow pair the 200-window missed:** `flowing` = a repository, DAO, or
-  controller *starts exposing* a `Flow` (`SubmissionsRepositoryImpl` →
-  `courses: smoother submissions repository flowing`); `collecting` = a
-  Fragment/Activity *collects* one (`BellDashboardFragment` → `dashboard:
-  smoother bell flow collecting`). Producer side gets `flowing`, consumer side
-  gets `collecting` — 21 titles split cleanly on this line.
-- **`handling` is the licensed fallback.** When the principal file is a
-  Fragment or Activity and no sharper operation word applies, the log says
-  `handling` (27 uses) — not `fragmenting`, not a stretched metaphor.
-- **The suffix-conversion rule is ironclad.** As nouns, `fragment`, `activity`
-  and `worker` appear **zero** times in 500 titles; `adapter` and `module` 3
-  each, `manager` 5. Suffixes convert to gerunds or vanish. Even one-off
-  classes obey it: `BaseAdapterFactory.kt` → `factoring`.
-- **`repository` stays the champion noun** — 113 uses (+11 `repositories`,
-  +28 `utils`), because those layers have no natural gerund and keep their
-  noun while the operation supplies the gerund.
-- **Coverage of the mechanical rule:** 216/500 diffs touch a single file
-  beyond the version bump, and 372/500 touch ≤3. Three quarters of all titles
-  are a pure function of one to three filenames.
-- **`less` arrives in sweeps.** Eleven of the 37 `less` titles landed in one
-  dead-code campaign (#14555–#14569), most shaped `<scope>: less repository
-  methods is more`. Outside sweeps it is rare — roughly one PR in twenty.
-- **The `(fixes #N)` link fails ~2% of the time, always by typo:**
-  `{fixes #14889)` (brace), `(fixes 14801)` and `(fixes 14266)` (missing `#`),
-  `(#14755)` (missing the word), and one title with no link at all. 489/500 got
-  it exactly right; the six broken ones are preserved under Counterexamples.
-- **Era vocabulary is fine.** `realm` appears in 21 titles from the
-  Realm-to-Room migration and then disappears. Titles name what the diff
-  touches *today*; don't sand off project-phase words.
+## Scope ↔ directory
 
-## all (132)
+Where each scope's diffs actually live, counted over this window. This is the evidence behind the pack's scope table — a directory that shows up under two scopes is a real border zone, not a mistake to iron out.
 
-- `all: smoother coderabbit configuring (fixes #15449)`
-  ← .coderabbit.yaml, CLAUDE.md, crowdin.yml, docs/AGENT_SPELLBOOK.md, docs/CODE_STYLE_GUIDE.md
-- `all: smoother claude assisting (fixes #15447)`
-  ← CLAUDE.md, test/model/UserEntityTest.kt, docs/AGENT_SPELLBOOK.md, docs/CODE_STYLE_GUIDE.md, docs/DOMAIN_MODEL.md, +1 more
-- `all: less service module injection is more (fixes #15434)`
-  ← di/CoreDependenciesEntryPoint.kt, di/ServiceModule.kt, services/sync/RealtimeSyncManager.kt, ui/sync/RealtimeSyncMixin.kt, test/services/sync/RealtimeSyncManagerTest.kt
-- `all: smoother user repository json array merging (fixes #15431)`
-  ← repository/UserRepositoryImpl.kt
-- `all: smoother dialog utils showing (fixes #15430)`
-  ← utils/DialogUtils.kt
-- `all: smoother theme managing (fixes #15424)`
-  ← MainApplication.kt, services/ThemeManager.kt, ui/dashboard/DashboardActivity.kt, ui/settings/SettingsActivity.kt, ui/sync/LoginActivity.kt, +1 more
-- `all: smoother download server checking (fixes #15410)`
-  ← MainApplication.kt
-- `all: smoother settings text capitalizing (fixes #5488)`
-  ← res/values/strings.xml
-- `all: smoother network utils lazy entering (fixes #15402)`
-  ← utils/NetworkUtils.kt
-- `all: smoother logo landscape handling (fixes #15262)`
-  ← res/layout/app_bar_bell.xml
-- `all: smoother claude assisting (fixes #15250)`
-  ← CLAUDE.md, ui/settings/StorageCategoryDetailFragment.kt, ui/surveys/PublicSurveyActivity.kt, docs/realm-to-room-migration.md
-- `all: smoother importing (fixes #15248)`
-  ← base/BaseContainerFragment.kt, base/BaseResourceFragment.kt, repository/ChatRepositoryImpl.kt, repository/CoursesRepository.kt, repository/RatingsRepository.kt, +46 more
-- `all: smoother settings storage space organizing (fixes #14958)`
-  ← ui/settings/SettingsActivity.kt, ui/settings/StorageBreakdownFragment.kt, res/layout/fragment_storage_breakdown.xml, res/values-ar/strings.xml, res/values-es/strings.xml, +5 more
-- `all: smoother configurations repository check version testing (fixes #15218)`
-  ← test/repository/ConfigurationsRepositoryImplTest.kt
-- `all: smoother settings free space handling (fixes #15217)`
-  ← ui/settings/SettingsActivity.kt
-- `all: smoother storage category detail callback diffing (fixes #15210)`
-  ← ui/settings/StorageCategoryDetailFragment.kt
-- `all: smoother user repository parse leaders testing (fixes #15207)`
-  ← test/repository/UserRepositoryImplParseLeadersTest.kt
-- `all: smoother base adapter factoring (fixes #15201)`
-  ← base/BaseAdapterFactory.kt, base/BaseRecyclerFragment.kt, ui/courses/CoursesAdapter.kt, ui/courses/CoursesFragment.kt, ui/resources/ResourcesAdapter.kt, +2 more
-- `all: smoother payload constants handling (fixes #15199)`
-  ← ui/courses/CoursesAdapter.kt, ui/courses/InlineResourceAdapter.kt, ui/resources/ResourcesAdapter.kt, ui/teams/members/MembersAdapter.kt, ui/user/AchievementsAdapter.kt, +1 more
-- `all: bump `androidx.constraintlayout:constraintlayout` to 2.2.2 (fixes #15192)`
-  ← gradle/libs.versions.toml
-- `all: smoother image utils loading (fixes #15159)`
-  ← base/BaseDashboardFragment.kt, ui/health/MyHealthFragment.kt, ui/sync/LoginActivity.kt, ui/teams/members/MembersDetailFragment.kt, ui/user/AchievementFragment.kt, +2 more
-- `all: less notifications repository survey id is more (fixes #15180)`
-  ← repository/NotificationsRepository.kt, repository/NotificationsRepositoryImpl.kt, ui/notifications/NotificationsAdapter.kt, ui/notifications/NotificationsFragment.kt, ui/notifications/NotificationsViewModel.kt
-- `all: smoother settings accessibility text size configuring (fixes #14894)`
-  ← base/BaseActivity.kt, ui/settings/SettingsActivity.kt, utils/LocaleUtils.kt, res/values-ar/strings.xml, res/values-es/strings.xml, +6 more
-- `all: smoother notifications read view modelling (fixes #15153)`
+- **`all`** (127) — repository 102 · test/utils 47 · utils 45 · test/repository 42 · test/ui 39 · model 27 · res/drawable 26 · ui/teams 24 · data/room 19 · test/services 18
+- **`sync`** (71) — repository 46 · test/services 37 · services/sync 25 · services 19 · test/repository 11 · di 11 · services/upload 9 · utils 8 · ui/sync 6 · ui/teams 4
+- **`teams`** (69) — repository 50 · ui/teams 30 · test/repository 25 · ui/voices 20 · test/ui 17 · data/room 8 · services 6 · ui/surveys 6 · base 5 · ui/events 5
+- **`courses`** (67) — ui/courses 49 · repository 39 · test/repository 20 · test/ui 18 · data/room 9 · model 8 · res/layout 7 · utils 6 · base 5 · ui/submissions 4
+- **`resources`** (41) — ui/resources 26 · repository 26 · test/repository 19 · test/ui 7 · res/layout 7 · utils 6 · data/room 5 · ui/viewer 5 · ui/settings 4 · res/values 4
+- **`actions`** (28) — .github/workflows 29 · .github/scripts 19 · CLAUDE.md 8 · docs 4 · test/services 3 · .coderabbit.yaml 1 · gradle.properties 1 · .github 1 · settings.gradle 1 · test/utils 1
+- **`life`** (26) — repository 15 · ui/health 12 · test/repository 10 · test/ui 6 · ui/life 5 · model 4 · data/room 3 · ui/user 2 · test/model 2 · base 2
+- **`login`** (23) — repository 7 · ui/sync 6 · ui/settings 5 · test/repository 4 · ui/user 4 · res/values 3 · test/data 2 · test/ui 1 · res/values-ar 1 · res/values-es 1
+- **`dashboard`** (17) — ui/dashboard 19 · res/layout 14 · test/ui 9 · res/values 6 · repository 5 · res/layout-sw600dp 5 · test/repository 3 · base 3 · res/layout-land 3 · res/values-ar 3
+- **`enterprises`** (14) — ui/enterprises 18 · repository 7 · test/ui 4 · res/layout 4 · test/repository 3 · di 1 · res/values-ar 1 · res/values-es 1 · res/values-fr 1 · res/values-ne 1
+- **`community`** (8) — ui/community 14 · repository 7 · test/ui 3 · test/repository 2 · ui/voices 2 · ui/enterprises 2 · ui/settings 1
+- **`chat`** (8) — ui/chat 11 · test/ui 6 · repository 2 · test/repository 2 · data/api 1 · test/data 1
+- **`lifel`** (1) — repository 1 · utils 1 · test/repository 1
+
+## How a title is actually made: init → prep → landed
+
+Every line in this corpus is the *third* version of its title. Reconstructing
+the first two — from `refs/pull/<n>/head` branch names and branch commits, for
+the 220 merges of 2026-08-25 … 2026-09-01 — is what the rest of this pack is
+built on, because it shows which moves the landed titles make and which ones a
+prep pass has to stop making.
+
+**Stage 1 — how the PR arrives.** Provenance, by branch name:
+
+| Branch shape | Count | Example |
+|---|---|---|
+| agent, task-id suffix | 101 | `drop-sharedprefmanager-lifeviewmodel-userid-15461683756249885456` |
+| `openhands/…` | 56 | `openhands/normalize-resource-search-query` |
+| `jules-…` | 28 | `jules-13182967188167027853-9bd88190` |
+| issue-first (GitHub's button) | 21 | `16640-identical-callback-interfaces` |
+| `claude/…` | 5 | `claude/versionutils-characterization-tests-lcdu90` |
+| `dependabot/…` | 1 | `dependabot/gradle/gradle-wrapper-9.7.1` |
+| hand-named branch | 1 | `coderabbit-label-gated-reviews` |
+| no merge commit, branch unknown | 7 | — |
+
+**190 of 220 merges (86%) start as an agent PR.** Human, issue-first PRs are
+21. That inverts the emphasis this skill used to carry: on myplanet the agent
+branch is the normal path, not the exception.
+
+Of the 203 initial titles recoverable from branch commits, **not one arrives in
+house style**. What they arrive as:
+
+- 77 carry a conventional-commit prefix — `refactor:`, `perf:`, `feat:`, `fix:`,
+  `chore:`, `ci:`, `test:`, even `perf(teams):`. None of those survive.
+- 103 open with a capitalised imperative verb: *Unify callback interfaces into
+  OnChangedListener*, *Hoist flatten calls in SyncTimeLogger buildSummary*.
+- 103 name a CamelCase class in the title itself.
+- Median length 8 words, against a landed median of 4 (scope + `smoother` +
+  noun phrase + gerund).
+
+**Stage 2 — the prep draft.** 29 of the 220 branches carry a commit that is
+itself a house-style title, i.e. someone had already composed one before merge.
+**27 of those 29 were still changed before landing.** Those 27 pairs are the
+single most useful thing in this corpus and they are listed below.
+
+**Stage 3 — the landed title**, which is what the entries in this file are.
+
+To reproduce the reconstruction (GitHub keeps a PR's head ref forever, so this
+works long after the branch is deleted — and it needs nothing but anonymous git
+access):
+
+```
+for n in $(git log --format=%s -220 origin/master | grep -oE '\(#[0-9]+\)$' | tr -d '(#)'); do
+    git fetch -q --depth=40 origin refs/pull/$n/head:refs/prs/$n
+done
+git log --format='%an :: %s' refs/prs/<n> --not origin/master   # per PR
+```
+
+The branch name falls out of the `Merge remote-tracking branch 'origin/master'
+into <branch>` commits the automerge drain leaves behind.
+
+The transformation is not a rewording, it is a re-derivation from the diff:
+**118 of 203 landed titles share no content word at all with the title the PR
+arrived with**, and across all 203 only 18% of a landed title's words were
+present in the init. That is the strongest evidence in either repo for the
+rule that the changed files, not the old title, are the input.
+
+The issue number tells the other half of the story: 138 of 220 landed titles
+close an issue numbered *below* their PR (filed first, then dispatched to an
+agent), 82 an issue numbered *above* it (created during the prep pass, from
+the PR's own title). Both paths are routine — a higher issue number is not a
+mistake.
+
+## The 27 corrections a prep draft needed
+
+Grouped by what actually changed. Prep draft on the left, landed title on the
+right.
+
+**1. The scope vocabulary is closed — 13 of 27.** By far the most common
+correction, and the easiest to avoid: prep keeps inventing a scope out of the
+feature or layer word in front of it. Every invented scope in this window was
+replaced by one of the twelve real ones, and the invented word usually survived
+as a *noun* in the phrase.
+
+| Prep draft | Landed |
+|---|---|
+| `retry: smoother dead queue api surface` | `sync: less retry repository reset all pending is more` |
+| `ui: smoother viewbinding for server address, life, and voices` | `all: smoother data binding` |
+| `notifications: smoother type classification in repository` | `all: smoother notifications repository view modelling` |
+| `voices: smoother image array size caching in adapter` | `teams: smoother voices image caching` |
+| `members: smoother last-visit date formatting via shared TimeUtils` | `teams: smoother members date formatting` |
+| `collections: smoother dead field cleanup` | `resources: smoother collections testing` |
+| `health: smoother patient search debouncing` | `life: smoother health search view modelling` |
+| `downloads: smoother file-not-found logging through diagnostics` | `sync: smoother download repository file handling` |
+| `model: smoother achievement json caching` | `life: smoother achievements model caching` |
+| `diagnostics: smoother log building in the batch path` | `all: smoother diagnostics repository log building` |
+| `docs: smoother overtaking skill locating` | `all: smoother skill branch overtaking` |
+| `ci: bump upload-artifact to v7 in test workflow` | ``actions: bump `actions/upload-artifact` to 7`` |
+| `submissions: smoother submissions landscape scrolling` | `courses: smoother submissions landscaping` |
+
+Two of them are worth reading twice. `notifications:` → `all:` is the trap the
+conventions file already documents, and prep walked into it anyway.
+`login: smoother edit achievement handling` → `life: smoother achievements
+editing` moved scope *and* found the operation word: achievements are `life`,
+not `login`.
+
+**2. Compress to a bare chain of nouns.** No prepositions, no articles, no
+`and`, no commas, no hyphenated compounds — 0 out of the 492 non-`bump` titles
+in this window contain any of them, while prep drafts are full of them. The
+median landed title is `smoother` plus **three** words including the gerund,
+i.e. a two-word noun phrase — over the 454 `smoother` titles in this window:
+one word 9, two 50, three 195, four 142, five 55, six 3.
+
+| Prep draft | Landed |
+|---|---|
+| `courses: smoother filtered-course sort without per-item lowercase` | `courses: smoother repository sorting` |
+| `dashboard: smoother fragment navigation and tab handling` | `dashboard: smoother navigating` |
+| `resources: smoother filter dialog duplicate close button removing` | `resources: less apply filter button is more` |
+| `members: smoother last-visit date formatting via shared TimeUtils` | `teams: smoother members date formatting` |
+
+**3. Put the layer word back.** Compression is not deletion of the layer. Where
+prep names the entity or the symptom, the landed title names the layer the diff
+sits in — `repository`, `dao`, `utils`, `model`, `view model`:
+
+| Prep draft | Landed |
+|---|---|
+| `courses: smoother filtered-course sort without per-item lowercase` | `courses: smoother repository sorting` |
+| `diagnostics: smoother log building in the batch path` | `all: smoother diagnostics repository log building` |
+| `downloads: smoother file-not-found logging through diagnostics` | `sync: smoother download repository file handling` |
+
+**4. `view modelling` wins over a descriptive gerund.** If a `*ViewModel` is in
+the diff, that is the gerund, however good the prep draft's verb was:
+`health: smoother patient search debouncing` → `life: smoother health search
+view modelling`; `notifications: smoother type classification in repository` →
+`all: smoother notifications repository view modelling`.
+
+**5. A removal-flavoured gerund means the shape is wrong.** `removing`,
+`cleanup`, `encapsulation` in a `smoother` draft are the signal to switch:
+
+| Prep draft | Landed |
+|---|---|
+| `resources: smoother enriched-libraries encapsulation` | `resources: less repository enriched libraries is more` |
+| `resources: smoother filter dialog duplicate close button removing` | `resources: less apply filter button is more` |
+| `retry: smoother dead queue api surface` | `sync: less retry repository reset all pending is more` |
+
+The reverse also happened once: `sync: smoother retry repository log removing`
+landed as `sync: smoother retry repository queue testing`, because what the
+diff actually contained was tests.
+
+**6. A test-only diff is `testing`, whatever the prose said.**
+`collections: smoother dead field cleanup` → `resources: smoother collections
+testing`.
+
+**7. `bump` gets normalised.** Coordinate in backticks, `to <version>` only —
+no `v` prefix, no dependabot-style `from A to B`, no trailing "in the test
+workflow": `ci: bump upload-artifact to v7 in test workflow` →
+``actions: bump `actions/upload-artifact` to 7``, and
+``all: bump gradle-wrapper from 9.7.0 to 9.7.1`` →
+``all: bump `gradle-wrapper` to 9.7.1``.
+
+**8. A branch of many small commits gets one summary title.** The three
+`actions:` PRs in this window each carried eight to eleven house-style commit
+titles (`actions: smoother playstore quota estimating`, `actions: less
+playstore force is more`, …) and landed as a single title that walks across the
+whole branch: `actions: smoother workflows playstore automerge priority
+queuing`. Don't land the last commit's title; compose one for the branch.
+
+## What this window changed against the previous corpus
+
+The previous corpus covered PRs #14167 … #15448 up to 2026-08-09; this window
+(#15363 … #16641, 2026-08-10 … 2026-09-01) does not overlap it. The grammar
+held; the vocabulary moved.
+
+- **Nothing is malformed any more.** 500/500 titles carry a well-formed
+  `(fixes #N)`. The previous window had six broken links (`{fixes #14889)`,
+  `(fixes 14801)`, `(fixes: #9423)`). Those typos are now history rather than a
+  live hazard — but two *other* anomalies replaced them, below.
+- **`smoother` is up to 90%** (454/500) with `less … is more` at 38 and `bump`
+  at 8.
+- **Scopes moved a lot.** `sync` 55 → 71 (now second), `actions` 6 → **28**,
+  `enterprises` 5 → 14, `community` 3 → 8; `chat` 21 → 8, `dashboard` 23 → 17,
+  `resources` 51 → 41. `all` holds the top spot at 127. **`feedback:` is gone**
+  — zero uses; `feedback` now appears as a noun under `all:`.
+- **`actions:` grew a fifth of a scope table's worth of ground**, and it is no
+  longer only `.github/workflows/`: it covers `.github/scripts/` (19),
+  `CLAUDE.md` (8) and `docs/` (4). Repo-documentation PRs land as `actions:` or
+  `all:`, never `docs:`.
+- **Gerunds shifted with the codebase.** Up: `querying` 10 → 34, `caching`
+  15 → 33, `modelling` 40 → 65, `handling` 27 → 40. Down: `inserting` 17 → 4
+  (the Room migration is over), `testing` 27 → 17, `diffing` 11 → 6,
+  `adapting` 10 → **2**.
+- **`binding` replaced `adapting`** for adapter work: 7 uses, five of them the
+  pair `view binding` during the ViewBinding migration (`teams: smoother
+  members view binding` ← `MembersAdapter.kt`). Keep `diffing` for `DiffUtil` /
+  `ItemCallback` / payload changes — that split is intact.
+- **Three gerunds the old pack did not name at all:** `working` for `*Worker`
+  classes (`all: smoother network monitor working` ← `NetworkMonitorWorker.kt`),
+  `injecting` for Hilt/constructor-injection work (`all: smoother gson
+  injecting` ← `di/NetworkModule.kt` + 12 repositories), and `landscaping` for
+  landscape-orientation layout work (`courses: smoother submissions
+  landscaping` ← `res/layout-land/fragment_my_submission.xml`).
+- **`handling` widened.** The old rule licensed it for Fragments and Activities;
+  in this window it is the fallback for *any* principal file with no sharper
+  operation word — `utils/Utilities.kt` → `all: smoother utilities toast
+  handling`, `model/MyPlanet.kt` → `all: smoother myplanet context handling`.
+- **Tests now ride along with the change.** `test/…` paths appear in most
+  entries, so a diff containing tests no longer implies the `testing` gerund —
+  only a diff that is *nothing but* tests does.
+
+## Two titles in this window not to imitate
+
+- `lifel: smoother personals repository device name providing (fixes #16433)` —
+  `lifel:` is a typo for `life:`, and the only scope outside the table.
+- `community : smoother tab pager adapting (fixes #16308)` — a space before the
+  colon. Nothing downstream parses this, but the log reads it as noise.
+
+Both are caught by the anomaly lines in **Shape of the window** above; check
+them after every regeneration rather than reading 500 lines.
+
+## all (127)
+
+- `all: smoother callback listeners unifying (fixes #16640)`
+  ← callback/OnChangedListener.kt, callback/OnFeedbackSubmittedListener.kt, callback/OnMemberChangeListener.kt, callback/OnSecurityDataListener.kt, callback/OnTeamUpdateListener.kt, +9 more
+- `all: smoother utilities hex mapping (fixes #16547)`
+  ← utils/Utilities.kt, test/utils/UtilitiesTest.kt
+- `all: smoother markdown utils link movement caching (fixes #16499)`
+  ← utils/MarkdownUtils.kt, test/utils/MarkdownUtilsTest.kt
+- `all: smoother markdown utils image url rewriting (fixes #16498)`
+  ← utils/MarkdownUtils.kt, test/utils/MarkdownUtilsTest.kt
+- `all: smoother server reachability checking (fixes #16579)`
+  ← MainApplication.kt, test/MainApplicationTest.kt
+- `all: smoother data binding (fixes #16542)`
+  ← ui/life/LifeAdapter.kt, ui/sync/ServerAddressAdapter.kt, ui/voices/VoicesActions.kt, test/ui/life/LifeAdapterTest.kt, test/ui/sync/ServerAddressAdapterTest.kt, +1 more
+- `all: smoother json utils log tagging (fixes #16479)`
+  ← utils/JsonUtils.kt, test/utils/JsonUtilsTest.kt
+- `all: smoother feedback messages caching (fixes #16473)`
+  ← model/Feedback.kt, ui/feedback/FeedbackDetailActivity.kt, test/model/FeedbackTest.kt
+- `all: smoother notifications repository view modelling (fixes #16582)`
+  ← repository/NotificationsRepository.kt, repository/NotificationsRepositoryImpl.kt, ui/notifications/NotificationsViewModel.kt, test/repository/NotificationsRepositoryImplTest.kt, test/ui/notifications/NotificationsViewModelTest.kt
+- `all: smoother storage categories sharing (fixes #16570)`
+  ← ui/settings/StorageBreakdownFragment.kt, ui/settings/StorageCategories.kt, ui/settings/StorageCategoryDetailFragment.kt, test/ui/settings/StorageCategoriesTest.kt
+- `all: smoother repositories mapping (fixes #16560)`
+  ← repository/CoursesRepositoryImpl.kt, repository/FeedbackRepositoryImpl.kt, repository/LifeRepositoryImpl.kt, repository/TagsRepositoryImpl.kt
+- `all: smoother server config utils networking (fixes #16537)`
+  ← utils/ServerConfigUtils.kt, test/utils/ServerConfigUtilsTest.kt
+- `all: smoother android decrypter utils payload checking (fixes #16536)`
+  ← utils/AndroidDecrypter.kt
+- `all: smoother network utils handling (fixes #16528)`
+  ← utils/NetworkUtils.kt, test/utils/NetworkUtilsMockTest.kt
+- `all: smoother download utils channels configuring (fixes #16483)`
+  ← utils/DownloadUtils.kt, test/utils/DownloadUtilsTest.kt
+- `all: smoother crash log store caching (fixes #16463)`
+  ← utils/CrashLogStore.kt
+- `all: smoother notifications group view modelling (fixes #16403)`
+  ← ui/notifications/NotificationsViewModel.kt, test/ui/notifications/NotificationsViewModelTest.kt
+- `all: smoother server reachability time providing (fixes #16401)`
+  ← utils/ServerReachabilityProvider.kt, test/utils/ServerReachabilityProviderTest.kt
+- `all: smoother base permission usage handling (fixes #16404)`
+  ← base/BasePermissionActivity.kt, test/base/BasePermissionActivityTest.kt
+- `all: smoother network utils lazy caching (fixes #16631)`
+  ← MainApplication.kt, utils/NetworkUtils.kt, test/utils/NetworkUtilsMockTest.kt, test/utils/NetworkUtilsStateTest.kt, test/utils/NetworkUtilsTest.kt
+- `all: smoother download url utils caching (fixes #16411)`
+  ← utils/DownloadUtils.kt, utils/UrlUtils.kt, test/utils/DownloadUtilsTest.kt, test/utils/UrlUtilsTest.kt
+- `all: smoother personals view model testing (fixes #16377)`
+  ← test/ui/personals/PersonalsViewModelTest.kt
+- `all: smoother storage category view model testing (fixes #16376)`
+  ← test/ui/settings/StorageCategoryViewModelTest.kt
+- `all: smoother notification list item html caching (fixes #16334)`
+  ← model/NotificationListItem.kt, ui/notifications/NotificationsAdapter.kt, test/ui/notifications/NotificationsAdapterTest.kt
+- `all: smoother version utils android id caching (fixes #16317)`
+  ← utils/NetworkUtils.kt, utils/VersionUtils.kt, test/utils/NetworkUtilsTest.kt, test/utils/VersionUtilsTest.kt
+- `all: smoother diagnostics repository log building (fixes #16342)`
+  ← repository/DiagnosticsRepositoryImpl.kt, test/repository/DiagnosticsRepositoryImplTest.kt
+- `all: smoother notifications repository dao querying (fixes #16325)`
+  ← data/room/dao/NotificationDao.kt, repository/NotificationsRepositoryImpl.kt, test/repository/NotificationsRepositoryImplTest.kt
+- `all: less notifications repository exam dao is more (fixes #16318)`
+  ← repository/NotificationsRepositoryImpl.kt, test/repository/NotificationsRepositoryImplTest.kt
+- `all: smoother configurations repository sha256 utils checking (fixes #16352)`
+  ← repository/ConfigurationsRepositoryImpl.kt, utils/Sha256Utils.kt, test/repository/ConfigurationsRepositoryImplTest.kt, test/utils/Sha256UtilsTest.kt
+- `all: less notifications repository task team name is more (fixes #16338)`
+  ← repository/NotificationsRepository.kt, repository/NotificationsRepositoryImpl.kt
+- `all: less team user dao queries is more (fixes #16341)`
+  ← data/room/dao/TeamDao.kt, data/room/dao/UserDao.kt
+- `all: smoother file utils checking (fixes #16312)`
+  ← services/DownloadService.kt, services/DownloadWorker.kt, utils/FileUtils.kt, test/utils/FileUtilsTest.kt
+- `all: smoother network module connection pooling (fixes #16305)`
+  ← di/NetworkModule.kt, test/di/NetworkModuleTest.kt
+- `all: less services submissions hilt injections is more (fixes #16307)`
+  ← services/DownloadService.kt, services/sync/SyncManager.kt, services/upload/UploadCoordinator.kt, ui/submissions/SubmissionsFragment.kt, test/services/sync/SyncManagerTest.kt
+- `all: less hilt entry point accessors is more (fixes #16298)`
+  ← di/CoreDependenciesEntryPoint.kt, di/ServiceDependenciesEntryPoint.kt
+- `all: smoother network monitor working (fixes #16299)`
+  ← services/NetworkMonitorWorker.kt, test/services/NetworkMonitorWorkerTest.kt
+- `all: smoother importing (fixes #16295)`
+  ← base/BaseActivity.kt, data/api/ChatApiService.kt, data/auth/AuthSessionUpdater.kt, model/Personal.kt, repository/ActivitiesRepositoryImpl.kt, +50 more
+- `all: smoother notifications icons lookup handling (fixes #16286)`
+  ← ui/notifications/NotificationsAdapter.kt, ui/notifications/NotificationsFragment.kt, ui/notifications/NotificationsViewModel.kt
+- `all: smoother stable id utils generating (fixes #16144)`
+  ← ui/courses/CoursesAdapter.kt, ui/resources/ResourcesAdapter.kt, ui/surveys/SurveysAdapter.kt, ui/teams/TeamsAdapter.kt, ui/voices/VoicesAdapter.kt, +2 more
+- `all: smoother room dao nullable querying (fixes #16278)`
+  ← data/room/dao/CourseProgressDao.kt, data/room/dao/NotificationDao.kt, data/room/dao/RemovedLogDao.kt, data/room/dao/SubmissionDao.kt, data/room/dao/TeamLogDao.kt, +1 more
+- `all: smoother skill branch overtaking (fixes #16057)`
+  ← .claude/settings.json, CLAUDE.md
+- `all: smoother map tile utils handling (fixes #16241)`
+  ← base/BaseActivity.kt, data/api/ChatApiService.kt, utils/MapTileUtils.kt, utils/Sha256Utils.kt, test/data/api/ChatApiServiceTest.kt, +1 more
+- `all: smoother version utils testing (fixes #16251)`
+  ← test/utils/VersionUtilsTest.kt
+- `all: smoother notifications view modelling (fixes #16248)`
   ← ui/notifications/NotificationsViewModel.kt
-- `all: less network dependencies entry point is more (fixes #15143)`
-  ← MainApplication.kt, di/NetworkDependenciesEntryPoint.kt, di/ServiceDependenciesEntryPoint.kt
-- `all: less user session main dispatcher is more (fixes #15141)`
-  ← services/UserSessionManager.kt
-- `all: smoother server url reachability mapping (fixes #15134)`
-  ← services/sync/ServerUrlMapper.kt, ui/viewer/ResourceViewerViewModel.kt, test/services/sync/ServerUrlMapperTest.kt
-- `all: smoother feedback caching (fixes #15124)`
-  ← ui/feedback/FeedbackAdapter.kt, res/drawable/bg_grey.xml, test/ui/feedback/TintTest.kt
-- `all: smoother text watchers annotations suppressing (fixes #15119)`
-  ← base/BaseExamFragment.kt, ui/chat/ChatDetailFragment.kt, ui/courses/CourseFilterController.kt, ui/exam/ExamTakingFragment.kt
-- `all: smoother user repository json applying (fixes #15117)`
-  ← repository/UserRepositoryImpl.kt
-- `all: smoother crash log store time providing (fixes #15116)`
-  ← MainApplication.kt, utils/CrashLogStore.kt, test/utils/CrashLogStoreTest.kt
-- `all: smoother notification utils time providing (fixes #15106)`
-  ← services/TaskNotificationWorker.kt, utils/NotificationUtils.kt, test/utils/NotificationUtilsTest.kt
-- `all: less download resources repository entry point is more (fixes #15104)`
-  ← di/CoreDependenciesEntryPoint.kt, di/ResourcesRepositoryEntryPoint.kt, utils/DownloadUtils.kt
-- `all: smoother file utils time providing (fixes #15103)`
-  ← base/BaseResourceFragment.kt, ui/dashboard/BellDashboardFragment.kt, ui/enterprises/EnterprisesFinancesFragment.kt, ui/enterprises/EnterprisesReportsFragment.kt, utils/FileUtils.kt
-- `all: less pager adapter diff utils is more (fixes #15099)`
-  ← ui/courses/CoursesPagerAdapter.kt, ui/teams/TeamPagerAdapter.kt
-- `all: smoother time utils providing (fixes #15096)`
-  ← ui/dashboard/DashboardActivity.kt, ui/settings/SettingsActivity.kt, ui/sync/SyncActivity.kt, ui/user/UserProfileFragment.kt, utils/TimeUtils.kt
-- `all: smoother notifications text caching (fixes #15093)`
-  ← model/NotificationListItem.kt, ui/notifications/NotificationsAdapter.kt
-- `all: smoother settings guest users handling (fixes #14959)`
-  ← ui/settings/SettingsActivity.kt
-- `all: bump `com.android.tools.build:gradle` to 9.3.1 (fixes #15078)`
-  ← gradle/libs.versions.toml
-- `all: smoother user repository batch deleting (fixes #14942)`
-  ← data/room/dao/LegacyEntityDaos.kt, repository/UserRepositoryImpl.kt
-- `all: smoother markdown image loading (fixes #14939)`
-  ← utils/MarkdownUtils.kt, gradle/libs.versions.toml
-- `all: smoother application time providing (fixes #14936)`
-  ← MainApplication.kt, di/CoreDependenciesEntryPoint.kt
-- `all: smoother default dispatcher provider utils testing (fixes #14935)`
-  ← test/utils/DefaultDispatcherProviderTest.kt
-- `all: smoother item reorder helper utils testing (fixes #14934)`
-  ← test/utils/ItemReorderHelperTest.kt
-- `all: smoother top right menu items capitalizing (fixes #14873)`
-  ← res/values-es/strings.xml, res/values-fr/strings.xml, res/values/strings.xml
-- `all: smoother room database configuring (fixes #14888)`
-  ← app/src/androidTest/java/org/ole/planet/myplanet/data/DatabaseServiceTest.kt, app/src/androidTest/java/org/ole/planet/myplanet/model/RealmUserTest.kt, MainApplication.kt, base/BaseContainerFragment.kt, base/BaseDashboardFragment.kt, +371 more
-- `all: smoother importing (fixes #14887)`
-  ← .claude/settings.json, ui/dashboard/DashboardActivity.kt, ui/health/MyHealthFragment.kt
-- `all: less notification bell icon list item is more (fixes #14859)`
-  ← ui/notifications/NotificationsAdapter.kt, res/layout/row_notifications.xml
-- `all: smoother notification item sorting (fixes #14858)`
-  ← ui/notifications/NotificationsFragment.kt, res/layout/fragment_notifications.xml, res/layout/spinner_item_right.xml
-- `all: smoother text view extensions utils coloring (fixes #14831)`
-  ← utils/TextViewExtensions.kt
-- `all: smoother deep linking (fixes #14870)`
-  ← app/src/main/AndroidManifest.xml, repository/SubmissionsRepository.kt, repository/SubmissionsRepositoryImpl.kt, repository/SurveysRepository.kt, repository/SurveysRepositoryImpl.kt, +11 more
-- `all: smoother importing (fixes #14823)`
-  ← base/BaseTeamFragment.kt, repository/RatingsRepository.kt, repository/RatingsRepositoryImpl.kt, repository/UserRepository.kt, services/ServerReachabilityWorker.kt, +16 more
-- `all: smoother view model scoping (fixes #14820)`
-  ← ui/courses/ProgressViewModel.kt, ui/feedback/FeedbackDetailViewModel.kt, ui/feedback/FeedbackListViewModel.kt, ui/notifications/NotificationsViewModel.kt, ui/ratings/RatingsViewModel.kt, +12 more
-- `all: smoother onboarding server hint handling (fixes #14810)`
-  ← ui/onboarding/OnboardingActivity.kt, res/layout/activity_onboarding.xml, res/values-ar/strings.xml, res/values-es/strings.xml, res/values-fr/strings.xml, +3 more
-- `all: smoother repositories api typed parameters writing (fixes #14819)`
-  ← model/FinanceReportParams.kt, model/MeetupCreationParams.kt, model/MemberInfo.kt, repository/EventsRepository.kt, repository/EventsRepositoryImpl.kt, +14 more
-- `all: smoother feedback detail stats replying (fixes #14817)`
-  ← ui/feedback/FeedbackDetailActivity.kt, ui/feedback/FeedbackReplyAdapter.kt, ui/user/StatsAdapter.kt, ui/user/UserProfileFragment.kt
-- `all: smoother settings user data processing (fixes #14815)`
-  ← ui/settings/SettingsActivity.kt, ui/sync/ProcessUserDataActivity.kt
-- `all: smoother importing (fixes #14814)`
-  ← base/BaseDashboardFragment.kt, repository/ResourcesRepositoryImpl.kt, repository/VoicesRepositoryImpl.kt, services/VoicesLabelManager.kt, ui/chat/ChatHistoryFragment.kt, +5 more
-- `all: smoother diff callback naming (fixes #14784)`
-  ← ui/feedback/FeedbackDetailActivity.kt, ui/personals/PersonalsAdapter.kt, ui/settings/StorageCategoryDetailFragment.kt, ui/submissions/QuestionAnswerAdapter.kt, ui/teams/TeamsAdapter.kt, +5 more
-- `all: smoother application anr watchdog scoping (fixes #14780)`
-  ← MainApplication.kt, utils/ANRWatchdog.kt
-- `all: smoother settings retry queue details view modelling (fixes #14776)`
-  ← ui/settings/SettingsViewModel.kt
-- `all: smoother user repository guest creating (fixes #14777)`
-  ← repository/UserRepositoryImpl.kt
-- `all: smoother base recycler view creating (fixes #14769)`
-  ← base/BaseRecyclerFragment.kt
-- `all: smoother upload repository realm utils handling (fixes #14768)`
-  ← repository/UploadRepositoryImpl.kt, services/upload/UploadCoordinator.kt, utils/RealmUtils.kt
-- `all: bump `org.jetbrains.kotlin:kotlin-*` to 2.4.10 (fixes #14767)`
-  ← gradle/libs.versions.toml
-- `all: bump `com.android.tools.build:gradle` to 9.3.0 (fixes #14766)`
-  ← gradle/libs.versions.toml
-- `all: smoother view extensions utils flow testing (fixes #14763)`
-  ← test/utils/ViewExtensionsTest.kt
-- `all: smoother tags repository children processing (fixes #14761)`
-  ← repository/TagsRepositoryImpl.kt
-- `all: smoother tags repository bulk linking (fixes #14760)`
-  ← repository/TagsRepositoryImpl.kt
-- `all: smoother realm database indexing (fixes #14657)`
-  ← data/DatabaseService.kt, data/RealmMigrations.kt, model/RealmMyPersonal.kt, model/RealmNews.kt, model/RealmSubmission.kt
-- `all: smoother server url mapper testing (fixes #14757)`
-  ← test/services/sync/ServerUrlMapperTest.kt
-- `all: smoother dimen utils testing (fixes #14756)`
-  ← test/utils/DimenUtilsTest.kt
-- `all: smoother text view extensions testing (fixes #14754)`
-  ← test/utils/TextViewExtensionsTest.kt
-- `all: smoother tags repository database testing (fixes #14753)`
-  ← test/repository/TagsRepositoryImplTest.kt
-- `all: bump `glide` to 5.0.9 (fixes #14744)`
-  ← gradle/libs.versions.toml
-- `all: smoother importing (fixes #14672)`
-  ← repository/CoursesRepositoryImpl.kt, repository/ResourcesRepositoryImpl.kt, repository/TeamsRepositoryImpl.kt, ui/chat/ChatViewModel.kt, ui/courses/CourseDetailFragment.kt, +12 more
-- `all: bump `com.google.crypto.tink` to 1.23.0 (fixes #14666)`
-  ← gradle/libs.versions.toml
-- `all: bump `com.google.devtools.ksp` to 2.3.10 (fixes #14665)`
-  ← gradle/libs.versions.toml
-- `all: smoother readme formatting (fixes #14647)`
-  ← README.md
-- `all: smoother importing (fixes #14645)`
-  ← app/src/androidTest/java/org/ole/planet/myplanet/model/RealmUserTest.kt, MainApplication.kt, base/BaseDashboardFragment.kt, base/BaseResourceFragment.kt, model/RealmMyCourse.kt, +32 more
-- `all: smoother feedback repository upload pending (fixes #14634)`
-  ← repository/FeedbackRepository.kt, repository/FeedbackRepositoryImpl.kt, repository/UploadRepositoryImpl.kt, services/upload/UploadConfig.kt, services/upload/UploadConfigs.kt, +1 more
-- `all: smoother utilities entry points caching (fixes #14624)`
-  ← services/ThemeManager.kt, utils/NetworkUtils.kt, utils/SyncTimeLogger.kt, test/services/ThemeManagerTest.kt
-- `all: smoother database migrations schema resetting (fixes #14431)`
-  ← data/DatabaseService.kt, data/RealmMigrations.kt, test/data/RealmMigrationsTest.kt
-- `all: smoother guest dialog utils handling (fixes #14592)`
-  ← ui/courses/CoursesFragment.kt, ui/dashboard/BellDashboardFragment.kt, ui/dashboard/DashboardActivity.kt, ui/dashboard/DashboardPluginFragment.kt, ui/resources/ResourcesFragment.kt, +2 more
-- `all: smoother network traffic tagging (fixes #14591)`
-  ← MainApplication.kt, di/NetworkModule.kt, utils/Constants.kt
-- `all: smoother server reach entry point caching (fixes #14588)`
-  ← MainApplication.kt
-- `all: smoother user array adapting (fixes #14585)`
-  ← ui/user/UserArrayAdapter.kt
-- `all: less gradle kotlin compiler options is more (fixes #14561)`
-  ← app/build.gradle
-- `all: less realm apk log model methods is more (fixes #14566)`
-  ← model/RealmApkLog.kt
-- `all: less base recycler show no filter is more (fixes #14565)`
-  ← base/BaseRecyclerFragment.kt, test/base/BaseRecyclerFragmentCompanionTest.kt
-- `all: less base recycler methods is more (fixes #14568)`
-  ← base/BaseRecyclerFragment.kt, test/base/BaseRecyclerFragmentTest.kt
-- `all: less repository injections is more (fixes #14560)`
-  ← ui/health/HealthExaminationActivity.kt, ui/resources/AddResourceFragment.kt, ui/settings/StorageBreakdownFragment.kt, ui/sync/LoginActivity.kt
-- `all: smoother notifications repository batch querying (fixes #14558)`
-  ← repository/NotificationsRepositoryImpl.kt
-- `all: less activities submissions repositories methods is more (fixes #14556)`
-  ← repository/ActivitiesRepository.kt, repository/ActivitiesRepositoryImpl.kt, repository/SubmissionsRepository.kt, repository/SubmissionsRepositoryImpl.kt
-- `all: smoother importing (fixes #14464)`
-  ← repository/HealthRepositoryImpl.kt, ui/courses/CoursesViewModel.kt, ui/events/EventsAdapter.kt, ui/events/EventsDetailFragment.kt, utils/NotificationUtils.kt, +6 more
-- `all: smoother claude assisting (fixes #14450)`
-  ← CLAUDE.md
-- `all: smoother user repository realm testing (fixes #14453)`
-  ← app/src/androidTest/java/org/ole/planet/myplanet/model/RealmUserTest.kt, repository/UserRepositoryImpl.kt
-- `all: smoother database service realm testing (fixes #14452)`
-  ← app/src/androidTest/java/org/ole/planet/myplanet/data/DatabaseServiceTest.kt
-- `all: smoother docs domain modelling (fixes #14461)`
-  ← docs/DOMAIN_MODEL.md
-- `all: smoother docs testing (fixes #14460)`
-  ← docs/TESTING.md
-- `all: bump `com.google.dagger:hilt` to 2.60.1 (fixes #14459)`
-  ← gradle/libs.versions.toml
-- `all: smoother notifications repository realm compacting (fixes #14418)`
-  ← data/DatabaseService.kt, repository/NotificationsRepository.kt, repository/NotificationsRepositoryImpl.kt, services/DownloadService.kt, services/TaskNotificationWorker.kt
-- `all: smoother free space working (fixes #14403)`
-  ← services/FreeSpaceWorker.kt, test/services/FreeSpaceWorkerTest.kt
-- `all: less jvm inter op annotations is more (fixes #14422)`
-  ← CLAUDE.md, base/BaseDialogFragment.kt, base/BasePermissionActivity.kt, base/BaseVoicesFragment.kt, model/MyPlanet.kt, +55 more
-- `all: less main dispatcher rule is more (fixes #14440)`
-  ← test/MainDispatcherRule.kt, test/ui/enterprises/EnterprisesFinancesViewModelTest.kt, test/ui/ratings/RatingsViewModelTest.kt, test/ui/voices/NewsViewModelTest.kt
-- `all: smoother crash logs storing (fixes #14397)`
-  ← MainApplication.kt, utils/CrashLogStore.kt, test/utils/CrashLogStoreTest.kt
-- `all: smoother inline fully qualified naming (fixes #14446)`
-  ← app/src/androidTest/java/org/ole/planet/myplanet/data/DatabaseServiceTest.kt, app/src/androidTest/java/org/ole/planet/myplanet/model/RealmUserTest.kt, MainApplication.kt, base/BasePermissionActivity.kt, base/BaseRecyclerFragment.kt, +155 more
-- `all: smoother importing (fixes #14416)`
-  ← di/ServiceModule.kt, services/DownloadService.kt, services/DownloadWorker.kt, services/ServerReachabilityWorker.kt, services/sync/RealtimeSyncManager.kt, +32 more
-- `all: bump `androidx.hilt:hilt-*` to 1.4.0 (fixes #14398)`
-  ← gradle/libs.versions.toml
-- `all: smoother utilities toasting (fixes #14387)`
-  ← utils/Utilities.kt, test/model/RealmUserTest.kt, test/utils/UtilitiesTest.kt
-- `all: less realm dispatcher provider shutdown is more (fixes #14378)`
-  ← MainApplication.kt
-- `all: smoother notification utils channel creating (fixes #14368)`
-  ← utils/NotificationUtils.kt
-- `all: smoother user repository first copy finding (fixes #14362)`
-  ← repository/UserRepositoryImpl.kt
-- `all: smoother ratings notifications repositories copy finding (fixes #14361)`
-  ← repository/NotificationsRepositoryImpl.kt, repository/RatingsRepositoryImpl.kt, test/repository/RatingsRepositoryImplTest.kt
-- `all: smoother storage category detail diffing (fixes #14357)`
-  ← ui/settings/StorageCategoryDetailFragment.kt
-- `all: smoother camera utils dispatcher providing (fixes #14356)`
-  ← utils/CameraUtils.kt
-- `all: smoother settings free space working (fixes #14355)`
-  ← ui/settings/SettingsActivity.kt
-- `all: smoother docs code style guiding (fixes #14351)`
-  ← docs/CODE_STYLE_GUIDE.md
-- `all: less android manifest permission is more (fixes #14277)`
-  ← app/src/main/AndroidManifest.xml
-- `all: smoother service module importing (fixes #14263)`
-  ← di/ServiceModule.kt
-- `all: bump `gradle-wrapper` to 9.6.1 (fixes #14269)`
+- `all: smoother feedback json parsing (fixes #16247)`
+  ← model/Feedback.kt
+- `all: smoother image viewer utils handling (fixes #16235)`
+  ← utils/ImageViewerUtils.kt, utils/MarkdownUtils.kt
+- `all: smoother network utils shared preferences managing (fixes #16230)`
+  ← utils/NetworkUtils.kt
+- `all: smoother notifications load view modelling (fixes #16227)`
+  ← ui/notifications/NotificationsViewModel.kt, test/ui/notifications/NotificationsViewModelTest.kt
+- `all: smoother network retry interceptor providing (fixes #16226)`
+  ← di/NetworkModule.kt
+- `all: less models android imports is more (fixes #16221)`
+  ← model/Achievement.kt, model/Feedback.kt, model/News.kt, ui/user/EditAchievementFragment.kt
+- `all: smoother layout change listening (fixes #16211)`
+  ← ui/courses/CoursesFragment.kt, ui/resources/ResourcesFragment.kt
+- `all: smoother view lifecycle owning (fixes #16204)`
+  ← ui/dashboard/BellDashboardFragment.kt, ui/resources/ResourceDetailFragment.kt, ui/resources/ResourcesFragment.kt, ui/teams/TeamCalendarFragment.kt, ui/user/AchievementFragment.kt
+- `all: smoother myplanet context handling (fixes #16168)`
+  ← model/MyPlanet.kt
+- `all: smoother feedback caching (fixes #16160)`
+  ← ui/feedback/FeedbackAdapter.kt
+- `all: smoother guest user role handling (fixes #16158)`
+  ← model/UserEntity.kt, test/model/UserEntityEncodeImageTest.kt
+- `all: smoother crash log store handling (fixes #16150)`
+  ← utils/CrashLogStore.kt, test/utils/CrashLogStoreTest.kt
+- `all: smoother download service testing (fixes #16149)`
+  ← test/services/DownloadServiceTest.kt
+- `all: bump `gradle-wrapper` to 9.7.1 (fixes #16147)`
   ← gradle/wrapper/gradle-wrapper.properties
-- `all: smoother time utils providing (fixes #14247)`
-  ← base/BasePermissionActivity.kt, di/ServiceModule.kt, di/TimeModule.kt, repository/ActivitiesRepositoryImpl.kt, repository/ConfigurationsRepositoryImpl.kt, +33 more
-- `all: bump `com.google.dagger:hilt-android` to 2.60 (fixes #14258)`
-  ← gradle/libs.versions.toml
-- `all: smoother importing (fixes #14251)`
-  ← model/RealmHealthExamination.kt, repository/FeedbackRepositoryImpl.kt, repository/RealmRepository.kt, repository/ResourcesRepositoryImpl.kt, repository/UploadRepositoryImpl.kt, +14 more
-- `all: smoother glide memory building (fixes #14232)`
-  ← utils/TaggedGlideModule.kt
-- `all: smoother settings view modelling (fixes #14245)`
-  ← ui/settings/SettingsActivity.kt, ui/settings/SettingsViewModel.kt
-- `all: smoother realm repository query list flowing (fixes #14236)`
-  ← repository/RealmRepository.kt, test/repository/RealmRepositoryTest.kt
-- `all: smoother view modelling (fixes #14235)`
-  ← ui/chat/ChatViewModel.kt, ui/teams/TeamViewModel.kt, ui/teams/voices/TeamsVoicesViewModel.kt, ui/voices/LabelManipulator.kt, ui/voices/NewsViewModel.kt, +1 more
-- `all: smoother network monitor working (fixes #14209)`
-  ← services/NetworkMonitorWorker.kt
-- `all: smoother user data processing (fixes #14208)`
-  ← ui/sync/ProcessUserDataActivity.kt
-- `all: smoother user data processing (fixes #14204)`
-  ← ui/sync/ProcessUserDataActivity.kt
-- `all: smoother settings category detail storing (fixes #14203)`
-  ← ui/settings/StorageCategoryDetailFragment.kt
-
-## teams (74)
-
-- `teams: smoother voices removing (fixes #15407)`
-  ← ui/voices/VoicesAdapter.kt
-- `teams: smoother repository members leader switching (fixes #15408)`
-  ← repository/TeamsRepositoryImpl.kt, ui/teams/members/MembersFragment.kt
-- `teams: smoother members leader refreshing (fixes #15246)`
-  ← ui/teams/members/MembersAdapter.kt
-- `teams: smoother voices post removing (fixes #15215)`
-  ← ui/voices/VoicesAdapter.kt
-- `teams: smoother voices list preparing  (fixes #15214)`
-  ← ui/voices/VoicesAdapter.kt
-- `teams: smoother submissions repository negative flow testing (fixes #15212)`
-  ← test/repository/SubmissionsRepositoryImplTest.kt
-- `teams: smoother submissions repository submitter name testing (fixes #15209)`
-  ← test/repository/SubmissionsRepositoryImplTest.kt
-- `teams: smoother repository details flow testing (fixes #15195)`
-  ← test/repository/TeamsRepositoryImplTest.kt
-- `teams: smoother repository serialize activities testing (fixes #15194)`
-  ← test/repository/TeamsRepositoryImplTest.kt
-- `teams: smoother repository user injecting (fixes #15193)`
-  ← repository/TeamsRepositoryImpl.kt, test/repository/TeamsRepositoryBenchmarkTest.kt, test/repository/TeamsRepositoryBulkInsertTransactionTest.kt, test/repository/TeamsRepositoryImplTest.kt
-- `teams: smoother members placeholder handling (fixes #15164)`
-  ← ui/teams/members/MembersFragment.kt
-- `teams: smoother voices repository dao querying (fixes #15154)`
-  ← data/room/dao/NewsDao.kt, repository/VoicesRepositoryImpl.kt, test/data/room/dao/NewsDaoTest.kt, test/repository/VoicesRepositoryImplTest.kt
-- `teams: smoother voices posting policy testing (fixes #15150)`
-  ← test/repository/VoicePostingPolicyTest.kt
-- `teams: smoother surveys repository reminders flow testing (fixes #15148)`
-  ← test/repository/SurveysRepositoryImplTest.kt
-- `teams: smoother voices reply helper scoping (fixes #15136)`
-  ← ui/teams/voices/TeamsVoicesFragment.kt, ui/voices/ReplyActivity.kt, ui/voices/VoicesAdapterHelper.kt, ui/voices/VoicesFragment.kt
-- `teams: smoother events repository user fetching (fixes #15132)`
-  ← repository/EventsRepositoryImpl.kt, test/repository/EventsRepositoryImplTest.kt
-- `teams: smoother voices notifications repositories chat counting (fixes #15131)`
-  ← repository/NotificationsRepositoryImpl.kt, repository/VoicesRepository.kt, repository/VoicesRepositoryImpl.kt, test/repository/NotificationsRepositoryImplTest.kt
-- `teams: smoother voices item spacing (fixes #15092)`
-  ← ui/voices/VoicesAdapter.kt, res/layout/row_news.xml, res/values/dimens.xml
-- `teams: smoother repository admin querying (fixes #15089)`
-  ← data/room/dao/LegacyEntityDaos.kt, repository/TeamsRepositoryImpl.kt
-- `teams: smoother voices coloring (fixes #15087)`
-  ← ui/teams/TeamsAdapter.kt, ui/voices/VoicesAdapter.kt, res/values/colors.xml
-- `teams: smoother task notifying (fixes #14932)`
-  ← services/TaskNotificationWorker.kt
-- `teams: smoother repository task list handling (fixes #14882)`
-  ← data/room/dao/TeamTaskDao.kt, repository/TeamsRepositoryImpl.kt, ui/teams/tasks/TeamsTasksFragment.kt
-- `teams: smoother repository leader marking (fixes #14827)`
-  ← repository/TeamsRepositoryImpl.kt
-- `teams: smoother repository records deleting (fixes #14943)`
-  ← data/room/dao/LegacyEntityDaos.kt, repository/TeamsRepositoryImpl.kt
-- `teams: smoother voices repository community distinct changing (fixes #14900)`
-  ← repository/VoicesRepositoryImpl.kt
-- `teams: smoother calendar dates selection binding (fixes #14798)`
-  ← ui/teams/TeamCalendarFragment.kt
-- `teams: smoother user repository model fetching (fixes #14809)`
-  ← base/BaseTeamFragment.kt, repository/UserRepository.kt, repository/UserRepositoryImpl.kt, services/UploadManager.kt, services/UserSessionManager.kt, +1 more
-- `teams: smoother voices steps resources dispatcher providing (fixes #14807)`
-  ← ui/courses/CourseStepFragment.kt, ui/courses/InlineResourceAdapter.kt, ui/teams/voices/TeamsVoicesFragment.kt, ui/voices/ReplyActivity.kt, ui/voices/VoicesAdapterHelper.kt, +1 more
-- `teams: smoother courses pagers calculate diffing (fixes #14805)`
+- `all: smoother code style guide indexing (fixes #16085)`
+  ← docs/CODE_STYLE_GUIDE.md
+- `all: smoother selection utils membership checking (fixes #16080)`
+  ← utils/SelectionUtils.kt
+- `all: smoother notifications repository allocations querying (fixes #16078)`
+  ← repository/NotificationsRepositoryImpl.kt
+- `all: smoother pager list submitting (fixes #16074)`
   ← ui/courses/CoursesPagerAdapter.kt, ui/teams/TeamPagerAdapter.kt
-- `teams: smoother view model dispatcher providing (fixes #14804)`
-  ← ui/teams/TeamViewModel.kt
-- `teams: smoother life progress repositories data filtering (fixes #14791)`
-  ← repository/LifeRepository.kt, repository/LifeRepositoryImpl.kt, repository/ProgressRepositoryImpl.kt, repository/TeamsRepositoryImpl.kt
-- `teams: smoother submissions questions detail item listing  (fixes #14651)`
-  ← res/layout/fragment_submission_detail.xml, res/layout/fragment_submission_list.xml, res/layout/item_question_answer.xml, res/layout/item_submission.xml
-- `teams: smoother voices filter view modelling (fixes #14789)`
-  ← repository/VoicesRepositoryImpl.kt, ui/voices/VoicesViewModel.kt, test/ui/voices/VoicesViewModelTest.kt
-- `teams: smoother voices label managing (fixes #14787)`
-  ← services/VoicesLabelManager.kt, ui/voices/VoicesAdapter.kt
-- `teams: smoother tasks list updating (fixes #14772)`
-  ← ui/teams/tasks/TeamsTasksFragment.kt
-- `teams: smoother submission list export view modelling (fixes #14770)`
-  ← ui/submissions/SubmissionListViewModel.kt
-- `teams: smoother leave view modelling (fixes #14600)`
-  ← ui/teams/TeamDetailFragment.kt, ui/teams/TeamFragment.kt, ui/teams/TeamViewModel.kt
-- `teams: smoother leader selection request diffing (fixes #14762)`
-  ← ui/community/CommunityLeadersAdapter.kt, ui/teams/TeamsSelectionAdapter.kt, ui/teams/members/RequestsAdapter.kt, test/ui/community/CommunityLeadersAdapterTest.kt, test/ui/teams/TeamsSelectionAdapterTest.kt, +1 more
-- `teams: smoother sync repository uploading (fixes #14759)`
-  ← repository/TeamsRepositoryImpl.kt, repository/TeamsSyncRepository.kt, services/UploadManager.kt
-- `teams: smoother repository member dating (fixes #14758)`
-  ← repository/TeamsRepositoryImpl.kt
-- `teams: smoother voices posting (fixes #14599)`
-  ← ui/teams/voices/TeamsVoicesFragment.kt, ui/voices/VoicesFragment.kt
-- `teams: smoother voices repository querying (fixes #14638)`
-  ← repository/VoicesRepository.kt, repository/VoicesRepositoryImpl.kt, ui/teams/voices/TeamsVoicesViewModel.kt, ui/voices/VoicesViewModel.kt, test/repository/VoicesRepositoryImplTest.kt, +2 more
-- `teams: smoother resources repositories querying (fixes #14629)`
-  ← model/RealmMyCourse.kt, model/RealmMyTeam.kt, repository/ResourcesRepository.kt, repository/ResourcesRepositoryImpl.kt, repository/TeamsRepositoryImpl.kt
-- `teams: smoother voices repository uploading (fixes #14627)`
-  ← data/DatabaseService.kt, data/RealmMigrations.kt, repository/VoicesRepositoryImpl.kt, test/repository/VoicesRepositoryImplTest.kt
-- `teams: smoother tasks view binding (fixes #14625)`
-  ← ui/teams/tasks/TeamsTasksAdapter.kt, ui/teams/tasks/TeamsTasksFragment.kt
-- `teams: smoother events item callback diffing (fixes #14620)`
-  ← ui/events/EventsAdapter.kt, test/ui/events/EventsAdapterTest.kt
-- `teams: smoother events detail time handling (fixes #14618)`
-  ← ui/events/EventsDetailFragment.kt
-- `teams: smoother tasks view modelling (fixes #14608)`
-  ← ui/teams/tasks/TeamsTasksFragment.kt, ui/teams/tasks/TeamsTasksViewModel.kt, test/ui/teams/tasks/TeamsTasksViewModelTest.kt
-- `teams: smoother detail pager adapting (fixes #14607)`
-  ← ui/teams/TeamDetailFragment.kt, ui/teams/TeamPagerAdapter.kt
-- `teams: smoother voices filters view modelling (fixes #14605)`
+- `all: smoother notifications view modelling (fixes #16071)`
+  ← ui/notifications/NotificationsViewModel.kt
+- `all: smoother utilities toast handling (fixes #16064)`
+  ← utils/Utilities.kt
+- `all: smoother colors context caching (fixes #16061)`
+  ← ui/sync/ServerAddressAdapter.kt, ui/sync/ServerDialogExtensions.kt, ui/teams/tasks/TeamsTasksFragment.kt, ui/user/UserArrayAdapter.kt
+- `all: smoother android decrypter sha utils handling (fixes #16060)`
+  ← utils/AndroidDecrypter.kt, utils/Sha256Utils.kt
+- `all: smoother fragment manager back stack listening (fixes #16056)`
+  ← ui/dashboard/DashboardActivity.kt, ui/surveys/PublicSurveyActivity.kt
+- `all: smoother feedback caching (fixes #16053)`
+  ← ui/feedback/FeedbackAdapter.kt
+- `all: smoother configurations repository versioning (fixes #16049)`
+  ← repository/ConfigurationsRepositoryImpl.kt
+- `all: smoother user repository markdown view modelling (fixes #16043)`
+  ← repository/UserRepository.kt, repository/UserRepositoryImpl.kt, ui/components/MarkdownDialogFragment.kt, ui/components/MarkdownViewModel.kt
+- `all: smoother server utils configuring (fixes #16039)`
+  ← utils/ServerConfigUtils.kt
+- `all: smoother exam utils answering (fixes #16034)`
+  ← utils/ExamAnswerUtils.kt, test/utils/ExamAnswerUtilsTest.kt
+- `all: smoother search text change flowing (fixes #16020)`
+  ← ui/chat/ChatHistoryFragment.kt, ui/submissions/SubmissionsFragment.kt, ui/surveys/SurveyFragment.kt, ui/teams/TeamFragment.kt
+- `all: less room models text utils is more (fixes #16018)`
+  ← model/Answer.kt, model/HealthExamination.kt, model/StepExam.kt, model/TeamTask.kt
+- `all: bump `com.squareup.okhttp3:okhttp` to 5.5.0 (fixes #16017)`
+  ← gradle/libs.versions.toml
+- `all: smoother feedback composer view modelling (fixes #16014)`
+  ← ui/feedback/FeedbackComposerViewModel.kt, ui/feedback/FeedbackFragment.kt, test/ui/feedback/FeedbackComposerViewModelTest.kt
+- `all: smoother notifications view modelling (fixes #16011)`
+  ← ui/notifications/NotificationsViewModel.kt
+- `all: less repositories methods is more (fixes #16008)`
+  ← data/room/dao/MyLibraryDao.kt, data/room/dao/SubmissionDao.kt, repository/ResourcesRepository.kt, repository/ResourcesRepositoryImpl.kt, repository/SubmissionsRepository.kt, +7 more
+- `all: smoother tts utils managing (fixes #16006)`
+  ← utils/TTSManager.kt
+- `all: smoother dictionary repository providing (fixes #16001)`
+  ← di/RepositoryModule.kt, repository/DictionaryRepository.kt, repository/DictionaryRepositoryImpl.kt, ui/dictionary/DictionaryActivity.kt, res/values/strings.xml, +1 more
+- `all: smoother time utils date formatter caching (fixes #15996)`
+  ← utils/TimeUtils.kt
+- `all: smoother user entity image url handling (fixes #15993)`
+  ← model/UserEntity.kt
+- `all: smoother notifications repository dao querying (fixes #15990)`
+  ← data/room/dao/NotificationDao.kt, repository/NotificationsRepositoryImpl.kt, test/repository/NotificationsRepositoryImplTest.kt
+- `all: smoother recycler viewing (fixes #16086)`
+  ← ui/chat/ChatHistoryFragment.kt, ui/dashboard/BellDashboardFragment.kt, ui/feedback/FeedbackDetailActivity.kt, ui/teams/TeamCalendarFragment.kt
+- `all: smoother map tile utils handling (fixes #15988)`
+  ← utils/MapTileUtils.kt, test/utils/MapTileUtilsTest.kt
+- `all: smoother json utils handling (fixes #15984)`
+  ← utils/JsonUtils.kt, test/utils/JsonUtilsTest.kt
+- `all: less robolectric config sdk pins is more (fixes #15939)`
+  ← test/base/BaseRecyclerFragmentTest.kt, test/data/api/RetryInterceptorTest.kt, test/data/room/dao/NewsDaoTest.kt, test/model/UserEntityParseLeadersTest.kt, test/repository/NotificationsRepositoryImplTest.kt, +29 more
+- `all: smoother importing (fixes #15826)`
+  ← MainApplication.kt, di/ServiceModule.kt, repository/ActivitiesRepository.kt, repository/ActivitiesRepositoryImpl.kt, repository/ChatRepositoryImpl.kt, +42 more
+- `all: smoother gson injecting (fixes #15801)`
+  ← di/NetworkModule.kt, repository/ChatRepositoryImpl.kt, repository/ConfigurationsRepositoryImpl.kt, repository/HealthRepositoryImpl.kt, repository/SubmissionsRepositoryImpl.kt, +8 more
+- `all: bump `androidx.appcompat:appcompat` to 1.8.0 (fixes #15810)`
+  ← gradle/libs.versions.toml
+- `all: smoother user repository parsing (fixes #15798)`
+  ← model/UserEntity.kt, repository/HealthRepository.kt, repository/HealthRepositoryImpl.kt, repository/TeamsRepositoryImpl.kt, repository/UserRepository.kt, +9 more
+- `all: smoother flow collecting (fixes #15797)`
+  ← base/BaseDashboardFragment.kt, ui/chat/ChatDetailFragment.kt, ui/enterprises/EnterprisesReportsFragment.kt, ui/notifications/NotificationsFragment.kt, ui/ratings/RatingsFragment.kt, +5 more
+- `all: bump `androidx.webkit:webkit` from 1.16.0 to 1.17.0 (fixes #15787)`
+  ← gradle/libs.versions.toml
+- `all: smoother free space worker recursive deleting (fixes #15784)`
+  ← services/FreeSpaceWorker.kt
+- `all: smoother user repository name unifying (fixes #15781)`
+  ← data/room/dao/UserDao.kt, repository/UserRepositoryImpl.kt
+- `all: less dialog utils indeterminate is more (fixes #15762)`
+  ← utils/DialogUtils.kt
+- `all: smoother configurations repository server url updating (fixes #15754)`
+  ← repository/ConfigurationsRepository.kt, repository/ConfigurationsRepositoryImpl.kt, ui/courses/CourseProgressViewModel.kt, ui/courses/ProgressViewModel.kt, ui/viewer/ResourceViewerViewModel.kt, +2 more
+- `all: smoother view models loading (fixes #15751)`
+  ← ui/events/EventsDetailViewModel.kt, ui/health/HealthViewModel.kt, ui/user/UserProfileViewModel.kt
+- `all: smoother repositories json parsing (fixes #15748)`
+  ← model/News.kt, repository/FeedbackRepositoryImpl.kt, repository/SubmissionsRepositoryImpl.kt, repository/VoicesRepositoryImpl.kt
+- `all: smoother feedback repository saving (fixes #15747)`
+  ← repository/FeedbackRepository.kt, repository/FeedbackRepositoryImpl.kt, ui/feedback/FeedbackFragment.kt
+- `all: smoother user repository dao save searching (fixes #15745)`
+  ← data/room/dao/UserDao.kt, repository/HealthRepositoryImpl.kt, repository/SubmissionsRepositoryImpl.kt, repository/UserRepository.kt, repository/UserRepositoryImpl.kt, +2 more
+- `all: smoother notification repository destination view modelling (fixes #15606)`
+  ← base/BaseTeamFragment.kt, data/room/AppDatabase.kt, model/AppNotification.kt, model/NotificationPayload.kt, repository/NotificationsRepositoryImpl.kt, +6 more
+- `all: less database service module is more (fixes #15732)`
+  ← CLAUDE.md, data/DatabaseService.kt, di/DatabaseModule.kt, test/data/DatabaseServiceTest.kt, test/services/sync/SyncManagerTest.kt, +1 more
+- `all: smoother regex normalizing (fixes #15730)`
+  ← model/MyLibrary.kt, ui/chat/ChatViewModel.kt, ui/surveys/SurveysViewModel.kt, utils/TTSManager.kt, utils/Utilities.kt, +1 more
+- `all: smoother network utils flowing (fixes #15701)`
+  ← utils/NetworkUtils.kt
+- `all: smoother base container dispatcher providing (fixes #15638)`
+  ← base/BaseContainerFragment.kt, base/BaseTeamFragment.kt, repository/ResourcesRepositoryImpl.kt, services/DownloadService.kt, ui/courses/CourseStepFragment.kt, +3 more
+- `all: smoother data room converters type token caching (fixes #15705)`
+  ← data/room/Converters.kt, test/data/room/ConvertersTest.kt
+- `all: smoother importing (fixes #15586)`
+  ← base/BaseDashboardFragment.kt, di/ServiceModule.kt, model/UserEntity.kt, repository/CoursesRepository.kt, repository/CoursesRepositoryImpl.kt, +38 more
+- `all: smoother download service testing (fixes #15584)`
+  ← test/services/DownloadServiceTest.kt
+- `all: smoother merge prepping submodule pinning (fixes #15581)`
+  ← .agents/skills/merge-prepping
+- `all: smoother refresh job cancelling (fixes #15564)`
+  ← ui/courses/CoursesFragment.kt, ui/health/HealthViewModel.kt, ui/resources/ResourcesFragment.kt, ui/teams/tasks/TeamsTasksFragment.kt
+- `all: smoother model database indexing (fixes #15573)`
+  ← data/room/AppDatabase.kt, model/Achievement.kt, model/ApkLog.kt, model/ChatHistory.kt, model/Community.kt, +3 more
+- `all: smoother resources courses grid list viewing (fixes #15440)`
+  ← base/BaseAdapterFactory.kt, repository/CoursesRepositoryImpl.kt, services/SharedPrefManager.kt, ui/components/MaxWidthFrameLayout.kt, ui/courses/CourseFilterController.kt, +62 more
+- `all: smoother notifications group view modelling (fixes #15256)`
+  ← ui/notifications/NotificationsViewModel.kt, test/ui/notifications/NotificationsViewModelTest.kt
+- `all: smoother adapters item callback diffing (fixes #15567)`
+  ← ui/health/HealthExaminationAdapter.kt, ui/references/ReferencesAdapter.kt, ui/surveys/SurveysAdapter.kt
+- `all: bump `androidx.media3:media3-*` to 1.11.0 (fixes #15548)`
+  ← gradle/libs.versions.toml
+- `all: smoother personals repository upload testing (fixes #15535)`
+  ← test/repository/PersonalsRepositoryImplTest.kt
+- `all: less repository functions is more (fixes #15546)`
+  ← data/room/dao/MyLifeDao.kt, data/room/dao/OfflineActivityDao.kt, repository/CoursesRepository.kt, repository/CoursesRepositoryImpl.kt, repository/EventsRepository.kt, +15 more
+- `all: smoother resources courses sorting view modelling (fixes #15544)`
+  ← ui/resources/ResourcesAdapter.kt, ui/resources/ResourcesFragment.kt, ui/resources/ResourcesViewModel.kt
+- `all: smoother leaders life send survey views modelling (fixes #15543)`
+  ← ui/community/LeadersFragment.kt, ui/community/LeadersViewModel.kt, ui/life/LifeFragment.kt, ui/life/LifeViewModel.kt, ui/surveys/SendSurveyFragment.kt, +2 more
+- `all: smoother crash log sweeping (fixes #15464)`
+  ← MainApplication.kt
+- `all: smoother base recycler caching (fixes #15542)`
+  ← base/BaseRecyclerFragment.kt, ui/courses/CoursesFragment.kt, ui/resources/ResourcesFragment.kt, ui/teams/TeamFragment.kt
+- `all: smoother anr watchdog log persisting (fixes #15534)`
+  ← MainApplication.kt
+- `all: bump `gradle-wrapper` to 9.7.0 (fixes #15540)`
+  ← gradle/wrapper/gradle-wrapper.jar, gradle/wrapper/gradle-wrapper.properties
+- `all: smoother apk log building (fixes #15496)`
+  ← MainApplication.kt
+- `all: smoother server reachability connecting (fixes #15495)`
+  ← MainApplication.kt
+- `all: smoother notifications repository testing (fixes #15490)`
+  ← test/repository/NotificationsRepositoryImplTest.kt
+
+## sync (71)
+
+- `sync: smoother time logger summary generating (fixes #16461)`
+  ← utils/SyncTimeLogger.kt, test/utils/SyncTimeLoggerTest.kt
+- `sync: smoother repository user data uploading (fixes #16450)`
+  ← repository/SyncRepositoryImpl.kt
+- `sync: less retry repository reset all pending is more (fixes #16337)`
+  ← data/room/dao/RetryDao.kt, repository/RetryRepository.kt, repository/RetryRepositoryImpl.kt, services/retry/RetryQueue.kt, test/repository/RetryRepositoryImplTest.kt
+- `sync: smoother realtime flow buffer managing (fixes #16306)`
+  ← services/sync/RealtimeSyncManager.kt, test/services/sync/RealtimeSyncManagerTest.kt
+- `sync: smoother server url mapper caching (fixes #16533)`
+  ← services/sync/ServerUrlMapper.kt, test/services/sync/ServerUrlMapperTest.kt
+- `sync: smoother auto worker time providing (fixes #16490)`
+  ← services/AutoSyncWorker.kt
+- `sync: smoother download service queue caching (fixes #16485)`
+  ← services/DownloadService.kt, test/services/DownloadServiceOnDownloadCompleteTest.kt
+- `sync: smoother time logger starting (fixes #16462)`
+  ← utils/SyncTimeLogger.kt
+- `sync: smoother repository error handling (fixes #16336)`
+  ← repository/SyncRepositoryImpl.kt, services/sync/LoginSyncManager.kt, services/sync/SyncManager.kt, test/services/sync/LoginSyncManagerTest.kt
+- `sync: smoother submissions repository photo dao uploading (fixes #16412)`
+  ← data/room/dao/SubmitPhotosDao.kt, repository/SubmissionsRepository.kt, repository/SubmissionsRepositoryImpl.kt, services/upload/PhotoUploader.kt, test/repository/SubmissionsRepositoryImplTest.kt, +1 more
+- `sync: smoother download repository file handling (fixes #16356)`
+  ← repository/DownloadRepositoryImpl.kt, test/repository/DownloadRepositoryImplTest.kt
+- `sync: smoother retry interceptor backoff time providing (fixes #16330)`
+  ← data/api/RetryInterceptor.kt, utils/TimeProvider.kt, test/data/api/RetryInterceptorTest.kt, test/utils/TestTimeProvider.kt
+- `sync: less upload repository query pending is more (fixes #16329)`
+  ← repository/UploadRepository.kt, repository/UploadRepositoryImpl.kt, test/repository/UploadRepositoryImplTest.kt
+- `sync: smoother retry repository queue testing (fixes #16351)`
+  ← repository/RetryRepositoryImpl.kt, test/repository/RetryRepositoryImplTest.kt
+- `sync: smoother importing (fixes #16563)`
+  ← ui/sync/SyncActivity.kt
+- `sync: smoother login uploading (fixes #16265)`
+  ← ui/sync/SyncActivity.kt
+- `sync: smoother upload teams managing (fixes #15830)`
+  ← services/UploadManager.kt, test/services/UploadManagerTest.kt
+- `sync: smoother retry queue working (fixes #16234)`
+  ← services/retry/RetryQueueWorker.kt, test/services/retry/RetryQueueWorkerTest.kt
+- `sync: smoother upload coordinating (fixes #16229)`
+  ← services/upload/UploadCoordinator.kt
+- `sync: smoother login user managing (fixes #16154)`
+  ← model/UserEntity.kt, services/sync/LoginSyncManager.kt, test/model/UserEntityTest.kt, test/services/sync/LoginSyncManagerTest.kt
+- `sync: smoother url utils managing (fixes #16210)`
+  ← services/sync/SyncManager.kt
+- `sync: smoother repository time logger providing (fixes #16209)`
+  ← di/ServiceModule.kt, repository/SyncRepositoryImpl.kt, services/sync/SyncManager.kt, services/sync/TransactionSyncManager.kt, utils/ServerReachabilityProvider.kt, +4 more
+- `sync: smoother download service buffering (fixes #16167)`
+  ← services/DownloadService.kt
+- `sync: smoother download auth header working (fixes #16161)`
+  ← services/DownloadWorker.kt
+- `sync: smoother photo url utils uploading (fixes #16159)`
+  ← services/upload/PhotoUploader.kt
+- `sync: smoother retry repository dao querying (fixes #16153)`
+  ← data/room/dao/RetryDao.kt, repository/RetryRepositoryImpl.kt, test/repository/RetryRepositoryImplTest.kt
+- `sync: smoother retry interceptor testing (fixes #16082)`
+  ← test/data/api/RetryInterceptorTest.kt
+- `sync: smoother upload repository querying (fixes #16079)`
+  ← repository/UploadRepositoryImpl.kt
+- `sync: smoother realtime tables watching (fixes #16068)`
+  ← ui/sync/RealtimeSyncMixin.kt
+- `sync: smoother realtime table flowing (fixes #16055)`
+  ← services/sync/RealtimeSyncManager.kt, ui/chat/ChatViewModel.kt, ui/teams/TeamDetailFragment.kt, ui/teams/TeamViewModel.kt, test/ui/chat/ChatViewModelTest.kt
+- `sync: smoother upload url utils coordinating (fixes #16047)`
+  ← services/upload/UploadCoordinator.kt
+- `sync: less process user data upload manager is more (fixes #16029)`
+  ← ui/sync/ProcessUserDataActivity.kt
+- `sync: smoother resources managing (fixes #16025)`
+  ← services/sync/SyncManager.kt
+- `sync: smoother upload batch coordinating (fixes #16021)`
+  ← services/upload/UploadCoordinator.kt
+- `sync: smoother transaction shared preferences managing (fixes #16005)`
+  ← services/SharedPrefManager.kt, services/sync/TransactionSyncManager.kt, test/services/SharedPrefManagerTest.kt, test/services/sync/TransactionSyncManagerCheckpointTest.kt
+- `sync: smoother download service next url managing (fixes #15994)`
+  ← services/DownloadService.kt
+- `sync: smoother upload shelfing (fixes #15983)`
+  ← services/UploadToShelfService.kt
+- `sync: smoother user repository security data preserving (fixes #15836)`
+  ← repository/UserRepositoryImpl.kt, test/repository/UserRepositoryImplTest.kt
+- `sync: smoother server url alternative credentials mapping (fixes #15834)`
+  ← services/sync/ServerUrlMapper.kt, test/services/sync/ServerUrlMapperTest.kt
+- `sync: smoother manager resources cleaning (fixes #15831)`
+  ← services/sync/SyncManager.kt
+- `sync: less manager courses repository is more (fixes #15802)`
+  ← services/sync/SyncManager.kt, test/services/sync/SyncManagerTest.kt
+- `sync: smoother repositories interfaces writing (fixes #15786)`
+  ← di/RepositoryModule.kt, di/ServiceModule.kt, repository/ChatRepository.kt, repository/ChatRepositoryImpl.kt, repository/ChatSyncWriter.kt, +13 more
+- `sync: smoother file uploading streaming (fixes #15794)`
+  ← repository/UploadRepositoryImpl.kt, services/UploadManager.kt, services/upload/AchievementUploader.kt, utils/FileUtils.kt, test/utils/FileUtilsTest.kt
+- `sync: less upload manager shared preferences is more (fixes #15806)`
+  ← services/UploadManager.kt, test/services/UploadManagerTest.kt
+- `sync: less upload shelf service constructor is more (fixes #15805)`
+  ← di/ServiceModule.kt, services/UploadToShelfService.kt, test/services/UploadToShelfServiceTest.kt
+- `sync: less transaction sync manager application scope is more (fixes #15803)`
+  ← di/ServiceModule.kt, services/sync/TransactionSyncManager.kt, test/services/sync/TransactionSyncManagerCheckpointTest.kt, test/services/sync/TransactionSyncManagerTest.kt
+- `sync: less manager teams repository is more (fixes #15804)`
+  ← services/sync/SyncManager.kt, test/services/sync/SyncManagerTest.kt
+- `sync: smoother upload repository attachment dispatcher providing (fixes #15782)`
+  ← repository/UploadRepositoryImpl.kt, test/repository/UploadRepositoryImplTest.kt
+- `sync: smoother upload repository api routing (fixes #15779)`
+  ← repository/UploadRepository.kt, repository/UploadRepositoryImpl.kt, services/UploadManager.kt, services/upload/AchievementUploader.kt, services/upload/PhotoUploader.kt, +1 more
+- `sync: less transaction manager teams repository is more (fixes #15764)`
+  ← di/ServiceModule.kt, services/sync/TransactionSyncManager.kt, test/services/sync/TransactionSyncManagerCheckpointTest.kt, test/services/sync/TransactionSyncManagerTest.kt
+- `sync: less login manager user repository is more (fixes #15763)`
+  ← services/sync/LoginSyncManager.kt, test/services/sync/LoginSyncManagerTest.kt
+- `sync: less upload manager chat repository is more (fixes #15761)`
+  ← services/UploadManager.kt, test/services/UploadManagerTest.kt
+- `sync: less retry queue context is more (fixes #15760)`
+  ← services/retry/RetryQueue.kt, test/services/retry/RetryQueueTest.kt
+- `sync: less manager events repository is more (fixes #15759)`
+  ← services/sync/SyncManager.kt, test/services/sync/SyncManagerTest.kt
+- `sync: less upload manager submissions repository is more (fixes #15758)`
+  ← services/UploadManager.kt, test/services/UploadManagerTest.kt
+- `sync: less upload manager personals repository is more (fixes #15757)`
+  ← services/UploadManager.kt, test/services/UploadManagerTest.kt
+- `sync: less upload manager teams repository is more (fixes #15756)`
+  ← services/UploadManager.kt, test/services/UploadManagerTest.kt
+- `sync: less manager teams repository is more (fixes #15755)`
+  ← services/sync/SyncManager.kt, test/services/sync/SyncManagerTest.kt
+- `sync: smoother diagnostics repository configs uploading (fixes #15750)`
+  ← MainApplication.kt, di/CoreDependenciesEntryPoint.kt, di/RepositoryModule.kt, repository/ActivitiesRepository.kt, repository/ActivitiesRepositoryImpl.kt, +13 more
+- `sync: smoother repository api interface injecting (fixes #15742)`
+  ← repository/SyncRepository.kt, repository/SyncRepositoryImpl.kt, services/sync/SyncManager.kt
+- `sync: smoother sync repository json tree mapping (fixes #15738)`
+  ← model/MyTeam.kt, repository/SyncRepositoryImpl.kt, test/model/MyTeamTest.kt
+- `sync: smoother transaction checkpoint applying (fixes #15736)`
+  ← services/sync/TransactionSyncManager.kt, test/services/sync/TransactionSyncManagerCheckpointTest.kt
+- `sync: less upload shelf api interface is more (fixes #15734)`
+  ← di/ServiceModule.kt, services/UploadToShelfService.kt, test/services/UploadToShelfServiceTest.kt
+- `sync: smoother status dashboard collecting (fixes #15708)`
+  ← ui/dashboard/DashboardActivity.kt, ui/sync/SyncActivity.kt
+- `sync: smoother time logger date formatting (fixes #15709)`
+  ← services/sync/SyncManager.kt, ui/enterprises/EnterprisesFinancesFragment.kt, ui/notifications/NotificationsAdapter.kt, ui/teams/TeamCalendarFragment.kt, utils/SyncTimeLogger.kt
+- `sync: smoother download dialog handling (fixes #15435)`
+  ← base/BaseResourceFragment.kt, ui/courses/CoursesFragment.kt, ui/teams/courses/TeamCoursesFragment.kt
+- `sync: smoother logger timestamp caching (fixes #15562)`
+  ← utils/SyncTimeLogger.kt
+- `sync: smoother realtime mixin injecting (fixes #15461)`
+  ← di/CoreDependenciesEntryPoint.kt, ui/courses/CoursesFragment.kt, ui/feedback/FeedbackListFragment.kt, ui/resources/ResourcesFragment.kt, ui/surveys/SurveyFragment.kt, +1 more
+- `sync: smoother sync repository server pulling (fixes #15466)`
+  ← di/RepositoryModule.kt, repository/SyncRepository.kt, repository/SyncRepositoryImpl.kt, services/sync/SyncManager.kt, test/services/sync/SyncManagerTest.kt
+- `sync: smoother download service url resolving (fixes #15494)`
+  ← services/DownloadService.kt
+- `sync: smoother download service early returning (fixes #15493)`
+  ← services/DownloadService.kt
+
+## teams (69)
+
+- `teams: smoother voices image url flowing (fixes #16527)`
+  ← ui/voices/NewsViewModel.kt, test/ui/voices/NewsViewModelTest.kt
+- `teams: smoother voices view modelling (fixes #16557)`
   ← ui/voices/VoicesViewModel.kt, test/ui/voices/VoicesViewModelTest.kt
-- `teams: smoother detail view modelling (fixes #14593)`
-  ← di/ServiceModule.kt, ui/teams/TeamDetailFragment.kt, ui/teams/TeamViewModel.kt, test/ui/teams/TeamViewModelTest.kt
-- `teams: smoother voices helper dispatcher providing (fixes #14590)`
-  ← ui/teams/voices/TeamsVoicesFragment.kt, ui/voices/ReplyActivity.kt, ui/voices/VoicesAdapterHelper.kt, ui/voices/VoicesFragment.kt
-- `teams: smoother voices view modelling (fixes #14587)`
-  ← ui/teams/voices/TeamsVoicesFragment.kt, ui/teams/voices/TeamsVoicesViewModel.kt, test/ui/teams/voices/TeamsVoicesViewModelTest.kt
-- `teams: smoother repository querying (fixes #14581)`
-  ← repository/TeamsRepositoryImpl.kt
-- `teams: smoother events date caching (fixes #14579)`
-  ← ui/events/EventsAdapter.kt, ui/teams/TeamsAdapter.kt
-- `teams: less repository methods is more (fixes #14557)`
-  ← repository/TeamsRepository.kt, repository/TeamsRepositoryImpl.kt
-- `teams: smoother submissions ui view modelling (fixes #14408)`
-  ← ui/submissions/SubmissionUiModel.kt, ui/submissions/SubmissionViewModel.kt, ui/submissions/SubmissionsAdapter.kt, ui/submissions/SubmissionsFragment.kt, test/ui/submissions/SubmissionViewModelTest.kt
-- `teams: smoother base data fallback routing (fixes #14400)`
-  ← base/BaseTeamFragment.kt, ui/teams/voices/TeamsVoicesFragment.kt, test/base/BaseTeamFragmentTest.kt
-- `teams: smoother surveys repository adopting (fixes #14395)`
+- `teams: smoother shared preferences name managing (fixes #16532)`
+  ← services/SharedPrefManager.kt
+- `teams: smoother members view binding (fixes #16416)`
+  ← ui/teams/members/MembersAdapter.kt, test/ui/teams/members/MembersAdapterTest.kt
+- `teams: smoother tasks members assigning (fixes #16561)`
+  ← ui/teams/tasks/TeamsTasksFragment.kt
+- `teams: smoother voices image caching (fixes #16552)`
+  ← ui/voices/VoicesAdapter.kt, test/ui/voices/VoicesAdapterImagesTest.kt
+- `teams: smoother requests view modelling (fixes #16541)`
+  ← ui/teams/members/RequestsViewModel.kt
+- `teams: smoother tasks assignees view modelling (fixes #16509)`
+  ← ui/teams/tasks/TeamsTasksFragment.kt, ui/teams/tasks/TeamsTasksViewModel.kt
+- `teams: smoother members date formatting (fixes #16524)`
+  ← ui/teams/members/MembersAdapter.kt, utils/TimeUtils.kt, test/ui/teams/members/MembersAdapterTest.kt
+- `teams: smoother voices label managing (fixes #16472)`
+  ← services/VoicesLabelManager.kt
+- `teams: smoother tasks notification worker testing (fixes #16451)`
+  ← services/TaskNotificationWorker.kt, test/services/TaskNotificationWorkerTest.kt
+- `teams: smoother voices label chip managing (fixes #16469)`
+  ← services/VoicesLabelManager.kt, test/services/VoicesLabelManagerTest.kt
+- `teams: smoother surveys repository eligibility filtering (fixes #16424)`
+  ← data/room/dao/ExamDao.kt, repository/SurveysRepositoryImpl.kt, test/data/room/dao/ExamDaoTest.kt, test/repository/SurveysRepositoryImplTest.kt
+- `teams: smoother base members user caching (fixes #16405)`
+  ← base/BaseTeamFragment.kt, ui/teams/members/MembersFragment.kt
+- `teams: smoother courses filtering (fixes #16408)`
+  ← ui/teams/courses/TeamCoursesFragment.kt
+- `teams: less members leader handle is more (fixes #16406)`
+  ← ui/teams/members/MembersFragment.kt
+- `teams: smoother events repository meetup dao querying (fixes #16421)`
+  ← data/room/dao/MeetupDao.kt, repository/EventsRepositoryImpl.kt, test/repository/EventsRepositoryImplTest.kt
+- `teams: smoother events detail view model testing (fixes #16378)`
+  ← test/ui/events/EventsDetailViewModelTest.kt
+- `teams: smoother repository member querying (fixes #16300)`
+  ← repository/TeamsRepositoryImpl.kt, test/repository/TeamsRepositoryImplTest.kt
+- `teams: smoother repository leader candidate querying (fixes #16214)`
+  ← data/room/dao/TeamDao.kt, repository/TeamsRepositoryImpl.kt
+- `teams: smoother tasks copy uploading (fixes #16242)`
+  ← ui/teams/tasks/TeamsTasksFragment.kt
+- `teams: smoother base voices members selecting (fixes #16223)`
+  ← base/BaseVoicesFragment.kt
+- `teams: smoother members repository view modelling (fixes #16219)`
+  ← base/BaseTeamFragment.kt, repository/TeamsMembersRepository.kt, repository/TeamsRepositoryImpl.kt, ui/teams/TeamDetailFragment.kt, ui/teams/TeamViewModel.kt, +5 more
+- `teams: smoother notifications repository querying (fixes #16206)`
+  ← di/RepositoryModule.kt, repository/NotificationsRepositoryImpl.kt, repository/TeamsNotificationsRepository.kt, repository/TeamsRepository.kt, test/repository/NotificationsRepositoryImplTest.kt
+- `teams: smoother resources repositories linking (fixes #16208)`
+  ← repository/ResourcesRepositoryImpl.kt, repository/TeamsRepository.kt, repository/TeamsRepositoryImpl.kt, test/repository/ResourcesRepositoryBenchmarkTest.kt, test/repository/ResourcesRepositoryImplTest.kt, +2 more
+- `teams: smoother members finances ratings repositories querying (fixes #16013)`
+  ← repository/RatingsRepository.kt, repository/RatingsRepositoryImpl.kt, ui/resources/ResourceDetailFragment.kt, test/repository/RatingsRepositoryImplTest.kt
+- `teams: smoother voices sorting (fixes #16207)`
+  ← ui/voices/VoicesFragment.kt
+- `teams: smoother events describing (fixes #16171)`
+  ← ui/events/EventsDescriptionAdapter.kt, test/ui/events/EventsDescriptionAdapterTest.kt
+- `teams: smoother voices label managing (fixes #16170)`
+  ← services/VoicesLabelManager.kt
+- `teams: smoother surveys repository querying (fixes #16157)`
   ← repository/SurveysRepositoryImpl.kt
-- `teams: smoother repository voices posting (fixes #14393)`
-  ← repository/TeamsRepository.kt, ui/teams/voices/TeamsVoicesFragment.kt, test/repository/VoicePostingPolicyTest.kt
-- `teams: smoother tasks assignee preloading (fixes #14383)`
-  ← ui/teams/tasks/TeamsTasksAdapter.kt, ui/teams/tasks/TeamsTasksFragment.kt
-- `teams: smoother calendar date formatting (fixes #14376)`
-  ← ui/teams/TeamCalendarFragment.kt
-- `teams: smoother survey debounced flowing (fixes #14365)`
+- `teams: less voices change overide is more (fixes #16083)`
+  ← ui/voices/VoicesFragment.kt
+- `teams: smoother voices label managing (fixes #16069)`
+  ← services/VoicesLabelManager.kt
+- `teams: smoother list caching (fixes #16065)`
+  ← ui/teams/TeamsAdapter.kt
+- `teams: smoother surveys view modelling (fixes #16062)`
+  ← ui/surveys/SurveysViewModel.kt
+- `teams: smoother events repository detail view modelling (fixes #16058)`
+  ← repository/EventsRepository.kt, repository/EventsRepositoryImpl.kt, ui/events/EventsDetailViewModel.kt, test/repository/EventsRepositoryImplTest.kt
+- `teams: smoother voices repository change flowing (fixes #16051)`
+  ← repository/VoicesRepositoryImpl.kt
+- `teams: less survey resume override is more (fixes #16046)`
   ← ui/surveys/SurveyFragment.kt
-- `teams: smoother realm submissions repositories first copy finding (fixes #14358)`
-  ← repository/RealmRepository.kt, repository/SubmissionsRepositoryImpl.kt
-- `teams: less callback interfaces is more (fixes #14264)`
-  ← callback/OnTeamActionsListener.kt, callback/OnTeamEditListener.kt, callback/OnUpdateCompleteListener.kt
-- `teams: smoother voices view modelling (fixes #14261)`
-  ← ui/voices/VoicesFragment.kt, ui/voices/VoicesViewModel.kt, res/layout/fragment_voices.xml
-- `teams: smoother voices label filtering (fixes #14217)`
-  ← ui/voices/VoicesFragment.kt, res/layout/fragment_voices.xml
-- `teams: smoother voices view holding (fixes #14246)`
-  ← ui/voices/VoicesAdapter.kt
-- `teams: smoother events detail collecting (fixes #14243)`
+- `teams: smoother surveys repository adopting (fixes #16044)`
+  ← repository/SurveysRepositoryImpl.kt, test/repository/SurveysRepositoryImplTest.kt
+- `teams: smoother events view binding (fixes #16042)`
+  ← ui/events/EventsAdapter.kt
+- `teams: smoother voices data view modelling (fixes #16040)`
+  ← ui/voices/VoicesFragment.kt, ui/voices/VoicesViewModel.kt
+- `teams: smoother events detail time picking (fixes #16038)`
   ← ui/events/EventsDetailFragment.kt
-- `teams: smoother voices label item adapting (fixes #14229)`
-  ← ui/voices/VoicesFragment.kt, ui/voices/VoicesLabelAdapter.kt, ui/voices/VoicesLabelItem.kt
-- `teams: smoother meetup realm model bulk upserting (fixes #14225)`
-  ← model/RealmMeetup.kt, test/model/RealmMeetupTest.kt
-- `teams: smoother voices refreshing (fixes #14222)`
+- `teams: smoother voices reply counting (fixes #16036)`
+  ← ui/voices/VoicesAdapter.kt, res/values/strings.xml
+- `teams: smoother voices label view modelling (fixes #16033)`
+  ← ui/voices/VoicesViewModel.kt, utils/Constants.kt
+- `teams: smoother voices item callback diffing (fixes #16027)`
   ← ui/voices/VoicesAdapter.kt
-- `teams: smoother notifications repositories looping (fixes #14207)`
-  ← repository/NotificationsRepositoryImpl.kt, repository/TeamsRepository.kt, repository/TeamsRepositoryImpl.kt
-- `teams: smoother repository member login caching (fixes #14201)`
-  ← repository/TeamsRepository.kt, repository/TeamsRepositoryImpl.kt, ui/sync/LoginActivity.kt, test/repository/TeamsRepositoryImplTest.kt
+- `teams: smoother notification repository querying (fixes #16010)`
+  ← repository/NotificationsRepository.kt, repository/NotificationsRepositoryImpl.kt, repository/VoicesRepository.kt, repository/VoicesRepositoryImpl.kt, ui/teams/voices/TeamsVoicesViewModel.kt, +3 more
+- `teams: smoother repository dao querying (fixes #16009)`
+  ← data/room/dao/TeamDao.kt, repository/TeamsRepositoryImpl.kt
+- `teams: smoother repository next leader querying (fixes #16000)`
+  ← repository/TeamsRepositoryImpl.kt
+- `teams: smoother voices repository editing (fixes #15991)`
+  ← repository/VoicesEditor.kt, repository/VoicesRepository.kt, ui/teams/voices/TeamsVoicesFragment.kt, ui/voices/ReplyActivity.kt, ui/voices/VoicesActions.kt, +2 more
+- `teams: smoother requests dao view modelling (fixes #15992)`
+  ← data/room/dao/TeamDao.kt, ui/teams/members/RequestsViewModel.kt, test/ui/teams/members/RequestsViewModelTest.kt
+- `teams: smoother surveys item callback diffing (fixes #15989)`
+  ← model/SurveyRow.kt, ui/surveys/SurveyFragment.kt, ui/surveys/SurveysAdapter.kt, ui/surveys/SurveysViewModel.kt, test/ui/surveys/SurveysViewModelTest.kt
+- `teams: smoother repository dashboard bell view modelling (fixes #15726)`
+  ← base/BaseDashboardFragment.kt, repository/TeamsRepository.kt, repository/TeamsRepositoryImpl.kt, ui/dashboard/BellDashboardFragment.kt, ui/teams/TeamFragment.kt, +3 more
+- `teams: smoother finances members repositories splitting (fixes #15840)`
+  ← callback/OnMemberActionListener.kt, di/RepositoryModule.kt, model/JoinedMemberData.kt, repository/TeamsFinancesRepository.kt, repository/TeamsMembersRepository.kt, +8 more
+- `teams: smoother base voices tasks dispatcher providing (fixes #15799)`
+  ← base/BaseTeamFragment.kt, ui/sync/ProcessUserDataActivity.kt, ui/teams/tasks/TeamsTasksFragment.kt, ui/teams/voices/TeamsVoicesFragment.kt
+- `teams: smoother submissions repositories streamlining (fixes #15796)`
+  ← model/ApkLog.kt, repository/SubmissionsRepository.kt, repository/SubmissionsRepositoryImpl.kt, repository/TeamsRepositoryImpl.kt, repository/TeamsSyncRepository.kt, +8 more
+- `teams: smoother voices replying (fixes #15792)`
+  ← ui/teams/voices/TeamsVoicesFragment.kt, ui/voices/ReplyActivity.kt, ui/voices/VoicesAdapter.kt, ui/voices/VoicesFragment.kt
+- `teams: smoother repository csv reports exporting (fixes #15785)`
+  ← repository/TeamsRepositoryImpl.kt
+- `teams: smoother task json testing (fixes #15783)`
+  ← test/model/TeamTaskTest.kt
+- `teams: smoother tasks view modelling (fixes #15777)`
+  ← repository/TeamsRepository.kt, repository/TeamsRepositoryImpl.kt, ui/teams/tasks/TeamsTasksFragment.kt, ui/teams/tasks/TeamsTasksViewModel.kt, test/ui/teams/tasks/TeamsTasksViewModelTest.kt
+- `teams: smoother voices repository view modelling (fixes #15741)`
+  ← repository/VoicesRepository.kt, repository/VoicesRepositoryImpl.kt, ui/teams/voices/TeamsVoicesViewModel.kt, ui/voices/VoicesViewModel.kt, test/repository/VoicesRepositoryImplTest.kt, +3 more
+- `teams: smoother voices payload diffing (fixes #15733)`
+  ← model/News.kt, ui/voices/VoicesAdapter.kt
+- `teams: smoother repository dao querying (fixes #15706)`
+  ← data/room/dao/TeamDao.kt, repository/TeamsRepositoryImpl.kt
+- `teams: smoother voices repository reply bulk querying (fixes #15710)`
+  ← data/room/dao/NewsDao.kt, repository/VoicesRepositoryImpl.kt, test/data/room/dao/NewsDaoTest.kt, test/repository/VoicesRepositoryImplTest.kt
+- `teams: smoother survey title ordering (fixes #15576)`
+  ← ui/surveys/SurveyFragment.kt, res/values-ar/strings.xml, res/values-es/strings.xml, res/values-fr/strings.xml, res/values-ne/strings.xml, +2 more
+- `teams: smoother voices repository replying (fixes #15517)`
+  ← repository/VoicesRepositoryImpl.kt, ui/voices/VoicesFragment.kt, test/repository/VoicesRepositoryImplTest.kt
+- `teams: smoother events repository detail view modelling (fixes #15565)`
+  ← repository/EventsRepository.kt, repository/EventsRepositoryImpl.kt, ui/events/EventsDetailViewModel.kt, test/repository/EventsRepositoryImplTest.kt
+- `teams: smoother repository members removing (fixes #15172)`
+  ← repository/TeamsRepositoryImpl.kt, ui/teams/members/MembersFragment.kt
+- `teams: smoother repository dao querying (fixes #15457)`
+  ← data/room/dao/TeamDao.kt, repository/TeamsRepositoryImpl.kt
+- `teams: smoother repository date formatter caching (fixes #15498)`
+  ← repository/TeamsRepositoryImpl.kt
+- `teams: smoother voices policy testing (fixes #15492)`
+  ← test/repository/VoicePostingPolicyTest.kt
 
 ## courses (67)
 
-- `courses: smoother repository list. filtering (fixes #15411)`
-  ← repository/CoursesRepositoryImpl.kt
-- `courses: smoother filter tags controlling (fixes #15404)`
-  ← ui/courses/CourseFilterController.kt
-- `courses: smoother list progress filter view modelling (fixes #15242)`
-  ← ui/courses/CoursesViewModel.kt, test/ui/courses/CoursesViewModelTest.kt
-- `courses: smoother repository payloads binding (fixes #15155)`
-  ← repository/CoursesRepositoryImpl.kt, ui/courses/CoursesAdapter.kt
-- `courses: smoother repository list filter testing (fixes #15211)`
-  ← test/repository/CoursesRepositoryImplTest.kt
-- `courses: smoother repository id flow testing (fixes #15208)`
-  ← test/repository/CoursesRepositoryImplTest.kt
-- `courses: smoother repository detail model providing (fixes #15189)`
-  ← model/CourseDetailModel.kt, repository/CoursesRepository.kt, repository/CoursesRepositoryImpl.kt, ui/courses/CourseDetailProvider.kt, test/repository/CoursesRepositoryImplTest.kt, +1 more
-- `courses: smoother ratings repository user injecting (fixes #15184)`
-  ← repository/RatingsRepositoryImpl.kt, test/repository/RatingsRepositoryImplTest.kt
-- `courses: smoother progress row callback diffing (fixes #15152)`
-  ← model/CoursesProgressRow.kt, ui/courses/CoursesProgressAdapter.kt, ui/courses/CoursesProgressFragment.kt, test/ui/courses/CoursesProgressAdapterTest.kt
-- `courses: smoother submissions repository pending flow testing (fixes #15149)`
-  ← test/repository/SubmissionsRepositoryImplTest.kt
-- `courses: smoother progress repository find testing (fixes #15147)`
-  ← test/repository/ProgressRepositoryImplTest.kt
-- `courses: smoother tags repository linking (fixes #15130)`
-  ← repository/CoursesRepositoryImpl.kt, repository/TagsRepository.kt, repository/TagsRepositoryImpl.kt, test/repository/CoursesRepositoryImplTest.kt
-- `courses: smoother steps inline resources coroutine scoping (fixes #15126)`
-  ← ui/courses/CourseStepFragment.kt, ui/courses/InlineResourceAdapter.kt
-- `courses: smoother submissions repositories exam utils answering (fixes #14878)`
-  ← repository/CoursesRepositoryImpl.kt, repository/SubmissionsRepositoryImpl.kt, ui/exam/ExamTakingFragment.kt, utils/ExamAnswerUtils.kt, test/repository/SubmissionsRepositoryImplTest.kt
-- `courses: smoother repository realtime sync managing (fixes #15105)`
-  ← repository/CoursesRepositoryImpl.kt, ui/health/MyHealthFragment.kt, test/repository/CoursesRepositoryImplTest.kt
-- `courses: less next button binding is more (fixes #15080)`
-  ← ui/courses/TakeCourseFragment.kt
-- `courses: smoother repository payload building (fixes #15095)`
-  ← repository/CoursesRepositoryImpl.kt
-- `courses: smoother progress grid lazy coloring (fixes #15088)`
-  ← ui/courses/ProgressGridAdapter.kt
-- `courses: smoother filter controller debouncing (fixes #15084)`
-  ← ui/courses/CourseFilterController.kt
-- `courses: smoother inline resources caching (fixes #15083)`
-  ← ui/courses/InlineResourceAdapter.kt
-- `courses: smoother exams taking (fixes #14829)`
-  ← repository/SubmissionsRepository.kt, repository/SubmissionsRepositoryImpl.kt, ui/exam/ExamTakingFragment.kt
-- `courses: smoother joining (fixes #14879)`
-  ← base/BaseRecyclerFragment.kt, ui/courses/CoursesFragment.kt, ui/resources/ResourcesFragment.kt
-- `courses: smoother take view modelling (fixes #14864)`
-  ← ui/courses/TakeCourseFragment.kt, ui/courses/TakeCourseViewModel.kt, test/ui/courses/TakeCourseViewModelTest.kt
-- `courses: smoother survey item listing (fixes #14892)`
-  ← res/layout/row_mysurvey.xml
-- `courses: smoother progress status view modelling (fixes #14797)`
-  ← ui/courses/CoursesAdapter.kt, ui/courses/CoursesViewModel.kt, test/ui/courses/CoursesViewModelTest.kt
-- `courses: smoother steps exams border spacing (fixes #14826)`
-  ← res/layout/fragment_course_detail.xml, res/layout/fragment_exam_taking.xml, res/layout/fragment_take_course.xml
-- `courses: smoother inline resources dark mode handling (fixes #14792)`
-  ← res/layout/item_inline_resource.xml
-- `courses: smoother achievements payload handling (fixes #14785)`
-  ← ui/courses/CoursesAdapter.kt, ui/user/AchievementsAdapter.kt, utils/DiffUtils.kt
-- `courses: smoother repository searching (fixes #14783)`
-  ← repository/CoursesRepositoryImpl.kt, test/repository/CoursesRepositoryImplTest.kt
-- `courses: smoother repository certifications bulk inserting (fixes #14782)`
-  ← repository/CoursesRepositoryImpl.kt
-- `courses: smoother filter controller spinner listening (fixes #14775)`
-  ← ui/courses/CourseFilterController.kt
-- `courses: smoother submissions repository realm querying (fixes #14774)`
-  ← repository/SubmissionsRepositoryImpl.kt
-- `courses: smoother base progress batch deleting (fixes #14752)`
-  ← base/BaseRecyclerFragment.kt
-- `courses: smoother inline resources caching (fixes #14749)`
-  ← ui/courses/InlineResourceAdapter.kt
-- `courses: smoother repository exams querying (fixes #14746)`
-  ← repository/CoursesRepositoryImpl.kt
-- `courses: smoother steps linking  (fixes #14653)`
+- `courses: smoother submissions landscaping (fixes #16617)`
+  ← res/layout-land/fragment_my_submission.xml, res/layout/fragment_my_submission.xml
+- `courses: smoother progress binding (fixes #16413)`
+  ← ui/courses/CoursesProgressAdapter.kt, test/ui/courses/CoursesProgressAdapterTest.kt
+- `courses: smoother repository member filtering (fixes #16517)`
+  ← model/MyCourse.kt, repository/CoursesRepositoryImpl.kt, test/model/MyCourseTest.kt, test/repository/CoursesRepositoryImplTest.kt
+- `courses: smoother steps data handling (fixes #16568)`
   ← ui/courses/CourseStepFragment.kt
-- `courses: smoother list filtering (fixes #14602)`
-  ← ui/courses/CoursesFragment.kt
-- `courses: smoother detail joining (fixes #14553)`
-  ← ui/courses/CourseDetailFragment.kt, ui/courses/TakeCourseFragment.kt
-- `courses: smoother pager creation diffing (fixes #14635)`
-  ← ui/courses/CoursesPagerAdapter.kt, ui/courses/TakeCourseFragment.kt
-- `courses: smoother repository querying (fixes #14628)`
-  ← repository/CoursesRepositoryImpl.kt
-- `courses: smoother resources repositories pre-filtered searching (fixes #14626)`
-  ← app/src/androidTest/java/org/ole/planet/myplanet/data/DatabaseServiceTest.kt, app/src/androidTest/java/org/ole/planet/myplanet/model/RealmUserTest.kt, data/DatabaseService.kt, data/RealmMigrations.kt, model/RealmMyLibrary.kt, +4 more
-- `courses: smoother filter controller flowing (fixes #14623)`
-  ← ui/courses/CourseFilterController.kt, ui/courses/CoursesFragment.kt
-- `courses: smoother steps resources view holding (fixes #14621)`
+- `courses: smoother selecting (fixes #16556)`
+  ← ui/courses/CoursesAdapter.kt
+- `courses: smoother repository sorting (fixes #16512)`
+  ← repository/CoursesRepositoryImpl.kt, test/repository/CoursesRepositoryImplTest.kt
+- `courses: smoother rating utils factoring (fixes #16491)`
+  ← utils/CourseRatingUtils.kt, test/utils/CourseRatingUtilsTest.kt
+- `courses: smoother exams questions initializing (fixes #16478)`
+  ← model/ExamQuestion.kt
+- `courses: smoother progress submissions repositories dao querying (fixes #16484)`
+  ← repository/ProgressRepositoryImpl.kt, repository/SubmissionsRepositoryImpl.kt
+- `courses: smoother activities repository visiting (fixes #16430)`
+  ← repository/ActivitiesRepositoryImpl.kt, test/repository/ActivitiesRepositoryImplTest.kt
+- `courses: smoother ratings repository dao aggregating (fixes #16420)`
+  ← data/room/dao/RatingDao.kt, repository/RatingsRepositoryImpl.kt, test/repository/RatingsRepositoryImplTest.kt
+- `courses: smoother submission view modelling (fixes #16417)`
+  ← ui/submissions/SubmissionViewModel.kt, test/ui/submissions/SubmissionViewModelTest.kt
+- `courses: smoother exam utils answering (fixes #16350)`
+  ← utils/ExamAnswerUtils.kt
+- `courses: less submission detail measure is more (fixes #16348)`
+  ← ui/submissions/SubmissionDetailFragment.kt
+- `courses: smoother resources inline scoping (fixes #16310)`
+  ← ui/courses/InlineResourceAdapter.kt, test/ui/courses/InlineResourceAdapterTest.kt
+- `courses: smoother base exam markdown caching (fixes #16249)`
+  ← base/BaseExamFragment.kt, test/base/BaseExamFragmentTest.kt
+- `courses: smoother steps label formatting (fixes #16244)`
+  ← ui/courses/TakeCourseFragment.kt
+- `courses: smoother submissions repository pdf exporting (fixes #16236)`
+  ← repository/SubmissionsRepositoryExporter.kt
+- `courses: smoother progress steps handling (fixes #16228)`
+  ← ui/courses/CoursesProgressAdapter.kt, test/ui/courses/CoursesProgressAdapterTest.kt
+- `courses: smoother inline resources caching (fixes #16225)`
   ← ui/courses/InlineResourceAdapter.kt
-- `courses: smoother submissions repository flowing (fixes #14611)`
-  ← repository/SubmissionsRepositoryImpl.kt, test/repository/SubmissionsRepositoryImplTest.kt, test/ui/submissions/SubmissionViewModelTest.kt
-- `courses: smoother detail rating view modelling (fixes #14610)`
-  ← base/BaseContainerFragment.kt, ui/courses/CourseDetailProvider.kt, ui/courses/CourseDetailViewModel.kt, ui/courses/RatingSummaryProvider.kt, utils/CourseRatingUtils.kt, +3 more
-- `courses: smoother progress repository data fetching (fixes #14580)`
-  ← repository/ProgressRepositoryImpl.kt, test/repository/ProgressRepositoryImplTest.kt
-- `courses: smoother submissions search flowing (fixes #14578)`
-  ← ui/submissions/SubmissionsFragment.kt
-- `courses: smoother status updates view modelling (fixes #14575)`
-  ← ui/courses/CoursesViewModel.kt
-- `courses: smoother ratings view modelling (fixes #14572)`
-  ← ui/ratings/RatingsFragment.kt, ui/ratings/RatingsViewModel.kt, test/ui/ratings/RatingsViewModelTest.kt
-- `courses: less realm step exam model creation time is more (fixes #14564)`
-  ← model/RealmStepExam.kt, test/model/RealmStepExamTest.kt
-- `courses: less realm step exam model ids is more (fixes #14562)`
-  ← model/RealmStepExam.kt, test/model/RealmStepExamTest.kt
-- `courses: less repository methods is more (fixes #14555)`
-  ← repository/CoursesRepository.kt, repository/CoursesRepositoryImpl.kt
-- `courses: smoother cover image handling (fixes #14392)`
-  ← data/DatabaseService.kt, data/RealmMigrations.kt, model/RealmMyCourse.kt, repository/CoursesRepositoryImpl.kt, services/sync/TransactionSyncManager.kt, +9 more
-- `courses: smoother progress repository bulk inserting (fixes #14409)`
-  ← repository/ProgressRepository.kt, repository/ProgressRepositoryImpl.kt, services/sync/TransactionSyncManager.kt, test/repository/ProgressRepositoryImplTest.kt
-- `courses: smoother resources inline metadata caching (fixes #14406)`
-  ← ui/courses/InlineResourceAdapter.kt
-- `courses: smoother exam base progressing (fixes #14401)`
-  ← base/BaseExamFragment.kt, ui/exam/ExamTakingFragment.kt, test/ui/exam/ExamTakingFragmentTest.kt
-- `courses: smoother repository log batch deleting (fixes #14371)`
-  ← repository/CoursesRepositoryImpl.kt
-- `courses: smoother submissions repository create exam submission modelling (fixes #14370)`
-  ← model/CreateExamSubmissionRequest.kt, repository/SubmissionsRepository.kt, repository/SubmissionsRepositoryImpl.kt, ui/exam/ExamTakingFragment.kt, test/repository/SubmissionsRepositoryImplTest.kt
-- `courses: smoother repository exam survey inserting (fixes #14369)`
-  ← repository/CoursesRepositoryImpl.kt
-- `courses: smoother repository bulk inserting (fixes #14354)`
-  ← repository/CoursesRepositoryImpl.kt, services/sync/TransactionSyncManager.kt
-- `courses: smoother submissions repository async serializing (fixes #14352)`
+- `courses: smoother exam answer utils caching (fixes #16220)`
+  ← utils/ExamAnswerUtils.kt, test/utils/ExamAnswerUtilsTest.kt
+- `courses: smoother view recycler gliding (fixes #16092)`
+  ← ui/courses/CoursesAdapter.kt, test/ui/courses/CoursesAdapterTest.kt
+- `courses: smoother submissions repository list flowing (fixes #16163)`
   ← repository/SubmissionsRepositoryImpl.kt
-- `courses: smoother take button navigating (fixes #13957)`
-  ← ui/courses/CoursesAdapter.kt, ui/courses/TakeCourseFragment.kt, ui/dashboard/DashboardViewModel.kt
-- `courses: smoother submissions latest collecting (fixes #14242)`
-  ← ui/submissions/SubmissionsAdapter.kt, ui/submissions/SubmissionsFragment.kt
-- `courses: smoother list latest collecting (fixes #14237)`
+- `courses: smoother submissions repository exporting (fixes #16151)`
+  ← repository/SubmissionsRepositoryExporter.kt
+- `courses: smoother submissions repository exams starting (fixes #16141)`
+  ← model/ExamAnswerData.kt, repository/SubmissionsRepository.kt, repository/SubmissionsRepositoryImpl.kt, ui/exam/ExamTakingFragment.kt, test/repository/SubmissionsRepositoryImplTest.kt
+- `courses: smoother ratings repository user querying (fixes #16095)`
+  ← repository/RatingsRepository.kt, repository/RatingsRepositoryImpl.kt, ui/courses/CourseDetailViewModel.kt, ui/courses/RatingSummaryProvider.kt, ui/ratings/RatingsViewModel.kt, +3 more
+- `courses: smoother progress activities repositories context querying (fixes #16081)`
+  ← repository/ActivitiesRepositoryImpl.kt, repository/CoursesRepositoryImpl.kt, repository/ProgressRepositoryImpl.kt, test/repository/ActivitiesRepositoryImplTest.kt, test/repository/ProgressRepositoryImplTest.kt
+- `courses: less ui state rating map is more (fixes #16077)`
+  ← ui/courses/CoursesFragment.kt, ui/courses/CoursesViewModel.kt, test/ui/courses/CoursesViewModelTest.kt
+- `courses: smoother submissions exams view modelling (fixes #16073)`
+  ← ui/submissions/SubmissionViewModel.kt
+- `courses: smoother base exams regex splitting (fixes #16072)`
+  ← base/BaseExamFragment.kt
+- `courses: smoother concatenated links saving (fixes #16063)`
+  ← model/MyCourse.kt
+- `courses: smoother submissions repository detail view modelling (fixes #16059)`
+  ← repository/SubmissionsRepository.kt, repository/SubmissionsRepositoryImpl.kt, services/upload/UploadConfigs.kt, ui/submissions/SubmissionDetailViewModel.kt, test/repository/SubmissionsRepositoryImplTest.kt
+- `courses: smoother repository step data querying (fixes #16045)`
+  ← model/CourseStepData.kt, repository/CoursesRepositoryImpl.kt, ui/courses/CourseStepFragment.kt
+- `courses: smoother progress repository data fetching (fixes #16032)`
+  ← repository/ProgressRepositoryImpl.kt, test/repository/ProgressRepositoryImplTest.kt
+- `courses: smoother submissions repository answers querying (fixes #16023)`
+  ← repository/SubmissionsRepositoryImpl.kt
+- `courses: smoother exams answers caching (fixes #16022)`
+  ← ui/exam/ExamTakingFragment.kt
+- `courses: smoother take view modelling (fixes #16015)`
+  ← ui/courses/TakeCourseFragment.kt, ui/courses/TakeCourseViewModel.kt, test/ui/courses/TakeCourseViewModelTest.kt
+- `courses: smoother layout handling (fixes #16012)`
   ← ui/courses/CoursesFragment.kt
-- `courses: smoother exams question realm model bulk inserting (fixes #14226)`
-  ← model/RealmExamQuestion.kt, test/model/RealmExamQuestionTest.kt
-- `courses: smoother submissions repository flowing (fixes #14223)`
-  ← repository/SubmissionsRepository.kt, repository/SubmissionsRepositoryImpl.kt
-- `courses: smoother ratings refresh view modelling (fixes #14206)`
-  ← callback/OnDiffRefreshListener.kt, callback/OnRatingChangeListener.kt, ui/courses/CoursesAdapter.kt, ui/courses/CoursesFragment.kt, ui/courses/CoursesViewModel.kt, +1 more
+- `courses: smoother progress repository submissions mapping (fixes #16007)`
+  ← repository/ProgressRepositoryImpl.kt
+- `courses: smoother resources payload adapting (fixes #16002)`
+  ← ui/courses/CoursesAdapter.kt, ui/resources/ResourcesAdapter.kt, test/ui/courses/CoursesAdapterTest.kt, test/ui/resources/ResourcesAdapterTest.kt
+- `courses: smoother surveys repository exam dao querying (fixes #15997)`
+  ← data/room/dao/ExamDao.kt, repository/SurveysRepositoryImpl.kt, test/data/room/dao/ExamDaoTest.kt, test/repository/SurveysRepositoryImplTest.kt
+- `courses: smoother progress view modelling (fixes #15995)`
+  ← ui/courses/CoursesProgressFragment.kt, ui/courses/ProgressViewModel.kt, test/ui/courses/ProgressViewModelTest.kt
+- `courses: smoother repository dao querying (fixes #15987)`
+  ← data/room/dao/CourseDao.kt, repository/CoursesRepositoryImpl.kt, test/data/room/dao/CourseDaoTest.kt, test/repository/CoursesRepositoryImplTest.kt
+- `courses: smoother progress scrolling (fixes #15553)`
+  ← res/layout/activity_course_progress.xml
+- `courses: smoother take view modelling (fixes #15800)`
+  ← ui/courses/TakeCourseFragment.kt, ui/courses/TakeCourseViewModel.kt
+- `courses: smoother steps filter coroutine scoping (fixes #15795)`
+  ← ui/courses/CourseFilterController.kt, ui/courses/CourseStepFragment.kt, ui/courses/CoursesFragment.kt, ui/courses/InlineResourceAdapter.kt, utils/ANRWatchdog.kt, +3 more
+- `courses: smoother resources caching (fixes #15793)`
+  ← ui/courses/CoursesAdapter.kt, ui/courses/CoursesFragment.kt, ui/resources/ResourcesAdapter.kt, ui/resources/ResourcesFragment.kt
+- `courses: smoother download dialog handling (fixes #15435)`
+  ← base/BaseRecyclerFragment.kt, base/BaseResourceFragment.kt, ui/courses/CoursesFragment.kt, ui/teams/courses/TeamCoursesFragment.kt
+- `courses: smoother removed log dao deleting (fixes #15780)`
+  ← data/room/dao/RemovedLogDao.kt, repository/CoursesRepositoryImpl.kt, repository/ResourcesRepositoryImpl.kt
+- `courses: smoother repository parts matching (fixes #15765)`
+  ← repository/CoursesRepositoryImpl.kt
+- `courses: smoother surveys refreshing (fixes #15752)`
+  ← ui/courses/CoursesAdapter.kt, ui/courses/CoursesFragment.kt, ui/surveys/SurveysAdapter.kt
+- `courses: smoother surveys sort views modelling (fixes #15749)`
+  ← ui/courses/CoursesViewModel.kt, ui/surveys/SurveysViewModel.kt, test/ui/courses/CoursesViewModelTest.kt, test/ui/surveys/SurveysViewModelTest.kt
+- `courses: smoother progress repository state mapping (fixes #15746)`
+  ← model/CourseProgressState.kt, repository/ProgressRepository.kt, repository/ProgressRepositoryImpl.kt, ui/courses/CoursesAdapter.kt, ui/courses/CoursesViewModel.kt, +3 more
+- `courses: smoother progress repository data fetching (fixes #15735)`
+  ← repository/ProgressRepositoryImpl.kt, test/repository/ProgressRepositoryImplTest.kt
+- `courses: smoother repository flowing (fixes #15731)`
+  ← repository/CoursesRepositoryImpl.kt, test/repository/CoursesRepositoryImplTest.kt
+- `courses: smoother view pager listening (fixes #15704)`
+  ← ui/courses/TakeCourseFragment.kt, ui/onboarding/OnboardingActivity.kt
+- `courses: smoother submissions repository dao bulk inserting (fixes #15707)`
+  ← data/room/dao/SubmissionDao.kt, repository/SubmissionsRepositoryImpl.kt, test/repository/SubmissionsRepositoryImplTest.kt
+- `courses: smoother repository batch querying (fixes #15703)`
+  ← repository/CoursesRepositoryImpl.kt, test/repository/CoursesRepositoryImplTest.kt
+- `courses: smoother survey submission syncing (fixes #15593)`
+  ← data/room/dao/SubmissionDao.kt, ui/surveys/SurveyFragment.kt
+- `courses: smoother empty state controling (fixes #15571)`
+  ← ui/courses/CourseFilterController.kt, ui/courses/CoursesFragment.kt, res/layout-land/fragment_my_course.xml, res/layout-sw600dp/fragment_my_course.xml, res/layout/fragment_my_course.xml, +1 more
+- `courses: smoother completion rating (fixes #15439)`
+  ← ui/courses/TakeCourseFragment.kt, ui/ratings/RatingsFragment.kt, res/layout/fragment_rating.xml
+- `courses: smoother grid cover imaging (fixes #15575)`
+  ← model/Course.kt, ui/courses/CoursesAdapter.kt, ui/courses/CoursesMapper.kt, res/layout/item_course_grid.xml, res/layout/item_course_list.xml
+- `courses: smoother repository leave view modelling (fixes #15156)`
+  ← base/BaseRecyclerFragment.kt, data/room/dao/CourseDao.kt, model/MyCourse.kt, repository/CoursesRepository.kt, repository/CoursesRepositoryImpl.kt, +5 more
+- `courses: smoother sort toggle view modelling (fixes #15537)`
+  ← ui/chat/ChatHistoryAdapter.kt, ui/courses/CoursesAdapter.kt, ui/courses/CoursesFragment.kt, ui/courses/CoursesViewModel.kt, ui/life/LifeAdapter.kt, +2 more
+- `courses: smoother repository progess ratings view modelling (fixes #15538)`
+  ← repository/CoursesRepository.kt, repository/CoursesRepositoryImpl.kt, ui/courses/CoursesViewModel.kt, ui/courses/TakeCourseViewModel.kt, test/ui/courses/CoursesViewModelTest.kt, +1 more
+- `courses: smoother surveys repositories counting (fixes #15473)`
+  ← data/room/dao/ExamDao.kt, data/room/dao/SubmissionDao.kt, repository/CoursesRepositoryImpl.kt, repository/SurveysRepositoryImpl.kt, test/repository/CoursesRepositoryImplTest.kt, +1 more
+- `courses: smoother progress repository testing (fixes #15497)`
+  ← test/repository/ProgressRepositoryImplTest.kt
 
-## sync (55)
+## resources (41)
 
-- `sync: smoother user repository inserting (fixes #15432)`
-  ← repository/UserRepositoryImpl.kt, test/repository/UserRepositoryBulkInsertTest.kt
-- `sync: smoother download service starting (fixes #15428)`
-  ← services/DownloadService.kt
-- `sync: smoother download file servicing (fixes #15427)`
-  ← services/DownloadService.kt
-- `sync: smoother upload voices managing (fixes #15423)`
-  ← services/UploadManager.kt
-- `sync: smoother repository user data flowing (fixes #15216)`
-  ← repository/SyncRepository.kt, ui/sync/ProcessUserDataActivity.kt
-- `sync: smoother url utils auth header handling (fixes #15160)`
-  ← repository/UserRepositoryImpl.kt, services/sync/LoginSyncManager.kt, services/sync/TransactionSyncManager.kt, utils/UrlUtils.kt
-- `sync: smoother upload bulk voices managing (fixes #15206)`
-  ← base/BaseDashboardFragment.kt, data/api/ApiInterface.kt, repository/ResourcesRepository.kt, repository/ResourcesRepositoryImpl.kt, repository/SurveysRepository.kt, +8 more
-- `sync: smoother upload repository bulk team managing (fixes #15203)`
-  ← data/api/ApiInterface.kt, repository/UploadRepository.kt, repository/UploadRepositoryImpl.kt, services/UploadManager.kt, test/services/UploadManagerTest.kt
-- `sync: smoother user repository uploading (fixes #15202)`
-  ← repository/UserRepositoryImpl.kt, repository/UserSyncRepository.kt, services/UploadToShelfService.kt
-- `sync: smoother process user data normalizing (fixes #15163)`
-  ← ui/sync/ProcessUserDataActivity.kt
-- `sync: smoother login auth utils managing (fixes #15151)`
-  ← services/sync/LoginSyncManager.kt, utils/AuthUtils.kt
-- `sync: smoother photo uploading (fixes #15145)`
-  ← services/upload/PhotoUploader.kt
-- `sync: smoother upload immediate dispatcher providing (fixes #15142)`
-  ← services/UploadManager.kt, utils/DispatcherProvider.kt, test/data/DatabaseServiceTest.kt, test/repository/ConfigurationsRepositoryImplTest.kt, test/ui/courses/CourseDetailViewModelTest.kt, +8 more
-- `sync: smoother user repository shelf batch uploading (fixes #15137)`
-  ← repository/UserRepositoryImpl.kt, repository/UserSyncRepository.kt, services/UploadToShelfService.kt
-- `sync: smoother upload repository attachments managing (fixes #15135)`
-  ← repository/UploadRepository.kt, repository/UploadRepositoryImpl.kt, services/FileUploader.kt, services/UploadManager.kt, services/upload/PhotoUploader.kt, +1 more
-- `sync: smoother time logger providing (fixes #15128)`
-  ← utils/SyncTimeLogger.kt
-- `sync: smoother retry interceptor time providing (fixes #15118)`
-  ← data/api/RetryInterceptor.kt, di/NetworkModule.kt, test/data/api/RetryInterceptorTest.kt
-- `sync: smoother realtime flow filtering (fixes #15098)`
-  ← ui/chat/ChatViewModel.kt, ui/teams/TeamDetailFragment.kt
-- `sync: smoother guest login validating (fixes #14951)`
-  ← ui/sync/GuestLoginExtensions.kt
-- `sync: smoother transaction manager attachment downloading (fixes #14937)`
-  ← services/sync/TransactionSyncManager.kt
-- `sync: smoother download queue starting (fixes #14841)`
-  ← services/DownloadService.kt
-- `sync: smoother network module requesting (fixes #14802)`
-  ← di/NetworkModule.kt
-- `sync: smoother server reachability caching (fixes #14799)`
-  ← MainApplication.kt, services/ServerReachabilityWorker.kt
-- `sync: smoother upload managing (fixes #14794)`
-  ← di/ServiceModule.kt, services/UploadManager.kt, test/services/UploadManagerTest.kt
-- `sync: smoother repository submissions uploading (fixes #14816)`
-  ← repository/SyncRepository.kt, services/SubmissionsUploader.kt, ui/exam/UserInformationFragment.kt, ui/sync/ProcessUserDataActivity.kt
-- `sync: smoother user ratings repositories transaction managing (fixes #14812)`
-  ← di/ServiceModule.kt, repository/RatingsRepository.kt, repository/RatingsRepositoryImpl.kt, repository/UserRepositoryImpl.kt, repository/UserSyncRepository.kt, +4 more
-- `sync: smoother file attachment photo uploading (fixes #14779)`
-  ← services/FileUploader.kt, services/upload/PhotoUploader.kt
-- `sync: smoother download repository responding (fixes #14771)`
-  ← repository/DownloadRepositoryImpl.kt
-- `sync: smoother configuration coordinator dispatcher providing (fixes #14596)`
-  ← ui/sync/SyncActivity.kt, ui/sync/SyncConfigurationCoordinator.kt, test/ui/sync/SyncConfigurationCoordinatorTest.kt
-- `sync: smoother upload repository coordinating (fixes #14636)`
-  ← repository/UploadRepository.kt, repository/UploadRepositoryImpl.kt, services/upload/UploadCoordinator.kt, test/repository/UploadRepositoryImplTest.kt
-- `sync: smoother time logger utils handling (fixes #14604)`
-  ← utils/SyncTimeLogger.kt
-- `sync: smoother min apk checking (fixes #14594)`
-  ← ui/sync/SyncActivity.kt, ui/sync/SyncConfigurationCoordinator.kt, test/ui/sync/SyncConfigurationCoordinatorTest.kt
-- `sync: smoother retry repository pending (fixes #14577)`
-  ← repository/RetryRepositoryImpl.kt, test/repository/RetryRepositoryImplTest.kt
-- `sync: smoother download repository testing (fixes #14570)`
-  ← test/repository/DownloadRepositoryImplTest.kt
-- `sync: smoother policy force testing (fixes #14432)`
-  ← ui/sync/ForceSyncPolicy.kt, ui/sync/SyncActivity.kt, test/ui/sync/ForceSyncPolicyTest.kt, test/ui/sync/LoginViewModelTest.kt, test/ui/sync/SyncConfigurationCoordinatorTest.kt
-- `sync: smoother transaction manager batch inserting (fixes #14438)`
-  ← services/sync/TransactionSyncManager.kt
-- `sync: smoother realtime manger flowing (fixes #14442)`
-  ← callback/OnBaseRealtimeSyncListener.kt, callback/OnRealtimeSyncListener.kt, services/sync/RealtimeSyncManager.kt, ui/chat/ChatHistoryFragment.kt, ui/health/MyHealthFragment.kt, +3 more
-- `sync: smoother adaptive batch processing (fixes #14424)`
-  ← services/sync/AdaptiveBatchProcessor.kt, services/sync/SyncManager.kt, test/services/sync/AdaptiveBatchProcessorTest.kt
-- `sync: smoother post requests retrying (fixes #14415)`
-  ← data/api/RetryInterceptor.kt, test/data/api/RetryInterceptorTest.kt
-- `sync: less gradle realm configuration is more (fixes #14433)`
-  ← app/build.gradle
-- `sync: smoother user repository bulk inserting (fixes #14404)`
-  ← repository/UserRepositoryImpl.kt, repository/UserSyncRepository.kt, services/sync/TransactionSyncManager.kt, test/repository/UserRepositoryBulkInsertTest.kt
-- `sync: smoother feedback list real time mixing (fixes #14366)`
-  ← ui/feedback/FeedbackListFragment.kt
-- `sync: smoother realtime manager notification listening (fixes #14364)`
-  ← services/sync/RealtimeSyncManager.kt
-- `sync: smoother realm repository transacting (fixes #14359)`
-  ← di/ServiceModule.kt, services/sync/TransactionSyncManager.kt, test/services/sync/TransactionSyncManagerTest.kt
-- `sync: smoother retry interceptor cancelling (fixes #14282)`
-  ← data/api/RetryInterceptor.kt, test/data/api/RetryInterceptorTest.kt
-- `sync: less experimental manager is more (fixes #14275)`
-  ← di/ServiceModule.kt, services/SharedPrefManager.kt, services/sync/AdaptiveBatchProcessor.kt, services/sync/ImprovedSyncManager.kt, services/sync/StandardSyncStrategy.kt, +13 more
-- `sync: smoother retry intercepting (fixes #14265)`
-  ← data/api/RetryInterceptor.kt, test/data/api/RetryInterceptorTest.kt
-- `sync: less beta fast option is more (fixes #14270)`
-  ← model/SyncState.kt, services/SharedPrefManager.kt, services/sync/ImprovedSyncManager.kt, services/sync/SyncManager.kt, services/sync/SyncStrategy.kt, +29 more
-- `sync: smoother url utils initializing (fixes #14259)`
-  ← MainApplication.kt, utils/UrlUtils.kt, test/utils/UrlUtilsTest.kt
-- `sync: less api client singleton is more (fixes #14238)`
-  ← MainApplication.kt, data/api/ApiClient.kt, di/NetworkDependenciesEntryPoint.kt, di/NetworkModule.kt
-- `sync: smoother network timeout handling (fixes #14228)`
-  ← di/NetworkModule.kt
-- `sync: smoother upload repository bulk querying (fixes #14212)`
-  ← repository/UploadRepositoryImpl.kt, test/repository/UploadRepositoryImplTest.kt
-- `sync: smoother upload managing (fixes #14211)`
-  ← services/UploadManager.kt
-- `sync: smoother personals repository documents uploading (fixes #14210)`
-  ← repository/PersonalsRepository.kt, repository/PersonalsRepositoryImpl.kt, services/UploadManager.kt, test/repository/PersonalsRepositoryImplTest.kt, test/services/UploadManagerTest.kt
-- `sync: smoother user repository achievements bulk inserting (fixes #14202)`
-  ← repository/UserRepositoryImpl.kt
-
-## resources (51)
-
-- `resources: smoother download utils handling (fixes #15429)`
-  ← services/DownloadService.kt, services/DownloadWorker.kt, utils/DownloadUtils.kt
-- `resources: smoother viewer audio path resolving (fixes #15413)`
-  ← ui/viewer/ResourceViewerFragment.kt
-- `resources: smoother repository shelf leaving (fixes #15255)`
-  ← data/room/AppDatabase.kt, data/room/dao/RemovedLogDao.kt, model/MyLibrary.kt, repository/ResourcesRepository.kt, repository/ResourcesRepositoryImpl.kt, +2 more
-- `resources: smoother bottom navigation adding (fixes #15221)`
-  ← res/layout/fragment_add_resource.xml
-- `resources: smoother base user injecting (fixes #15197)`
-  ← base/BaseContainerFragment.kt, base/BaseDashboardFragment.kt, base/BaseRecyclerFragment.kt, base/BaseResourceFragment.kt, ui/courses/CourseStepFragment.kt, +8 more
-- `resources: smoother repository recent downloads testing (fixes #15190)`
-  ← test/repository/ResourcesRepositoryImplTest.kt
-- `resources: smoother repository list view modelling (fixes #15188)`
-  ← repository/ResourcesRepository.kt, repository/ResourcesRepositoryImpl.kt, ui/resources/ResourcesViewModel.kt, test/ui/resources/ResourcesViewModelTest.kt
-- `resources: smoother repository search dao title filtering (fixes #15186)`
-  ← data/room/dao/MyLibraryDao.kt, repository/ResourcesRepositoryImpl.kt, test/repository/ResourcesRepositoryImplTest.kt
-- `resources: smoother repository open tracking (fixes #15185)`
-  ← base/BaseContainerFragment.kt, repository/ResourcesRepository.kt, repository/ResourcesRepositoryImpl.kt, utils/ResourceOpener.kt, test/repository/ResourcesRepositoryBenchmarkTest.kt, +2 more
-- `resources: smoother repository user injecting (fixes #15183)`
-  ← repository/ResourcesRepositoryImpl.kt, test/repository/ResourcesRepositoryBenchmarkTest.kt, test/repository/ResourcesRepositoryImplTest.kt, test/repository/ResourcesRepositoryLibrarySyncTest.kt
-- `resources: smoother video picture in picture viewing (fixes #14902)`
-  ← app/src/main/AndroidManifest.xml, ui/viewer/ResourceViewerActivity.kt, ui/viewer/ResourceViewerFragment.kt
-- `resources: smoother view modelling (fixes #15100)`
-  ← ui/resources/ResourcesViewModel.kt
-- `resources: smoother chip cloud configuring (fixes #15079)`
-  ← ui/resources/ResourcesAdapter.kt
-- `resources: less web view orientation lock is more (fixes #14945)`
-  ← ui/viewer/WebViewActivity.kt
-- `resources: smoother web view pathing (fixes #14944)`
-  ← ui/viewer/WebViewActivity.kt
-- `resources: smoother view extensions utils hint spinning (fixes #14940)`
-  ← ui/resources/AddResourceActivity.kt, utils/ViewExtensions.kt
-- `resources: smoother repository batch inserting (fixes #14938)`
-  ← repository/ResourcesRepositoryImpl.kt, test/repository/ResourcesRepositoryBenchmarkTest.kt
-- `resources: smoother creation handing (fixes #14603)`
-  ← ui/resources/AddResourceActivity.kt, ui/resources/AddResourceFragment.kt, ui/resources/ResourcesFragment.kt
-- `resources: smoother video viewing (fixes #14840)`
-  ← ui/viewer/ResourceViewerFragment.kt
-- `resources: smoother searching (fixes #14818)`
-  ← utils/ViewExtensions.kt
-- `resources: less webview progress bar increment is more (fixes #14830)`
-  ← ui/viewer/WebViewActivity.kt
-- `resources: smoother repository creation editing (fixes #14648)`
-  ← repository/ResourcesRepository.kt, repository/ResourcesRepositoryImpl.kt, ui/resources/AddResourceActivity.kt, ui/resources/ResourcesAdapter.kt, ui/resources/ResourcesFragment.kt, +7 more
-- `resources: smoother repository local requesting (fixes #14788)`
-  ← repository/ResourcesRepository.kt, repository/ResourcesRepositoryImpl.kt, ui/resources/AddResourceActivity.kt
-- `resources: smoother voices payload adapting (fixes #14786)`
-  ← ui/resources/ResourcesAdapter.kt, ui/voices/VoicesAdapter.kt
-- `resources: smoother repository search normalizing (fixes #14745)`
+- `resources: smoother search utils query normalizing (fixes #16515)`
+  ← utils/ResourcesSearchUtils.kt, test/utils/ResourcesSearchUtilsTest.kt
+- `resources: smoother storage dialog handling (fixes #16546)`
+  ← ui/resources/AddResourceFragment.kt, ui/settings/StorageBreakdownFragment.kt, ui/settings/StorageCategoryDetailFragment.kt
+- `resources: smoother collections testing (fixes #16492)`
+  ← ui/resources/CollectionsFragment.kt, test/ui/resources/CollectionsFragmentTest.kt
+- `resources: smoother repository files downloading (fixes #16493)`
   ← repository/ResourcesRepositoryImpl.kt, test/repository/ResourcesRepositoryImplTest.kt
-- `resources: smoother webview navigating (fixes #14656)`
-  ← ui/viewer/WebViewActivity.kt
-- `resources: smoother courses repositories search utils handing (fixes #14631)`
-  ← repository/CoursesRepositoryImpl.kt, repository/ResourcesRepositoryImpl.kt, ui/chat/ChatViewModel.kt, ui/resources/ResourcesFragment.kt, ui/surveys/SurveysViewModel.kt, +4 more
-- `resources: smoother view modelling (fixes #14667)`
-  ← ui/resources/ResourcesViewModel.kt, test/ui/resources/ResourcesViewModelTest.kt
-- `resources: smoother multi line text spinning (fixes #14646)`
-  ← ui/resources/AddResourceActivity.kt, res/layout/activity_add_resource.xml
-- `resources: smoother viewer initializing (fixes #14616)`
-  ← app/src/main/AndroidManifest.xml, ui/viewer/ResourceViewerActivity.kt
-- `resources: smoother repository realm results filtering (fixes #14606)`
-  ← repository/ResourcesRepositoryImpl.kt, test/repository/ResourcesRepositoryImplTest.kt
-- `resources: smoother coroutines job refreshing (fixes #14589)`
-  ← ui/resources/ResourcesFragment.kt
-- `resources: smoother regex text normalizing (fixes #14586)`
-  ← ui/resources/ResourcesFragment.kt
-- `resources: less base survey methods is more (fixes #14569)`
-  ← base/BaseResourceFragment.kt
-- `resources: less repository methods is more (fixes #14559)`
+- `resources: less repository enriched libraries is more (fixes #16453)`
   ← repository/ResourcesRepository.kt, repository/ResourcesRepositoryImpl.kt, test/repository/ResourcesRepositoryImplTest.kt
-- `resources: less viewers ratings layouts is more (fixes #14444)`
-  ← res/drawable/bg_rating_button_1.xml, res/drawable/bg_rating_button_2.xml, res/drawable/bg_rating_button_3.xml, res/drawable/bg_rating_button_4.xml, res/drawable/bg_rating_button_5.xml, +12 more
-- `resources: smoother tags repository relation collecting (fixes #14402)`
-  ← repository/TagsRepository.kt, repository/TagsRepositoryImpl.kt, ui/resources/CollectionsFragment.kt, test/repository/TagsRepositoryImplTest.kt
-- `resources: smoother realm model inserting (fixes #14390)`
-  ← model/RealmMyLibrary.kt, repository/CoursesRepositoryImpl.kt, repository/ResourcesRepositoryImpl.kt
-- `resources: smoother tags repository bulk inserting (fixes #14389)`
-  ← repository/TagsRepositoryImpl.kt
-- `resources: smoother download utils injecting (fixes #14367)`
-  ← di/RepositoryDependenciesEntryPoint.kt, di/ResourcesRepositoryEntryPoint.kt, utils/DownloadUtils.kt
-- `resources: smoother collections debounce text flowing (fixes #14382)`
-  ← ui/resources/CollectionsFragment.kt, ui/resources/ResourcesFragment.kt
-- `resources: smoother repository realm handling (fixes #14380)`
-  ← repository/ResourcesRepositoryImpl.kt, test/repository/ResourcesRepositoryImplTest.kt
-- `resources: smoother selecting (fixes #14377)`
-  ← ui/resources/ResourcesAdapter.kt
-- `resources: smoother list filtering (fixes #14375)`
-  ← ui/resources/ResourcesFragment.kt
-- `resources: smoother viewer video playing (fixes #14374)`
-  ← ui/viewer/ResourceViewerFragment.kt
-- `resources: smoother rating (fixes #14256)`
-  ← ui/resources/ResourceDetailFragment.kt, ui/resources/ResourcesFragment.kt
-- `resources: smoother selection adapting (fixes #14231)`
-  ← ui/resources/ResourcesAdapter.kt
-- `resources: smoother realm model bulk inserting (fixes #14224)`
-  ← model/RealmMyLibrary.kt
-- `resources: smoother repository log removing (fixes #14219)`
+- `resources: smoother repository dao querying (fixes #16371)`
+  ← data/room/dao/MyLibraryDao.kt, repository/ResourcesRepositoryImpl.kt, test/repository/ResourcesRepositoryImplTest.kt
+- `resources: smoother grid dark mode searching (fixes #16129)`
+  ← res/layout/layout_search_pill.xml, res/values-night/colors.xml
+- `resources: smoother filtering (fixes #16102)`
+  ← ui/resources/ResourcesAdapter.kt, ui/resources/ResourcesFragment.kt, res/layout-land/fragment_my_library.xml, res/layout-sw600dp/fragment_my_library.xml, res/layout/fragment_my_library.xml, +6 more
+- `resources: smoother filter initializing (fixes #16268)`
+  ← ui/resources/ResourcesFilterFragment.kt
+- `resources: smoother viewer text truncating (fixes #673)`
+  ← ui/viewer/ResourceViewerFragment.kt, res/values-ar/strings.xml, res/values-es/strings.xml, res/values-fr/strings.xml, res/values-ne/strings.xml, +2 more
+- `resources: smoother view modelling (fixes #16213)`
+  ← ui/resources/ResourcesFragment.kt, ui/resources/ResourcesViewModel.kt, test/ui/resources/ResourcesViewModelTest.kt
+- `resources: smoother collections parent tagging (fixes #16246)`
+  ← ui/resources/CollectionsFragment.kt
+- `resources: smoother search utils filtering (fixes #16245)`
+  ← ui/resources/ResourcesFragment.kt, utils/ResourcesSearchUtils.kt, test/utils/ResourcesSearchUtilsTest.kt
+- `resources: smoother collections view modelling (fixes #16238)`
+  ← ui/resources/CollectionsViewModel.kt
+- `resources: less apply filter button is more (fixes #16091)`
+  ← ui/resources/ResourcesFilterFragment.kt, res/layout/fragment_library_filter.xml, test/ui/resources/ResourcesFilterFragmentTest.kt
+- `resources: smoother repository detail querying (fixes #16143)`
+  ← repository/ResourcesRepository.kt, repository/ResourcesRepositoryImpl.kt, ui/resources/ResourceDetailFragment.kt, res/values-ar/strings.xml, res/values-es/strings.xml, +5 more
+- `resources: smoother tagging (fixes #16067)`
+  ← ui/resources/ResourcesTagsAdapter.kt
+- `resources: smoother title view modelling (fixes #15941)`
+  ← ui/resources/ResourcesViewModel.kt, test/ui/resources/ResourcesViewModelTest.kt
+- `resources: smoother repository facets filtering (fixes #16048)`
   ← repository/ResourcesRepositoryImpl.kt
-- `resources: smoother tag repository list inserting (fixes #14218)`
-  ← repository/TagsRepository.kt, repository/TagsRepositoryImpl.kt
-- `resources: smoother inline coroutine scoping (fixes #14205)`
-  ← ui/courses/CourseStepFragment.kt, ui/courses/InlineResourceAdapter.kt
+- `resources: smoother repository dashboard view modelling (fixes #16031)`
+  ← data/room/dao/MyLibraryDao.kt, repository/ResourcesRepository.kt, repository/ResourcesRepositoryImpl.kt, ui/dashboard/DashboardViewModel.kt, test/ui/dashboard/DashboardViewModelTest.kt
+- `resources: smoother collections tag data querying (fixes #16041)`
+  ← ui/resources/CollectionsFragment.kt
+- `resources: smoother repository image url querying (fixes #16035)`
+  ← repository/ResourcesRepository.kt, repository/ResourcesRepositoryImpl.kt, repository/VoicesRepository.kt, repository/VoicesRepositoryImpl.kt, ui/voices/NewsViewModel.kt, +3 more
+- `resources: smoother collections view modelling (fixes #16028)`
+  ← ui/resources/CollectionsFragment.kt, ui/resources/CollectionsViewModel.kt, test/ui/resources/CollectionsViewModelTest.kt
+- `resources: smoother layout handling (fixes #16016)`
+  ← ui/resources/ResourcesFragment.kt
+- `resources: smoother repository offline dao marking (fixes #16003)`
+  ← data/room/dao/MyLibraryDao.kt, repository/ResourcesRepositoryImpl.kt
+- `resources: smoother feedback personals repositories flowing (fixes #15998)`
+  ← repository/FeedbackRepositoryImpl.kt, repository/PersonalsRepositoryImpl.kt, repository/ResourcesRepositoryImpl.kt, utils/FlowExtensions.kt, test/repository/FeedbackRepositoryImplTest.kt, +2 more
+- `resources: smoother viewer video handling (fixes #15985)`
+  ← ui/viewer/ResourceViewerFragment.kt
+- `resources: smoother web view nested entry pathing (fixes #15634)`
+  ← base/BaseContainerFragment.kt, data/room/AppDatabase.kt, model/MyLibrary.kt, ui/viewer/WebViewActivity.kt, utils/FileUtils.kt, +2 more
+- `resources: smoother repository inserting (fixes #15812)`
+  ← repository/ResourcesRepositoryImpl.kt, test/repository/ResourcesRepositoryImplTest.kt
+- `resources: smoother list grid toggling (fixes #15572)`
+  ← ui/resources/ResourcesFragment.kt
+- `resources: smoother payload notifying (fixes #15753)`
+  ← ui/courses/CoursesAdapter.kt, ui/resources/ResourcesAdapter.kt
+- `resources: smoother search view modelling (fixes #15743)`
+  ← ui/resources/ResourcesFragment.kt, ui/resources/ResourcesViewModel.kt
+- `resources: smoother viewer view modelling (fixes #15729)`
+  ← ui/viewer/ResourceViewerFragment.kt, ui/viewer/ResourceViewerViewModel.kt
+- `resources: smoother thumbnail preview loading (fixes #15574)`
+  ← MainApplication.kt, base/BaseAdapterFactory.kt, ui/courses/InlineResourceAdapter.kt, ui/resources/ResourcesAdapter.kt, ui/resources/ResourcesFragment.kt, +5 more
+- `resources: smoother content item callback diffing (fixes #15702)`
+  ← ui/resources/ResourcesAdapter.kt
+- `resources: smoother guest all selecting (fixes #15514)`
+  ← ui/resources/ResourcesFragment.kt
+- `resources: smoother list  filter icon spacing (fixes #15438)`
+  ← res/layout-land/fragment_my_course.xml, res/layout-land/fragment_my_library.xml, res/layout/fragment_my_course.xml, res/layout/fragment_my_library.xml
+- `resources: smoother repository pending downloading (fixes #15557)`
+  ← data/room/dao/MyLibraryDao.kt, repository/ResourcesRepository.kt, repository/ResourcesRepositoryImpl.kt, test/repository/ResourcesRepositoryImplTest.kt
+- `resources: smoother repository offline item category detail storing (fixes #15545)`
+  ← model/OfflineResourceItem.kt, repository/ResourcesRepository.kt, repository/ResourcesRepositoryImpl.kt, ui/settings/StorageCategoryDetailFragment.kt, test/repository/ResourcesRepositoryBenchmarkTest.kt, +2 more
+- `resources: smoother repository retrieval testing (fixes #15541)`
+  ← test/repository/ResourcesRepositoryImplTest.kt
+- `resources: smoother retry repositories settings view modelling (fixes #15476)`
+  ← repository/ResourcesRepository.kt, repository/ResourcesRepositoryImpl.kt, repository/RetryRepository.kt, repository/RetryRepositoryImpl.kt, services/retry/RetryQueue.kt, +5 more
 
-## login (26)
+## actions (28)
 
-- `login: less auth utils username validation is more (fixes #15414)`
-  ← ui/sync/GuestLoginExtensions.kt, utils/AuthUtils.kt
-- `login: smoother creation username validating (fixes #15406)`
-  ← ui/user/BecomeMemberActivity.kt
-- `login: smoother landscape scrolling (fixes #15235)`
-  ← res/layout-large-land/activity_login.xml, res/layout-night/activity_login.xml, res/layout-normal-land/activity_login.xml, res/layout-xlarge-land/activity_login.xml, res/layout/activity_login.xml
-- `login: smoother settings language dialog cancelling (fixes #14948)`
-  ← ui/settings/SettingsActivity.kt, ui/sync/LoginActivity.kt, res/layout/checked_list_item.xml
-- `login: smoother activities repository courses uploading (fixes #15138)`
-  ← repository/ActivitiesRepository.kt, repository/ActivitiesRepositoryImpl.kt, services/upload/UploadConfigs.kt, test/services/upload/UploadConfigsTest.kt
-- `login: smoother settings resetting (fixes #14957)`
-  ← ui/settings/SettingsActivity.kt
-- `login: smoother user repository case insensitive finding (fixes #15082)`
-  ← data/room/dao/LegacyEntityDaos.kt, repository/UserRepositoryImpl.kt
-- `login: smoother registering (fixes #14952)`
-  ← res/values/strings.xml
-- `login: smoother storage category selection coloring (fixes #14838)`
-  ← res/layout/fragment_storage_category_detail.xml
-- `login: smoother download dialog all selecting (fixes #14860)`
-  ← res/layout/fragment_storage_category_detail.xml, res/layout/item_downloaded_resource.xml
-- `login: smoother view model dispatcher providing (fixes #14751)`
-  ← ui/sync/LoginViewModel.kt
-- `login: smoother user avatar dimension caching (fixes #14750)`
-  ← ui/health/HealthUsersAdapter.kt, ui/teams/members/MembersAdapter.kt, ui/user/UserArrayAdapter.kt, ui/user/UsersAdapter.kt
-- `login: smoother onboarding (fixes #14615)`
-  ← ui/onboarding/OnboardingActivity.kt
-- `login: smoother guest extensions validating (fixes #14614)`
-  ← ui/sync/GuestLoginExtensions.kt, ui/sync/LoginActivity.kt
-- `login: smoother shared preferences credentials managing (fixes #14612)`
-  ← services/SharedPrefManager.kt, ui/sync/LoginActivity.kt, ui/user/BecomeMemberActivity.kt, test/services/SharedPrefManagerTest.kt
-- `login: smoother user data processing (fixes #14584)`
-  ← ui/sync/ProcessUserDataActivity.kt
-- `login: smoother network utils caching (fixes #14582)`
-  ← utils/NetworkUtils.kt
-- `login: smoother user repository saving (fixes #14574)`
-  ← repository/UserRepository.kt, repository/UserRepositoryImpl.kt, ui/sync/LoginViewModel.kt, test/repository/UserRepositoryImplTest.kt, test/ui/sync/LoginViewModelTest.kt
-- `login: smoother user profile view modelling (fixes #14573)`
-  ← ui/user/UserProfileFragment.kt, ui/user/UserProfileViewModel.kt, test/ui/user/UserProfileViewModelTest.kt
-- `login: less shared preferences url port is more (fixes #14563)`
-  ← services/SharedPrefManager.kt, ui/sync/ProcessUserDataActivity.kt, test/services/SharedPrefManagerTest.kt
-- `login: smoother user repository bulk insert testing (fixes #14435)`
-  ← test/repository/UserRepositoryBulkInsertTest.kt
-- `login: smoother screen layout spacing (fixes #14281)`
-  ← res/layout-night/activity_login.xml, res/layout/activity_login.xml
-- `login: smoother activities repository bulk inserting (fixes #14385)`
-  ← repository/ActivitiesRepository.kt, repository/ActivitiesRepositoryImpl.kt, services/sync/TransactionSyncManager.kt
-- `login: smoother settings flow collecting (fixes #14394)`
-  ← ui/settings/SettingsActivity.kt
-- `login: smoother teams loading (fixes #14255)`
-  ← ui/sync/LoginActivity.kt
-- `login: smoother activities flow collecting (fixes #14386)`
-  ← ui/dashboard/ActivitiesFragment.kt
-
-## life (25)
-
-- `life: smoother user repository achievement view modelling (fixes #15433)`
-  ← repository/UserRepository.kt, repository/UserRepositoryImpl.kt, ui/user/AchievementFragment.kt, ui/user/AchievementViewModel.kt, test/repository/UserRepositoryBulkInsertTest.kt, +2 more
-- `life: smoother achievement linking (fixes #15425)`
-  ← model/Achievement.kt
-- `life: smoother repository shelf visibility updating (fixes #15220)`
-  ← base/BaseDashboardFragment.kt, data/room/dao/MyLifeDao.kt, repository/LifeRepositoryImpl.kt, ui/life/LifeAdapter.kt, ui/life/LifeFragment.kt
-- `life: smoother achievement edit button aligning (fixes #15219)`
-  ← res/layout/fragment_achievement.xml
-- `life: smoother health repository user injecting (fixes #15200)`
-  ← repository/HealthRepository.kt, repository/HealthRepositoryImpl.kt, repository/UserRepositoryImpl.kt
-- `life: smoother health users item callback diffing (fixes #15140)`
-  ← ui/health/HealthUsersAdapter.kt
-- `life: smoother health examination item callback diffing (fixes #15139)`
-  ← ui/health/HealthExaminationAdapter.kt
-- `life: smoother list sorting (fixes #14953)`
-  ← callback/OnItemMoveListener.kt, model/MyLife.kt, ui/dashboard/DashboardPluginFragment.kt, ui/life/LifeAdapter.kt, ui/life/LifeFragment.kt, +1 more
-- `life: smoother health repository examination marking (fixes #15085)`
-  ← data/room/dao/HealthExaminationDao.kt, repository/HealthRepositoryImpl.kt, test/repository/HealthRepositoryImplTest.kt
-- `life: smoother health profile image loading (fixes #14617)`
-  ← ui/health/MyHealthFragment.kt
-- `life: smoother health birthdate handling (fixes #14832)`
-  ← ui/health/MyHealthFragment.kt, res/layout/fragment_vital_sign.xml
-- `life: smoother health repository examining (fixes #14806)`
-  ← repository/HealthRepository.kt, repository/HealthRepositoryImpl.kt, ui/health/HealthExaminationActivity.kt, test/repository/HealthRepositoryImplTest.kt
-- `life: smoother repository list order caching (fixes #14790)`
-  ← repository/LifeRepositoryImpl.kt
-- `life: smoother health users adapting (fixes #14622)`
-  ← ui/health/MyHealthFragment.kt
-- `life: smoother repository items caching (fixes #14613)`
-  ← base/BaseDashboardFragment.kt, repository/LifeRepository.kt, repository/LifeRepositoryImpl.kt, services/SharedPrefManager.kt, test/repository/LifeRepositoryImplTest.kt, +2 more
-- `life: smoother achievement view modelling (fixes #14595)`
-  ← ui/user/AchievementFragment.kt, ui/user/AchievementViewModel.kt
-- `life: smoother dictionary handling (fixes #14462)`
-  ← di/RealmDispatcherProvider.kt, repository/SubmissionsRepositoryExporter.kt, ui/dictionary/DictionaryActivity.kt, ui/exam/ExamTakingFragment.kt, ui/sync/SyncActivity.kt
-- `life: smoother personals state handling (fixes #13757)`
-  ← ui/personals/PersonalsFragment.kt
-- `life: smoother health examination view modelling (fixes #14412)`
-  ← app/src/main/AndroidManifest.xml, ui/health/AddExaminationViewModel.kt, ui/health/HealthExaminationActivity.kt, ui/health/HealthExaminationAdapter.kt, ui/health/HealthExaminationViewModel.kt, +3 more
-- `life: smoother achievements references adapting (fixes #14384)`
-  ← ui/references/ReferencesAdapter.kt, ui/references/ReferencesFragment.kt, ui/user/AchievementFragment.kt, ui/user/AchievementsAdapter.kt, test/ui/user/AchievementsAdapterTest.kt
-- `life: smoother health creation flow collecting (fixes #14388)`
-  ← ui/health/AddHealthActivity.kt
-- `life: smoother health users list adapting (fixes #14381)`
-  ← ui/health/HealthUsersAdapter.kt
-- `life: smoother health examination creation collecting (fixes #14372)`
-  ← ui/health/AddExaminationActivity.kt
-- `life: smoother health view modelling (fixes #14249)`
-  ← ui/health/AddHealthActivity.kt, ui/health/HealthViewModel.kt
-- `life: smoother adapter view holding (fixes #14221)`
-  ← ui/life/LifeAdapter.kt
-
-## dashboard (23)
-
-- `dashboard: smoother health user handling (fixes #15426)`
-  ← base/BaseDashboardFragment.kt
-- `dashboard: smoother coroutine view modelling (fixes #15405)`
-  ← ui/dashboard/DashboardViewModel.kt
-- `dashboard: smoother base cards placeholding (fixes #14950)`
-  ← base/BaseDashboardFragment.kt, res/values-ar/strings.xml, res/values-es/strings.xml, res/values-fr/strings.xml, res/values-ne/strings.xml, +2 more
-- `dashboard: smoother profile banner handling (fixes #15401)`
-  ← res/layout-large-land/card_profile_bell.xml, res/layout-normal-land/card_profile_bell.xml, res/layout-xlarge-land/card_profile_bell.xml, res/layout/card_profile_bell.xml
-- `dashboard: smoother life items spacing (fixes #15109)`
-  ← res/layout/fragment_feedback_list.xml, res/layout/fragment_finance.xml, res/layout/fragment_home_bell.xml, res/layout/fragment_my_course.xml, res/layout/fragment_my_library.xml, +6 more
-- `dashboard: smoother landscape navigating (fixes #14949)`
-  ← ui/dashboard/DashboardActivity.kt
-- `dashboard: smoother notification refresh view modelling (fixes #15162)`
-  ← ui/dashboard/DashboardViewModel.kt, ui/sync/SyncActivity.kt
-- `dashboard: smoother bell reminding (fixes #15146)`
-  ← ui/dashboard/BellDashboardFragment.kt
-- `dashboard: smoother base transaction manager syncing (fixes #15133)`
-  ← base/BaseDashboardFragment.kt, di/ServiceModule.kt, services/sync/TransactionSyncManager.kt, test/services/sync/TransactionSyncManagerCheckpointTest.kt, test/services/sync/TransactionSyncManagerTest.kt
-- `dashboard: smoother dispatcher usage view modelling (fixes #15097)`
-  ← ui/dashboard/DashboardViewModel.kt
-- `dashboard: smoother guest dark mode visiting (fixes #14954)`
-  ← res/layout/activity_dashboard.xml
-- `dashboard: smoother guest handling (fixes #14956)`
-  ← ui/dashboard/DashboardElementActivity.kt
-- `dashboard: smoother base loading (fixes #15091)`
-  ← base/BaseDashboardFragment.kt
-- `dashboard: smoother guest login warning (fixes #14955)`
-  ← ui/dashboard/DashboardActivity.kt
-- `dashboard: less inactive layout comment is more (fixes #14928)`
-  ← res/layout/fragment_in_active_dashboard.xml
-- `dashboard: smoother window edge handling (fixes #14825)`
-  ← ui/dashboard/DashboardActivity.kt
-- `dashboard: smoother user repositroy profile view modelling (fixes #14808)`
-  ← model/DashboardProfile.kt, repository/UserRepository.kt, repository/UserRepositoryImpl.kt, ui/dashboard/DashboardViewModel.kt, test/repository/UserRepositoryImplTest.kt, +1 more
-- `dashboard: smoother base plugin item handling (fixes #14781)`
-  ← base/BaseDashboardFragment.kt, ui/dashboard/DashboardItem.kt, ui/dashboard/DashboardPluginFragment.kt
-- `dashboard: smoother challenge view modelling (fixes #14576)`
-  ← ui/dashboard/DashboardViewModel.kt
-- `dashboard: less base download dictionary is more (fixes #14567)`
-  ← base/BaseDashboardFragment.kt
-- `dashboard: less action listener callback is more (fixes #14430)`
-  ← base/BaseDashboardFragment.kt, callback/OnDashboardActionListener.kt
-- `dashboard: smoother ui state flow collecting (fixes #14396)`
-  ← ui/dashboard/DashboardActivity.kt
-- `dashboard: smoother bell flow collecting (fixes #14363)`
-  ← ui/dashboard/BellDashboardFragment.kt, utils/FlowExtensions.kt
-
-## chat (20)
-
-- `chat: smoother history voices view modelling (fixes #15422)`
-  ← ui/chat/ChatHistoryFragment.kt, ui/chat/ChatViewModel.kt, test/ui/chat/ChatViewModelTest.kt
-- `chat: smoother search filter view modeling (fixes #15409)`
-  ← ui/chat/ChatViewModel.kt
-- `chat: smoother history view binding (fixes #15403)`
-  ← ui/chat/ChatHistoryAdapter.kt
-- `chat: smoother repository history data view modelling (fixes #15129)`
-  ← repository/ChatRepository.kt, repository/ChatRepositoryImpl.kt, ui/chat/ChatHistoryAdapter.kt, ui/chat/ChatHistoryFragment.kt, ui/chat/ChatHistoryScreenData.kt, +5 more
-- `chat: smoother detail ai providing (fixes #15144)`
-  ← ui/chat/ChatDetailFragment.kt
-- `chat: smoother view modelling (fixes #15127)`
-  ← ui/chat/ChatViewModel.kt
-- `chat: smoother message model callback diffing (fixes #15102)`
-  ← model/ChatMessage.kt, ui/chat/ChatAdapter.kt
-- `chat: smoother share target coloring (fixes #15101)`
-  ← ui/chat/ChatShareTargetAdapter.kt
-- `chat: smoother history teams sharing (fixes #14854)`
-  ← ui/chat/ChatHistoryAdapter.kt, res/values-ar/strings.xml, res/values-es/strings.xml, res/values-fr/strings.xml, res/values-ne/strings.xml, +2 more
-- `chat: smoother primary url checking (fixes #14866)`
-  ← MainApplication.kt, ui/chat/ChatDetailFragment.kt, test/MainApplicationTest.kt
-- `chat: smoother history realtime sync view modelling (fixes #14778)`
-  ← ui/chat/ChatHistoryFragment.kt, ui/chat/ChatViewModel.kt, test/ui/chat/ChatViewModelTest.kt
-- `chat: smoother share target item callback diffing (fixes #14748)`
-  ← ui/chat/ChatShareTargetAdapter.kt
-- `chat: smoother history color caching (fixes #14747)`
-  ← ui/chat/ChatHistoryAdapter.kt, ui/health/HealthExaminationAdapter.kt
-- `chat: smoother history share target item adapting (fixes #14609)`
-  ← ui/chat/ChatHistoryAdapter.kt, ui/chat/ChatShareTargetAdapter.kt, ui/chat/ChatShareTargetItem.kt, res/layout/chat_share_dialog.xml, res/layout/expandable_list_group.xml
-- `chat: smoother repository experimental coroutines api testing (fixes #14571)`
-  ← app/src/androidTest/java/org/ole/planet/myplanet/model/RealmUserTest.kt, test/model/RealmUserTest.kt, test/repository/ChatRepositoryImplTest.kt, test/repository/ChatRepositoryTest.kt
-- `chat: smoother repository bulk inserting (fixes #14407)`
-  ← repository/ChatRepository.kt, repository/ChatRepositoryImpl.kt, services/sync/TransactionSyncManager.kt, test/repository/ChatRepositoryImplTest.kt, test/repository/ChatRepositoryTest.kt
-- `chat: smoother history search input shared flowing (fixes #14379)`
-  ← ui/chat/ChatHistoryFragment.kt
-- `chat: smoother history latest collecting (fixes #14241)`
-  ← ui/chat/ChatHistoryFragment.kt
-- `chat: smoother history view holding (fixes #14234)`
-  ← ui/chat/ChatHistoryAdapter.kt
-- `chat: smoother target id sharing (fixes #14220)`
-  ← ui/chat/ChatShareTargetAdapter.kt
-
-## actions (6)
-
-- `actions: smoother workflow automerge scripting (fixes #15400)`
+- `actions: smoother workflow release versioning (fixes #16349)`
+  ← .github/workflows/release.yml
+- `actions: smoother workflow automerge coauthoring (fixes #16375)`
+  ← .github/scripts/coauthors.sh
+- `actions: smoother workflow automerge playstore resuming (fixes #16629)`
+  ← .github/scripts/automerge.sh, .github/scripts/playstore.sh, .github/workflows/automerge.yml, .github/workflows/playstore.yml, CLAUDE.md
+- `actions: smoother workflow automerge pr picking (fixes #16379)`
   ← .github/scripts/automerge.sh
-- `actions: smoother workflow test handling (fixes #15398)`
-  ← .github/scripts/test_timing_summary.py, .github/workflows/test.yml, res/layout/fragment_edit_achievement.xml, gradle.properties, gradle/libs.versions.toml
-- `actions: smoother workflow automerge looping (fixes #15397)`
-  ← .github/scripts/automerge.sh, .github/scripts/coauthors.sh, .github/scripts/version.sh, .github/workflows/automerge.yml
-- `actions: bump `gradle/actions` to 6.2.0 (fixes #15394)`
-  ← .github/scripts/automerge.sh, .github/workflows/automerge.yml, .github/workflows/build.yml, .github/workflows/release.yml, .github/workflows/test.yml
-- `actions: smoother workflow automerging (fixes #15393)`
-  ← .github/scripts/automerge.sh, .github/scripts/coauthors.sh, .github/scripts/version.sh, .github/workflows/automerge.yml
-- `actions: smoother gradle tooling parallel enabling (fixes #14884)`
+- `actions: smoother labels workflow handling (fixes #16316)`
+  ← .github/workflows/labels.yml
+- `actions: smoother workflow automerging (fixes #16301)`
+  ← .github/workflows/automerge.yml
+- `actions: smoother workflow release caching (fixes #16297)`
+  ← .github/workflows/release.yml
+- `actions: smoother coderabbit reviewing (fixes #16287)`
+  ← .coderabbit.yaml, docs/AGENT_SPELLBOOK.md, docs/CODE_STYLE_GUIDE.md
+- `actions: smoother workflow labeling (fixes #16289)`
+  ← .github/scripts/labels.sh, .github/workflows/labels.yml, CLAUDE.md
+- `actions: smoother gradle configuring (fixes #16250)`
   ← gradle.properties
+- `actions: bump `actions/upload-artifact` to 7 (fixes #16240)`
+  ← .github/workflows/test.yml
+- `actions: smoother workflow test timing (fixes #16239)`
+  ← .github/scripts/test_timing_summary.py
+- `actions: smoother workflows playstore automerge priority queuing (fixes #16263)`
+  ← .github/scripts/automerge.sh, .github/scripts/playstore-quota.sh, .github/scripts/playstore.sh, .github/workflows/automerge.yml, .github/workflows/playstore.yml, +1 more
+- `actions: smoother workflow test caching (fixes #16156)`
+  ← .github/workflows/test.yml
+- `actions: smoother workflow building (fixes #16216)`
+  ← .github/workflows/build.yml
+- `actions: smoother automerge conflict handling (fixes #16252)`
+  ← .github/scripts/automerge.sh, .github/workflows/automerge.yml, CLAUDE.md
+- `actions: smoother workflows skipping (fixes #16166)`
+  ← .github/workflows/build.yml, .github/workflows/test.yml
+- `actions: smoother test workflow handling (fixes #16155)`
+  ← .github/workflows/test.yml
+- `actions: smoother dependabot configuring (fixes #16152)`
+  ← .github/dependabot.yml
+- `actions: smoother playstore quota handling (fixes #16146)`
+  ← .github/scripts/automerge.sh, .github/scripts/playstore-quota.sh, .github/scripts/playstore.sh, .github/workflows/automerge.yml, .github/workflows/playstore.yml, +2 more
+- `actions: smoother robolectric sdk prefetching (fixes #15935)`
+  ← .github/workflows/test.yml, CLAUDE.md, docs/TESTING.md
+- `actions: smoother workflow automerge base judging (fixes #15829)`
+  ← .github/scripts/automerge.sh, .github/workflows/automerge.yml
+- `actions: smoother workflow automerge release retrying (fixes #15814)`
+  ← .github/scripts/automerge.sh, .github/workflows/automerge.yml, CLAUDE.md
+- `actions: bump `actions/cache` from 4 to 6 (fixes #15788)`
+  ← .github/workflows/build.yml, .github/workflows/test.yml
+- `actions: smoother workflow automerge playstore quota handling (fixes #15790)`
+  ← .github/scripts/automerge.sh, .github/workflows/automerge.yml, .github/workflows/release.yml
+- `actions: smoother workflow automerge drain cancelling (fixes #15561)`
+  ← .github/scripts/automerge.sh, .github/workflows/release.yml
+- `actions: smoother workflow test sharding (fixes #15721)`
+  ← .github/scripts/test_timing_summary.py, .github/workflows/build.yml, .github/workflows/test.yml, CLAUDE.md, test/services/DownloadServiceTest.kt, +3 more
+- `actions: smoother workflow automerge retrying (fixes #15713)`
+  ← .github/scripts/automerge.sh, test/services/UploadToShelfServiceTest.kt, test/utils/SecurePrefsTest.kt
 
-## enterprises (5)
+## life (26)
 
-- `enterprises: smoother reports state change notifying (fixes #15249)`
-  ← ui/enterprises/EnterprisesReportsAdapter.kt
-- `enterprises: smoother finances initializing (fixes #15090)`
+- `life: smoother user repository view modelling (fixes #16575)`
+  ← repository/UserRepository.kt, repository/UserRepositoryImpl.kt, ui/life/LifeViewModel.kt, test/repository/UserRepositoryImplTest.kt, test/ui/life/LifeViewModelTest.kt
+- `life: smoother repository dao visibility filtering (fixes #16447)`
+  ← data/room/dao/MyLifeDao.kt, repository/LifeRepositoryImpl.kt, test/repository/LifeRepositoryImplTest.kt
+- `life: smoother dictionary repository inserting (fixes #16434)`
+  ← repository/DictionaryRepositoryImpl.kt, test/repository/DictionaryRepositoryImplTest.kt
+- `life: smoother achievements references info handling (fixes #16446)`
+  ← ui/user/EditAchievementFragment.kt
+- `life: smoother personals repository dao deleting (fixes #16431)`
+  ← data/room/dao/PersonalDao.kt, repository/PersonalsRepositoryImpl.kt, test/repository/PersonalsRepositoryImplTest.kt
+- `life: smoother health search view modelling (fixes #16454)`
+  ← ui/health/HealthViewModel.kt, ui/health/MyHealthFragment.kt, test/ui/health/HealthSearchDebounceTest.kt, test/ui/health/HealthViewModelTest.kt
+- `life: smoother key deduping (fixes #16435)`
+  ← repository/LifeRepositoryImpl.kt, test/repository/LifeRepositoryImplTest.kt
+- `life: smoother achievements model caching (fixes #16355)`
+  ← model/Achievement.kt, test/model/AchievementTest.kt
+- `life: smoother achievements editing (fixes #16253)`
+  ← ui/user/EditAchievementFragment.kt, res/layout/fragment_edit_achievement.xml, test/ui/user/EditAchievementFragmentTest.kt
+- `life: smoother health examining (fixes #1939)`
+  ← ui/health/HealthExaminationActivity.kt
+- `life: smoother health view binding (fixes #16233)`
+  ← ui/health/AddHealthActivity.kt
+- `life: smoother dashboard plugin view modelling (fixes #16231)`
+  ← model/MyLife.kt, ui/dashboard/DashboardPluginFragment.kt, ui/life/LifeViewModel.kt
+- `life: smoother personals repository serializing (fixes #16224)`
+  ← model/Personal.kt, repository/PersonalsRepositoryImpl.kt, test/model/PersonalTest.kt
+- `life: smoother health examination handling (fixes #16169)`
+  ← ui/health/HealthExaminationAdapter.kt
+- `life: smoother repository view modelling (fixes #16162)`
+  ← repository/LifeRepositoryImpl.kt, ui/life/LifeViewModel.kt, test/repository/LifeRepositoryImplTest.kt, test/repository/LifeRepositoryTest.kt
+- `life: smoother personals repository querying (fixes #16148)`
+  ← repository/PersonalsRepositoryImpl.kt, test/repository/PersonalsRepositoryImplTest.kt
+- `life: smoother health examination blood pressure handling (fixes #16076)`
+  ← ui/health/HealthExaminationActivity.kt
+- `life: smoother personals resources opening (fixes #16070)`
+  ← ui/personals/PersonalsAdapter.kt
+- `life: smoother personals repository dao querying (fixes #16019)`
+  ← data/room/dao/PersonalDao.kt, repository/PersonalsRepositoryImpl.kt, test/repository/PersonalsRepositoryImplTest.kt
+- `life: smoother health examination view modelling (fixes #15986)`
+  ← ui/health/HealthExaminationActivity.kt, ui/health/HealthExaminationViewModel.kt, test/ui/health/HealthExaminationViewModelTest.kt
+- `life: smoother health examination dispatcher providing (fixes #15740)`
+  ← ui/health/HealthExaminationAdapter.kt, ui/health/MyHealthFragment.kt
+- `life: smoother list adapter caching (fixes #15739)`
+  ← ui/life/LifeFragment.kt
+- `life: smoother health user repositories view modelling (fixes #15563)`
+  ← repository/HealthRepository.kt, repository/HealthRepositoryImpl.kt, repository/UserRepository.kt, repository/UserRepositoryImpl.kt, ui/health/HealthViewModel.kt, +2 more
+- `life: smoother options visibility updating (fixes #15236)`
+  ← base/BaseDashboardFragment.kt, model/MyLife.kt, ui/life/LifeAdapter.kt
+- `life: smoother repository dashboard seeding (fixes #15521)`
+  ← base/BaseDashboardFragment.kt, repository/LifeRepositoryImpl.kt
+- `life: smoother health repository testing (fixes #15491)`
+  ← test/repository/HealthRepositoryImplTest.kt
+
+## login (23)
+
+- `login: smoother configurations repository server availability checking (fixes #16538)`
+  ← repository/ConfigurationsRepositoryImpl.kt, test/repository/ConfigurationsRepositoryImplTest.kt
+- `login: smoother achievements payload handling (fixes #16523)`
+  ← ui/user/AchievementsAdapter.kt, test/ui/user/AchievementsAdapterTest.kt
+- `login: smoother activities repository bulk inserting (fixes #16511)`
+  ← repository/ActivitiesRepositoryImpl.kt, test/repository/ActivitiesRepositoryImplTest.kt
+- `login: smoother achievements editing (fixes #16407)`
+  ← ui/user/EditAchievementFragment.kt
+- `login: smoother sync back press handling (fixes #16273)`
+  ← ui/sync/SyncActivity.kt, res/values-ar/strings.xml, res/values-es/strings.xml, res/values-fr/strings.xml, res/values-ne/strings.xml, +2 more
+- `login: smoother activities repository serializing (fixes #16281)`
+  ← repository/ActivitiesRepositoryImpl.kt
+- `login: smoother form submitting (fixes #16267)`
+  ← ui/sync/LoginActivity.kt
+- `login: smoother settings text capitalizing (fixes #16130)`
+  ← res/values/strings.xml
+- `login: smoother teams members view modelling (fixes #16243)`
+  ← ui/sync/LoginViewModel.kt
+- `login: smoother url utils handling (fixes #16237)`
+  ← services/sync/LoginSyncManager.kt, utils/UrlUtils.kt
+- `login: smoother onboarding (fixes #16232)`
+  ← ui/onboarding/OnboardingActivity.kt
+- `login: smoother auth session updating (fixes #16222)`
+  ← data/auth/AuthSessionUpdater.kt, test/data/auth/AuthSessionUpdaterTest.kt
+- `login: smoother server dialog extensions url handling (fixes #16075)`
+  ← ui/sync/ServerDialogExtensions.kt
+- `login: smoother settings shared preference managing (fixes #16030)`
+  ← services/SharedPrefManager.kt, ui/settings/SettingsActivity.kt
+- `login: smoother storage breakdown indexing (fixes #16026)`
+  ← ui/settings/StorageBreakdownFragment.kt
+- `login: smoother storage category view modelling (fixes #16004)`
+  ← ui/settings/StorageCategoryDetailFragment.kt, ui/settings/StorageCategoryViewModel.kt
+- `login: smoother learner registering (fixes #15556)`
+  ← ui/user/BecomeMemberActivity.kt
+- `login: smoother configurations repository provisioning (fixes #15811)`
+  ← repository/ConfigurationsRepository.kt, repository/ConfigurationsRepositoryImpl.kt, ui/sync/SyncActivity.kt, test/repository/ConfigurationsRepositoryImplTest.kt
+- `login: smoother user repository dao querying (fixes #15791)`
+  ← data/room/dao/UserDao.kt, repository/UserRepositoryImpl.kt, test/data/room/dao/UserDaoTest.kt, test/repository/UserRepositoryBulkInsertTest.kt
+- `login: smoother configurations repository io wrapping (fixes #15778)`
+  ← repository/ConfigurationsRepositoryImpl.kt
+- `login: smoother user profile landscaping (fixes #15551)`
+  ← ui/user/UserProfileFragment.kt, res/layout-land/fragment_user_profile.xml, res/layout-large-land/fragment_user_profile.xml, res/layout-normal-land/fragment_user_profile.xml, res/layout/fragment_user_profile.xml, +2 more
+- `login: smoother feedback flow collecting (fixes #15566)`
+  ← ui/dictionary/DictionaryActivity.kt, ui/feedback/FeedbackDetailActivity.kt, ui/sync/LoginActivity.kt
+- `login: less settings edges is more (fixes #15257)`
+  ← ui/settings/SettingsActivity.kt, res/xml/pref.xml
+
+## dashboard (17)
+
+- `dashboard: smoother navigating (fixes #16613)`
+  ← ui/dashboard/DashboardElementActivity.kt, test/ui/dashboard/DashboardElementActivityNavigationTest.kt
+- `dashboard: smoother voice date count querying (fixes #16455)`
+  ← data/room/dao/NewsDao.kt, repository/VoicesRepository.kt, repository/VoicesRepositoryImpl.kt, ui/dashboard/DashboardViewModel.kt, test/data/room/dao/NewsDaoTest.kt, +2 more
+- `dashboard: smoother surveys text coloring (fixes #16522)`
+  ← ui/dashboard/DashboardSurveysAdapter.kt, test/ui/dashboard/DashboardSurveysAdapterTest.kt
+- `dashboard: smoother bell sync status refreshing (fixes #16272)`
+  ← ui/dashboard/BellDashboardFragment.kt, ui/dashboard/DashboardActivity.kt
+- `dashboard: smoother activities repository offline logins flowing (fixes #16215)`
+  ← repository/ActivitiesRepository.kt, repository/ActivitiesRepositoryImpl.kt, ui/dashboard/ActivitiesFragment.kt, test/repository/ActivitiesRepositoryImplTest.kt, test/ui/dashboard/ActivitiesFragmentTest.kt, +1 more
+- `dashboard: smoother courses shelf handling (fixes #15727)`
+  ← base/BaseDashboardFragment.kt, ui/dashboard/BellDashboardFragment.kt
+- `dashboard: smoother activities view modelling (fixes #16205)`
+  ← ui/dashboard/ActivitiesFragment.kt, ui/dashboard/ActivitiesViewModel.kt, test/ui/dashboard/ActivitiesViewModelTest.kt
+- `dashboard: smoother activities fragment date format caching (fixes #16054)`
+  ← ui/dashboard/ActivitiesFragment.kt
+- `dashboard: smoother activities monthly counting (fixes #16052)`
+  ← ui/dashboard/ActivitiesFragment.kt
+- `dashboard: smoother base resources navigating (fixes #15728)`
+  ← base/BaseDashboardFragment.kt, ui/dashboard/BellDashboardFragment.kt, res/layout-sw600dp/home_card_library.xml, res/layout/home_card_library.xml, test/ui/resources/ResourcesViewModelTest.kt
+- `dashboard: smoother bell view modelling (fixes #15744)`
+  ← ui/dashboard/BellDashboardFragment.kt, ui/dashboard/BellDashboardViewModel.kt, test/ui/dashboard/BellDashboardViewModelTest.kt
+- `dashboard: smoother activities chart landscaping (fixes #15552)`
+  ← ui/dashboard/ActivitiesFragment.kt, res/layout-land/fragment_activities.xml, res/layout/fragment_activities.xml, test/ui/dashboard/ActivitiesFragmentTest.kt
+- `dashboard: smoother responsive layout handling (fixes #15524)`
+  ← app/src/main/AndroidManifest.xml, base/BaseDashboardFragment.kt, ui/dashboard/BellDashboardFragment.kt, ui/dashboard/DashboardActivity.kt, ui/dashboard/DashboardPluginFragment.kt, +41 more
+- `dashboard: smoother sync message spacing (fixes #15122)`
+  ← res/values/strings.xml
+- `dashboard: smoother placeholder wording (fixes #15522)`
+  ← res/values-ar/strings.xml, res/values-es/strings.xml, res/values-fr/strings.xml, res/values-ne/strings.xml, res/values-so/strings.xml, +1 more
+- `dashboard: smoother user repository gson injecting (fixes #15539)`
+  ← repository/UserRepositoryImpl.kt, test/repository/EventsRepositoryImplTest.kt
+- `dashboard: smoother guest offline visiting (fixes #15213)`
+  ← ui/dashboard/DashboardActivity.kt, res/layout/banner_offline_visit_warning.xml, res/values-ar/strings.xml, res/values-es/strings.xml, res/values-fr/strings.xml, +3 more
+
+## enterprises (14)
+
+- `enterprises: smoother finances totals view modelling (fixes #16586)`
+  ← ui/enterprises/EnterprisesFinancesFragment.kt, ui/enterprises/EnterprisesFinancesViewModel.kt, test/ui/enterprises/EnterprisesFinancesViewModelTest.kt
+- `enterprises: smoother repository reports csv view modelling (fixes #16374)`
+  ← repository/EnterprisesRepository.kt, repository/EnterprisesRepositoryImpl.kt, ui/enterprises/EnterprisesReportsFragment.kt, ui/enterprises/EnterprisesViewModel.kt, test/repository/EnterprisesRepositoryImplTest.kt
+- `enterprises: smoother repository report flowing (fixes #16354)`
+  ← repository/EnterprisesRepositoryImpl.kt, test/repository/EnterprisesRepositoryImplTest.kt
+- `enterprises: smoother finances string comparisons handling (fixes #16285)`
+  ← ui/enterprises/EnterprisesFinancesAdapter.kt, ui/enterprises/EnterprisesFinancesFragment.kt
+- `enterprises: smoother teams repositories view modelling (fixes #16212)`
+  ← di/RepositoryModule.kt, repository/EnterprisesRepository.kt, repository/EnterprisesRepositoryImpl.kt, repository/TeamsFinancesRepository.kt, repository/TeamsRepositoryImpl.kt, +2 more
+- `enterprises: smoother finances transaction view modelling (fixes #16145)`
+  ← ui/enterprises/EnterprisesFinancesFragment.kt, ui/enterprises/EnterprisesFinancesViewModel.kt, test/ui/enterprises/EnterprisesFinancesViewModelTest.kt
+- `enterprises: smoother finances view binding (fixes #16142)`
+  ← ui/enterprises/EnterprisesFinancesAdapter.kt
+- `enterprises: smoother finances landscaping (fixes #15577)`
+  ← ui/enterprises/EnterprisesFinancesFragment.kt, res/layout/add_transaction.xml, res/layout/dialog_add_transaction.xml, res/layout/fragment_finance.xml, res/layout/header_finance.xml, +6 more
+- `enterprises: smoother finances date filter resetting (fixes #15767)`
   ← ui/enterprises/EnterprisesFinancesFragment.kt
-- `enterprises: smoother finances date formatting (fixes #14360)`
+- `enterprises: smoother finances date filtering (fixes #15766)`
   ← ui/enterprises/EnterprisesFinancesFragment.kt
-- `enterprises: smoother finances images view modelling (fixes #14215)`
-  ← data/DatabaseService.kt, data/RealmMigrations.kt, model/RealmMyTeam.kt, model/Transaction.kt, repository/TeamsRepository.kt, +20 more
-- `enterprises: smoother reporting (fixes #14200)`
+- `enterprises: smoother glide request managing (fixes #15774)`
+  ← ui/courses/CoursesAdapter.kt, ui/enterprises/EnterprisesFinancesAdapter.kt, ui/enterprises/EnterprisesReportsAdapter.kt
+- `enterprises: smoother members reports payload diffing (fixes #15737)`
+  ← ui/enterprises/EnterprisesReportsAdapter.kt, ui/teams/members/MembersAdapter.kt, test/ui/enterprises/EnterprisesReportsAdapterTest.kt, test/ui/teams/members/MembersAdapterTest.kt
+- `enterprises: smoother finances date picking (fixes #15518)`
+  ← ui/enterprises/EnterprisesFinancesFragment.kt
+- `enterprises: smoother csv export date caching (fixes #15501)`
   ← ui/enterprises/EnterprisesReportsFragment.kt
 
-## community (3)
+## community (8)
 
-- `community: smoother leaders adapting (fixes #14583)`
-  ← ui/community/CommunityLeadersAdapter.kt
-- `community: smoother voices label filtering (fixes #14420)`
-  ← ui/voices/VoicesFragment.kt, ui/voices/VoicesLabelAdapter.kt, ui/voices/VoicesLabelItem.kt, res/layout/fragment_voices.xml
-- `community: smoother repository meetups bulk inserting (fixes #14353)`
-  ← repository/CommunityRepository.kt, repository/CommunityRepositoryImpl.kt, services/sync/TransactionSyncManager.kt
+- `community: smoother configurations repository tab views modelling (fixes #16326)`
+  ← repository/ConfigurationsRepository.kt, repository/ConfigurationsRepositoryImpl.kt, ui/community/CommunityTabViewModel.kt, ui/community/HomeCommunityDialogFragment.kt, ui/community/LeadersViewModel.kt, +5 more
+- `community : smoother tab pager adapting (fixes #16308)`
+  ← ui/community/CommunityPagerAdapter.kt, ui/community/CommunityTabFragment.kt, ui/community/HomeCommunityDialogFragment.kt
+- `community: smoother voices view modelling (fixes #16165)`
+  ← ui/voices/VoicesViewModel.kt
+- `community: smoother tab view modelling (fixes #16066)`
+  ← ui/community/CommunityTabFragment.kt, ui/community/CommunityTabViewModel.kt
+- `community: smoother leaders view modelling (fixes #16037)`
+  ← ui/community/LeadersFragment.kt, ui/community/LeadersViewModel.kt
+- `community: smoother home dialog handling (fixes #16024)`
+  ← ui/community/HomeCommunityDialogFragment.kt
+- `community: smoother voices showing (fixes #15695)`
+  ← repository/VoicesRepositoryImpl.kt, ui/voices/VoicesFragment.kt, test/repository/VoicesRepositoryImplTest.kt
+- `community: smoother type shared preferences handling (fixes #15474)`
+  ← repository/ConfigurationsRepository.kt, repository/ConfigurationsRepositoryImpl.kt, repository/TeamsRepository.kt, repository/TeamsRepositoryImpl.kt, ui/community/CommunityPagerAdapter.kt, +4 more
 
-## feedback (1)
+## chat (8)
 
-- `feedback: smoother repository dao replying (fixes #15243)`
-  ← data/room/dao/FeedbackDao.kt, repository/FeedbackRepositoryImpl.kt, test/repository/FeedbackRepositoryImplTest.kt
+- `chat: smoother history caching (fixes #16448)`
+  ← ui/chat/ChatHistoryAdapter.kt
+- `chat: smoother history view binding (fixes #16415)`
+  ← ui/chat/ChatHistoryAdapter.kt, test/ui/chat/ChatHistoryAdapterTest.kt
+- `chat: smoother history view modelling (fixes #16319)`
+  ← ui/chat/ChatHistoryFragment.kt, ui/chat/ChatViewModel.kt, test/ui/chat/ChatViewModelTest.kt
+- `chat: smoother clipboard caching (fixes #16518)`
+  ← ui/chat/ChatAdapter.kt, test/ui/chat/ChatAdapterTest.kt
+- `chat: smoother repository search view modelling (fixes #16084)`
+  ← repository/ChatRepository.kt, repository/ChatRepositoryImpl.kt, ui/chat/ChatViewModel.kt, test/repository/ChatRepositoryImplTest.kt, test/repository/ChatRepositoryTest.kt, +1 more
+- `chat: smoother api dispatcher providing (fixes #16050)`
+  ← data/api/ChatApiService.kt, test/data/api/ChatApiServiceTest.kt
+- `chat: smoother history ai provider view modelling (fixes #15999)`
+  ← ui/chat/ChatDetailFragment.kt, ui/chat/ChatHistoryFragment.kt, ui/chat/ChatViewModel.kt, test/ui/chat/ChatViewModelTest.kt
+- `chat: smoother detail ui state view modelling (fixes #15776)`
+  ← ui/chat/ChatDetailFragment.kt, ui/chat/ChatViewModel.kt, test/ui/chat/ChatViewModelTest.kt
 
-## Counterexamples — titles that broke the pattern
+## lifel (1)
 
-Kept as warnings, not precedents:
-
-- `filter window fills screen in landscape mode (fixes #15261)`
-  ← ui/courses/CoursesFragment.kt, ui/resources/ResourcesFilterFragment.kt, ui/resources/ResourcesFragment.kt, res/layout-land/fragment_my_course.xml, res/layout-land/fragment_my_library.xml, +3 more
-- `🧪 [Testing Improvement] Add test for getTasksFlow testing (fixes #15196)`
-  ← test/repository/TeamsRepositoryImplTest.kt
-- `courses: ratings repository summary providing (fixes #15187)`
-  ← repository/RatingsRepository.kt, repository/RatingsRepositoryImpl.kt, ui/courses/CourseDetailViewModel.kt, ui/courses/RatingSummaryProvider.kt, test/repository/RatingsRepositoryImplTest.kt, +1 more
-- `teams: smoother survey submissions guest handling {fixes #14889)`
-  ← ui/submissions/SubmissionsAdapter.kt
-- `all: smoother server config utils handling (fixes 14801)`
-  ← ui/dashboard/DashboardActivity.kt, ui/sync/ServerDialogExtensions.kt, ui/viewer/WebViewActivity.kt, utils/ServerConfigUtils.kt
-- `teams: smoother base member list requesting`
-  ← base/BaseMemberFragment.kt, ui/teams/members/RequestsFragment.kt
-- `chat: smoother history utils shared view testing (#14755)`
-  ← test/utils/ChatHistoryUtilsTest.kt
-- `Refactor upload data contracts to repository layer`
-  ← repository/UploadRepository.kt, repository/UploadRepositoryImpl.kt, services/upload/UploadCoordinator.kt, test/repository/UploadRepositoryImplTest.kt
-- `login: smother syncing (fixes 14266)`
-  ← ui/sync/LoginActivity.kt
-- `login: smoother view modelling (fixes  #14244)`
-  ← ui/sync/LoginActivity.kt, ui/sync/LoginViewModel.kt
-- ` sync: smoother process continuing (fixes #14213)`
-  ← ui/sync/SyncActivity.kt
-- `life: smoother health examination realm model bulk inserting (fixes 14227)`
-  ← model/RealmHealthExamination.kt, repository/HealthRepositoryImpl.kt, test/repository/HealthRepositoryImplTest.kt
+- `lifel: smoother personals repository device name providing (fixes #16433)`
+  ← repository/PersonalsRepositoryImpl.kt, utils/DeviceNameProvider.kt, test/repository/PersonalsRepositoryImplTest.kt
 

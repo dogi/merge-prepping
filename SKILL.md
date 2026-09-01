@@ -70,9 +70,9 @@ conventional-commit types (`feat:`, `fix:`, `refactor:` never appear).
 
 | Shape | When | myplanet | planet |
 |---|---|---|---|
-| `<scope>: smoother <noun phrase> <gerund> (fixes #N)` | Anything that improves, fixes, adds, or reworks | 445/500 | 456/500 |
-| `<scope>: less <noun phrase> is more (fixes #N)` | A named thing *ceases to exist* | 37/500 | 33/500 |
-| ``all: bump `<coordinate>` to <version> (fixes #N)`` | Dependency version bumps only — always `all:` in both logs | 12/500 | 10/500 |
+| `<scope>: smoother <noun phrase> <gerund> (fixes #N)` | Anything that improves, fixes, adds, or reworks | 454/500 | 456/500 |
+| `<scope>: less <noun phrase> is more (fixes #N)` | A named thing *ceases to exist* | 38/500 | 33/500 |
+| ``<scope>: bump `<coordinate>` to <version> (fixes #N)`` | Dependency version bumps only — `all:` for language/framework coordinates, the CI scope for workflow actions | 8/500 | 10/500 |
 
 myplanet-lite has no column because it has no house-style log yet — running this
 skill there **establishes** the style rather than matching it. Its pack covers
@@ -85,6 +85,15 @@ the signal: a refactor that restructures code into a tidier shape deletes plenty
 of lines and is still `smoother`. Ask what the PR is *for*. If its purpose is
 "get rid of X", use `less`; if its purpose is "make X work better" and deletion
 is a side effect, use `smoother`.
+
+There is a tell in the other direction too: if the draft you are about to write
+ends in `removing`, `cleanup`, `removal` or `encapsulation`, the shape is
+probably wrong — that is a `less … is more` title wearing `smoother`. Three of
+myplanet's measured corrections were exactly this (`resources: smoother
+enriched-libraries encapsulation` → `resources: less repository enriched
+libraries is more`). Check the diff before you switch, though: one draft ending
+in `log removing` landed as `… queue testing`, because what the diff actually
+contained was tests.
 
 Worked failure (myplanet, but the trap is general): a PR converting
 `LoginSyncManager.login` to a `suspend` function was 89 additions against 106
@@ -105,7 +114,9 @@ stamp gets mirrored into the body as `Fixes #N`. Both, every time.
 Get the title spelling exact: lowercase `fixes`, a space, `#`, the number,
 wrapped in round parens. Real typos in the logs (`{fixes #14889)`, `(fixes
 14801)` and `(fixes 9105)` with no `#`, `(fixes: #9423)` with a stray colon)
-broke even the cosmetic link.
+broke even the cosmetic link. myplanet's most recent 500 are 500/500
+well-formed, so a broken link now stands out as *your* typo rather than
+blending in.
 
 planet also uses `(connects #N)` for work that advances an issue without closing
 it; myplanet does not. See its pack.
@@ -127,6 +138,16 @@ myplanet; myplanet's `sync:` does not exist on planet; `life:` covers different
 ground in each. Each pack also lists its own traps — directories claimed by more
 than one scope, and scopes that have been renamed.
 
+**The vocabulary is closed.** A scope that is not in the pack's table is not a
+scope, however well it describes the diff. This is the most common mistake a
+prep pass makes: on myplanet, 13 of 27 measured title corrections were an
+invented scope being replaced by a real one — `retry:`, `downloads:`,
+`notifications:`, `voices:`, `members:`, `collections:`, `health:`,
+`submissions:`, `ui:`, `model:`, `diagnostics:`, `docs:`, `ci:`. The invented
+word is usually a good *word*; it belongs in the noun phrase, not in front of
+the colon. If nothing in the table fits, the answer is the pack's default
+(`all:` in both repos), not a new scope.
+
 ## Building the phrase — read it off the diff, not the old title
 
 The single most important shared rule: **the changed files are the primary input
@@ -134,12 +155,18 @@ to the title, and the old title is not.** Its only job is to become the issue
 title. Agent-written titles in particular are consistently vaguer than their
 diffs.
 
+The measured version, over myplanet's last 220 merges: **118 of 203 landed
+titles share no content word at all** with the title the PR arrived with, and
+across all 203 only 18% of a landed title's words were present in the incoming
+one. Median length after the scope: four words landed, against eight in the
+title that arrived. You are re-deriving, not editing.
+
 Beyond that the two repos diverge, and this is where using the wrong pack does
 the most damage:
 
 - **The Kotlin repos are mechanical.** The noun phrase is the principal changed
   file, de-CamelCased and lowercased with its role suffix dropped; the gerund
-  comes from that suffix (`*Adapter` → diffing or adapting, `*Manager` →
+  comes from that suffix (`*Adapter` → diffing or binding, `*Manager` →
   managing). There is a full suffix table in myplanet's pack, and myplanet-lite
   amends four rows of it — including deleting `*ViewModel`, myplanet's single
   most common gerund, because lite has no such classes.
@@ -157,9 +184,16 @@ What holds in both:
 - Prefer the **layer or concept word** over the entity name. The domain is
   already carried by the scope plus one feature word, so repeating the entity is
   noise.
-- Aim for **three to five words** between the scope and the gerund. `all:
-  smoother importing` is fine when the change genuinely is that broad; padding a
-  narrow change with words it doesn't need is worse than being terse.
+- **Keep it a bare chain of nouns.** No prepositions, no articles, no `and`, no
+  commas, no hyphenated compounds — 0 of myplanet's 492 non-`bump` titles and 7
+  of planet's 500 contain any of them, and hyphens appear in neither log. Drafts
+  fail here constantly: `courses: smoother filtered-course sort without per-item
+  lowercase` landed as `courses: smoother repository sorting`.
+- Aim for **one to three words between the scope and the gerund** — median two
+  in both logs, i.e. three words after `smoother` counting the gerund (myplanet
+  195 of 454 titles, planet 195 of 452). `all: smoother importing` is fine when
+  the change genuinely is that broad; padding a narrow change with words it
+  doesn't need is worse than being terse.
 - Near-duplicates are fine and common. The qualifier and the issue number
   distinguish them; picking a less accurate word to look novel is the worse
   trade.
@@ -173,9 +207,15 @@ What holds in both:
 
 This is the half that's easy to get wrong, because the right move depends on who
 opened the PR. The mechanics are the same everywhere; what differs is how often
-each branch fires. On myplanet and planet most human PRs arrive with an issue.
-On myplanet-lite **none do** — not one of the last 200 titles links one — so the
-create-an-issue branch is the normal path there, not the exception.
+each branch fires.
+
+On myplanet, **86% of the last 220 merges arrived as an agent PR** (190 of 220;
+21 were human and issue-first) — but that no longer means "no issue". Agents
+there are dispatched *from* the backlog, so 138 of 220 landed titles closed an
+issue numbered below their PR and only 82 closed one created during the prep
+pass. Look before you create: the number is as likely to already exist on an
+agent PR as not. On myplanet-lite **none do** — not one of the last 200 titles
+links one — so the create-an-issue branch is the normal path there.
 
 **A human contributor's PR usually already has an issue.** They filed it first,
 and it shows up in one of three places — check all three before concluding there
@@ -191,15 +231,22 @@ rather than a stale or cross-repo reference before you build the title around
 it. myplanet and planet issue numbers are in overlapping ranges, so a number
 copied from the sibling repo will look plausible and resolve to the wrong thing.
 
-**An agent-generated PR usually has no issue.** Jules, Copilot, and similar bots
-open PRs directly, with descriptive prose titles like `Refactor: Consolidate
-duplicate EntryPoints` and a body ending in *"PR created automatically by Jules
-for task …"*. Branch names look like `consolidate-entrypoints-1618928943660463448`.
+**An agent-generated PR often has no issue — but check first.** Jules,
+OpenHands, Copilot, Codex and similar bots open PRs directly, with descriptive
+prose titles like `Refactor: Consolidate duplicate EntryPoints` and a body
+ending in *"PR created automatically by Jules for task …"*. Branch names carry
+the giveaway: a task-id suffix
+(`consolidate-entrypoints-1618928943660463448`), or an agent prefix —
+`openhands/…`, `jules-…`, `claude/…`, `codex/…`. Two places still worth reading
+on an agent PR before you conclude there is no issue: a `(fixes #N)` the agent
+copied out of the issue it was dispatched from, often mid-sentence in the first
+commit message, and the issue link in the body.
 
-In that case, create the issue — and this is the key move: **the PR's current
-title becomes the issue title, verbatim.** That descriptive title is a perfectly
-good issue title and a poor commit subject, so it gets promoted rather than
-discarded. Nothing is lost when the PR title is then rewritten into house style.
+When there really is none, create the issue — and this is the key move: **the
+PR's current title becomes the issue title, verbatim.** That descriptive title
+is a perfectly good issue title and a poor commit subject, so it gets promoted
+rather than discarded. Nothing is lost when the PR title is then rewritten into
+house style.
 
 ```
 before  PR #15048  "Refactor: Consolidate duplicate EntryPoints"      (no issue)
@@ -242,7 +289,7 @@ stack duplicate lines; anchor the number, since `Fixes #1234` does not link
    genuinely open axes — one candidate per plausible value:
    - **scope** — torn between a feature scope and `all:`, or in one of the
      pack's named border zones: offer both
-   - **gerund** — where the pack lists a pair (myplanet's `diffing`/`adapting`
+   - **gerund** — where the pack lists a pair (myplanet's `diffing`/`binding`
      and `flowing`/`collecting`; planet's `handling` versus a sharper operation
      word): offer both
    - **shape** — a borderline removal: offer the `less … is more` form as an
@@ -284,9 +331,29 @@ still diverged on scopes, four suffix rows and the version-bump file, and one of
 those — a `*ViewModel` rule for a codebase with no view models — would have
 produced confidently wrong titles on every PR.
 
-Build the corpus from the repo's own log: pair each squash-merged title with the
-files that produced it, strip the trailing `(#NNNN)` GitHub appends, group by
-scope, and note the per-PR version-bump file so it can be omitted. Then read the
-result and write `conventions.md` from what you actually see — scope league
-table, how the noun phrase is derived, the gerund vocabulary, and any point
-where the log changed its mind about a convention partway through the window.
+Build the corpus from the repo's own log with `scripts/build-corpus.py`: it
+pairs each squash-merged title with the files that produced it, strips the
+trailing `(#NNNN)` GitHub appends, groups by scope, and prints the league
+tables. Use `--skip` for the per-PR version-bump file, `--strip` for the source
+root and `--rename PREFIX=SHORT` for the paths worth keeping but shortening
+(test sources, resources). Then read the result and write `conventions.md` from
+what you actually see — scope league table, how the noun phrase is derived, the
+gerund vocabulary, and any point where the log changed its mind about a
+convention partway through the window. Two generated sections do most of that
+reading for you: `## Scope ↔ directory`, the cross-tab of where each scope's
+diffs actually live, and the anomaly lines under `## Shape of the window`, which
+flag function words, hyphenated compounds, malformed links, a space before the
+colon, and any scope used only once or twice — usually a typo (`lifel:`) or a
+scope somebody invented on the spot.
+
+**A corpus is worth rebuilding when the repo moves, not on a schedule.** Between
+myplanet's last two windows — three weeks apart, with no overlap — one scope
+disappeared, another grew five-fold, and the gerund for adapter work changed.
+The window that produced a pack's numbers is printed at the top of its corpus;
+if it is far behind the repo's log, regenerate before trusting the tables.
+
+If the repo squash-merges, you can also recover what each title looked like
+*before* it was prepped, which is the highest-value thing in myplanet's pack:
+GitHub keeps `refs/pull/<n>/head` forever, so the branch's own commits and the
+branch name survive the merge. See the method note in
+`references/myplanet/title-corpus.md`.

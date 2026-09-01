@@ -66,14 +66,16 @@ offers to add a pack.
 
    ```
    scripts/build-corpus.py --repo ~/src/<repo> --name <repo> \
-       --strip <source root>/ --skip <version bump file> \
+       --strip <source root>/ --rename <test root>/=test/ \
+       --skip <version bump file> \
        > references/<repo>/title-corpus.md
    ```
 
    It pairs each merged title with the files that produced it, groups by scope,
-   and prints the shape / scope / gerund league tables — plus a warning if the
-   log changed its mind about a convention partway through the window, which
-   planet's did in October 2025.
+   prints the shape / scope / gerund league tables, a scope ↔ directory
+   cross-tab and an anomaly scan (function words, hyphens, malformed links,
+   once-used scopes) — plus a warning if the log changed its mind about a
+   convention partway through the window, which planet's did in October 2025.
 
 2. Read those tables and write `references/<repo>/conventions.md` from what you
    actually see, not from what the other packs say.
@@ -147,10 +149,13 @@ already has:
 
 It picks the scope from where the diff's centre of gravity sits, walks the noun
 phrase across every changed area, and reads all of that off the file list rather
-than the old title. The old title has one job: becoming the issue title when the
-PR arrived without an issue, which is the usual case for Jules- and
-Copilot-opened PRs. Human PRs normally already have a number in the title, the
-body, or the `<N>-slug` branch name.
+than the old title. That is not a stylistic preference: across myplanet's last
+220 merges, 118 of 203 landed titles share **no content word at all** with the
+title the PR arrived with. The old title has one job: becoming the issue title
+when the PR arrived without an issue. Which happens often — 86% of myplanet's
+recent merges start as an agent PR — but not always: agents there are dispatched
+from the backlog, so most already carry a number in the title, the body, or the
+`<N>-slug` branch name. Look before creating one.
 
 `(fixes #N)` goes in the title **and** `Fixes #N` in the body: the title keeps
 the log traceable, the body is the only place GitHub reads the link from.
@@ -161,13 +166,13 @@ Where the repos differ — and why the packs exist:
 |---|---|---|---|
 | Noun phrase | mechanical, off the filenames | descriptive, off the screen (`component` is a noun 3× in 500 titles) | mechanical, as myplanet |
 | Scoped by | directory (`ui/teams/`, `services/sync/`) | directory (`src/app/*/`) | **class-name prefix** — the tree is flat |
-| Fallback gerund | `handling` for Fragments/Activities, 27/500 | `handling` for anything, 86/500 | as myplanet |
-| Top suffix | `*ViewModel` → view modelling, 40/500 | suffixes discarded | `*Extensions`, 32 files — takes **no** gerund; **zero** view models exist |
+| Fallback gerund | `handling` for any file with no sharper operation word, 40/500 | `handling` for anything, 86/500 | as myplanet |
+| Top suffix | `*ViewModel` → view modelling, 65/500 | suffixes discarded | `*Extensions`, 32 files — takes **no** gerund; **zero** view models exist |
 | Test diffs | `app/src/test/`-only always ends in `testing` | no spec-only PRs exist; specs ride along | as myplanet, plus `androidTest/` |
 | Style diffs | rare | ~a fifth of PRs; own vocabulary (`aligning`, `spacing`, `padding`) | rare |
 | Issue link | `fixes` only | `fixes`, plus `connects` when the issue stays open (title only) | none practised yet — expect to open one per PR |
 | Version bump | `app/build.gradle` | `package.json` | `app/build.gradle.kts` |
-| Scopes absent | — | `sync` | `life`, `chat`, `community`, `enterprises`, `feedback` |
+| Scopes absent | — | `sync` | `life`, `chat`, `community`, `enterprises` |
 
 myplanet-lite has **no house style in its log at all** — zero of the last 200
 titles link an issue, and they read like `🧹 [Code Health] Refactor
