@@ -275,10 +275,15 @@ line is what actually closes an issue, and this shape exists to keep one open.
 
 `closes #N` appears twice and is not house style — don't reach for it.
 
-**Two issues get two stamps** — `(fixes #10199) (fixes #10200)`, separate
-parens with one space, not a comma list inside one pair and not jammed together.
-#10203 was corrected through both errors in turn. Mirror both into the body, one
-`Fixes #N` line each.
+**Two issues get two stamps, run together with no space** —
+`(fixes #10199)(fixes #10200)`, and it scales: `resources: smoother creating
+attachments (fixes #8359)(fixes #8360)(fixes #8361)`. Never a comma list inside
+one pair. Mirror each into the body as its own `Fixes #N` line.
+
+Across the whole log 34 multi-stamp titles run together and only 2 of the
+styled era are spaced — one of them the most recent (#10203), which is a slip
+rather than a change of practice. The other spaced ones are all 2018–19 and
+predate the house style.
 
 **Lowercase and US-spell everything.** `All:` → `all:`, `Fixes` → `fixes`,
 `labelling` → `labeling` were all corrections in the last fifty.

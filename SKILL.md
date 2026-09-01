@@ -102,9 +102,10 @@ the squash commit subject is the PR title. It is not what closes the issue:
 squash subject it synthesises out of the title, which is the trap. So the title
 stamp gets mirrored into the body as `Fixes #N`. Both, every time.
 
-When a PR closes two issues, give each its own parenthesised stamp separated by
-a single space — `(fixes #10199) (fixes #10200)` — not a comma list inside one
-pair, and mirror both into the body as their own `Fixes #N` lines.
+When a PR closes more than one issue, give each its own parenthesised stamp and
+**run them together with no space** — `(fixes #10199)(fixes #10200)`, and a
+third if needed — not a comma list inside one pair. Mirror each into the body as
+its own `Fixes #N` line.
 
 Get the title spelling exact: lowercase `fixes`, a space, `#`, the number,
 wrapped in round parens. Real typos in the logs (`{fixes #14889)`, `(fixes
