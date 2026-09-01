@@ -9,6 +9,13 @@ default and the `(fixes #N)` rules are shared and live in `SKILL.md`.
 
 Corpus: `references/myplanet/title-corpus.md` (last 500 merged PRs).
 
+One myplanet-specific note on the body line `SKILL.md` requires: the automerge
+drain (`.github/scripts/automerge.sh`, `link_title_issues`) mirrors a title's
+closing reference into the PR body just before it squash-merges, so PRs that go
+out through the queue are covered. **PRs merged by hand are not.** Write the
+body line at prep time regardless — the drain's pass is a safety net, not the
+mechanism, and it is idempotent about refs the body already links.
+
 ## Scopes
 
 `all:` is the workhorse (133/500) and the right default whenever the change

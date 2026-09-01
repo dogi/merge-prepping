@@ -154,6 +154,9 @@ the title.
 
 `closes #N` appears twice and is not house style — don't reach for it.
 
+It follows that a `connects` title gets no `Fixes #N` line in the PR body: that
+line is what actually closes an issue, and this shape exists to keep one open.
+
 ## Dependency bumps
 
 planet bumps frameworks and the app itself, not Gradle coordinates. Backtick
