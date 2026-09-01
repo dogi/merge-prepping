@@ -1,6 +1,6 @@
 # Title corpus — planet, the last 500 merged PRs
 
-Generated from the 500 most recent squash commits on `HEAD` (`6c3ea09`, PR #10191 / issue #10190, back to `96945b8`, PR #8610 / issue #8607).
+Generated from the 500 most recent squash commits on `master` (`bef1977`, PR #10363 / issue #10362, back to `cea7e5a`, PR #8777 / issue #8776).
 Each line pairs the landed title with the changed files that produced it — **the changed files are the primary input to the title**. Skim for the nearest precedent by scope, then by the area of the files you changed.
 
 Path shorthand: bare paths are under `src/app/`; everything else is written from the repo root.
@@ -11,17 +11,29 @@ The trailing `(#NNNN)` GitHub appends at squash time is stripped: what you see h
 Regenerate with:
 
 ```
-scripts/build-corpus.py --repo <checkout> --name planet --strip src/app/ --skip package.json --skip package-lock.json
+scripts/build-corpus.py --repo <checkout> --name planet --ref master --strip src/app/ --skip package.json --skip package-lock.json
 ```
 
 ## Shape of the window
 
-- **Shape shares:** `smoother` 456/500 (91%), `less … is more` 33, `bump` 10, other 1.
-- **Scope league table:** `all` 138 · `teams` 93 · `manager` 80 · `courses` 53 · `community` 29 · `dashboard` 25 · `actions` 21 · `chat` 18 · `resources` 16 · `login` 12 · `life` 8 · `mylife` 6 · `enterprises` 1.
-- **Gerund league table:** handling 86 · filtering 10 · aligning 10 · loading 9 · formatting 8 · styling 7 · navigating 7 · paginating 7 · linking 7 · creating 7 · building 7 · selecting 5 · showing 5 · padding 4 · viewing 4 · linting 4 · testing 4 · spacing 4 · reporting 4 · routing 4 · validating 4 · uploading 3 · exporting 3 · translating 3.
-- **Issue link:** `fixes` 472, `connects` 21, well-formed 492/500.
-- **Diff size:** 184/500 diffs touch a single file beyond the version bump, 348/500 touch three or fewer.
-- **⚠️ The gerund era starts 2025-10-14.** The trailing gerund is not uniform across this window: of the 294 `smoother` titles from 2025-10-14 onward, 287 end in one (97%) — but of the 162 before it, only 25 do (15%). Older titles stop at a bare noun phrase. **Take precedent from the recent half.** The older entries are kept because their scope and noun-phrase choices are still good evidence; their missing gerunds are not.
+- **Shape shares:** `smoother` 458/500 (91%), `less … is more` 32, `bump` 9, other 1.
+- **Scope league table:** `all` 148 · `teams` 91 · `manager` 72 · `courses` 57 · `community` 25 · `dashboard` 22 · `actions` 20 · `resources` 20 · `chat` 16 · `life` 12 · `login` 10 · `mylife` 4 · `enterprises` 3.
+- **Gerund league table:** handling 91 · navigating 12 · filtering 11 · linting 10 · aligning 10 · formatting 9 · styling 8 · loading 8 · showing 7 · paginating 7 · linking 7 · creating 7 · building 7 · validating 6 · testing 5 · selecting 5 · hovering 4 · padding 4 · viewing 4 · spacing 4 · reporting 4 · routing 4 · removing 3 · confirming 3.
+- **Phrase length** (words between `smoother` and the stamp, gerund included): 1 word 29 · 2 words 135 · 3 words 207 · 4 words 77 · 5 words 8.
+- **Issue link:** `fixes` 468, `connects` 27, well-formed 494/500.
+- **Diff size:** 166/500 diffs touch a single file beyond the version bump, 329/500 touch three or fewer.
+- **⚠️ The gerund era starts 2025-10-14.** The trailing gerund is not uniform across this window: of the 350 `smoother` titles from 2025-10-14 onward, 343 end in one (98%) — but of the 108 before it, only 23 do (21%). Older titles stop at a bare noun phrase. **Take precedent from the recent half.** The older entries are kept because their scope and noun-phrase choices are still good evidence; their missing gerunds are not.
+
+### The last 100 on their own
+
+Conventions drift. Where these tables disagree with the 500-wide ones above, **the last 100 win** — they are what the maintainers are correcting titles *towards* right now.
+
+- **Scope, last 100:** `all` 35 · `teams` 28 · `courses` 9 · `resources` 8 · `actions` 5 · `life` 5 · `dashboard` 5 · `manager` 3 · `enterprises` 2.
+- **Gerund, last 100:** handling 19 · linting 7 · navigating 7 · hovering 4 · confirming 3 · validating 2 · formatting 2 · showing 2 · styling 2 · filtering 2 · testing 2 · saving 2 · deleting 2 · padding 2 · checking 1 · describing 1 · patching 1 · truncating 1 · previewing 1 · alerting 1 · pressuring 1 · indicating 1 · removing 1 · clearing 1.
+- **Distinct gerunds:** 53 across 97 titles here, against 112 across 368 over the whole window.
+- **Phrase length, last 100:** 1 word 4 · 2 words 18 · 3 words 44 · 4 words 30 · 5 words 2.
+- **Scopes absent from the recent window:** `login` · `community` · `chat` · `mylife` — present earlier, not lately. Still valid; just not evidence of current practice.
+
 - **Malformed or link-less titles in this window:**
   - `teams: smoother voices icon aligning (#9787)`
   - `login: smoother dialogs handling (#9796)`
@@ -29,11 +41,51 @@ scripts/build-corpus.py --repo <checkout> --name planet --strip src/app/ --skip 
   - `all: less material legacy core is more (closes #9166)`
   - `all: smoother profile image styling (fixes: #9423)`
   - `all: smoother linting (fixes 9105)`
-  - `actions: smoother release prebuild`
-  - `all: bump `ramda` to 0.29.0`
 
-## all (138)
+## all (148)
 
+- `all: smoother arrow body style linting (connects #9082)`
+  ← .eslintrc.json, eslint.config.mjs, community/community.component.ts, configuration/configuration.component.ts, configuration/configuration.service.ts, +47 more
+- `all: smoother quote props linting (connects #9082)`
+  ← .eslintrc.json, eslint.config.mjs, app.component.ts, chat/chat-sidebar/chat-sidebar.component.ts, chat/chat-window/chat-window.component.ts, +87 more
+- `all: smoother configuration patching (fixes #10341)`
+  ← configuration/configuration.component.ts, configuration/configuration.service.spec.ts, configuration/configuration.service.ts, manager-dashboard/manager-aiservices.component.ts, manager-dashboard/manager-currency.component.ts, +2 more
+- `all: smoother collections truncating (fixes #10343)`
+  ← shared/forms/planet-tag-input-dialog.component.html, shared/forms/planet-tag-input-dialog.component.ts, shared/forms/planet-tag-input-dialog.scss
+- `all: smoother collection title handling (fixes #10325)`
+  ← shared/forms/planet-tag-input.component.html, shared/forms/planet-tag-input.scss, src/styles.scss
+- `all: smoother notifications unread indicating (fixes #10284)`
+  ← notifications/notifications.component.html, notifications/notifications.component.scss, notifications/notifications.component.ts
+- `all: smoother search clearing (fixes #10199) (fixes #10200)`
+  ← chat/chat-sidebar/chat-sidebar.component.html, chat/chat-sidebar/chat-sidebar.component.ts, community/community.component.html, community/community.component.ts, courses/courses.component.html, +23 more
+- `all: smoother coderabbit reviewing (fixes #10348)`
+  ← .coderabbit.yaml
+- `all: smoother user profile dialog focusing (fixes #10184)`
+  ← courses/progress-courses/courses-progress-leader.component.ts, manager-dashboard/reports/reports-detail.component.ts, meetups/view-meetups/meetups-view.component.ts, news/news-list-item.component.ts, tasks/tasks.component.spec.ts, +6 more
+- `all: smoother members deactivation confirming (fixes #10292)`
+  ← shared/dialogs/dialogs-prompt.component.html, users/users-table.component.html, users/users-table.component.spec.ts, users/users-table.component.ts, users/users.service.ts
+- `all: smoother prefer arrow const linting (connects #9082)`
+  ← .eslintrc.json, eslint.config.mjs, dashboard/dashboard.component.spec.ts, home/home-router.module.ts, resources/resources-add.component.ts, +7 more
+- `all: smoother one var linting (connects #9082)`
+  ← .eslintrc.json, eslint.config.mjs, courses/courses.component.ts, home/home.component.spec.ts, login/login.component.spec.ts, +4 more
+- `all: smoother object shorthand linting (connects #9082)`
+  ← eslint.config.mjs, chat/chat-sidebar/chat-sidebar.component.ts, community/community.component.ts, courses/courses.service.ts, courses/progress-courses/courses-progress-leader.component.ts, +16 more
+- `all: smoother requests table column sizing (fixes #10229)`
+  ← _mixins.scss, courses/courses.scss, manager-dashboard/requests/requests-table.component.html, manager-dashboard/requests/requests-table.component.scss, manager-dashboard/requests/requests-table.component.ts, +8 more
+- `all: smoother notification planet scoping (fixes #10205)`
+  ← home/home.component.ts, news/news-list-item.component.spec.ts, news/news-list-item.component.ts, notifications/notifications.component.ts, notifications/notifications.service.spec.ts, +3 more
+- `all: smoother eqeqeq less underscore linting (connects #9082)`
+  ← .eslintrc.json, eslint.config.mjs, chat/chat-sidebar/chat-sidebar.component.ts, courses/add-courses/courses-add.component.ts, courses/courses.component.html, +21 more
+- `all: smoother markdown read only rendering (fixes #10162)`
+  ← exams/exams-view.component.html, exams/exams-view.component.ts, exams/public-surveys/public-survey.component.html, exams/public-surveys/public-survey.component.ts, health/health-event-dialog.component.html, +22 more
+- `all: smoother auto side navigating (fixes #10222)`
+  ← home/home.component.html, home/home.component.spec.ts, home/home.component.ts
+- `all: smoother feedback forms saving (fixes #10201)`
+  ← feedback/feedback.directive.ts, shared/dialogs/dialogs-form.component.html, shared/dialogs/dialogs-form.component.ts, shared/dialogs/dialogs-form.service.ts
+- `all: smoother profiles keyboard navigating (fixes #10168)`
+  ← courses/progress-courses/courses-progress-chart.component.html, courses/progress-courses/courses-progress-chart.component.ts, manager-dashboard/reports/reports-detail.component.html, manager-dashboard/reports/reports-detail.component.ts, meetups/view-meetups/meetups-view.component.html, +9 more
+- `all: smoother agents assisting (fixes #10270)`
+  ← .agents/skills/merge-prepping, .claude/settings.json, .github/copilot-instructions.md, .github/workflows/automerge.yml, .gitmodules, +4 more
 - `all: smoother delete buttons styling (fixes #10170)`
   ← manager-dashboard/certifications/certifications.component.html, manager-dashboard/reports/pending-table.component.html, shared/forms/planet-step-list.component.html, shared/forms/planet-tag-input-dialog.component.html, teams/teams-view.component.html, +3 more
 - `all: smoother user profile language handling (fixes #10157)`
@@ -62,6 +114,9 @@ scripts/build-corpus.py --repo <checkout> --name planet --strip src/app/ --skip 
   ← feedback/feedback.directive.spec.ts, feedback/feedback.directive.ts
 - `all: smoother linting (connects #9082)`
   ← .eslintrc.json, eslint.config.mjs, app.component.ts, resources/resources-add.component.ts
+
+*— below here is older than the last 100 merges. —*
+
 - `all: smoother install configuration viewing (fixes #10024)`
   ← configuration/configuration.component.ts
 - `all: smoother agents assisting (fixes #10027)`
@@ -292,31 +347,33 @@ scope and noun-phrase precedent only, not the ending. —*
   ← README.md
 - `all: smoother navigation changing language (fixes #8776)`
   ← home/home.component.html, home/home.component.ts, shared/planet-language.component.ts
-- `all: smoother search fuzzy style (fixes #8789)`
-  ← courses/courses.component.ts, resources/resources.component.ts, shared/fuzzy-search.service.ts, shared/table-helpers.ts
-- `all: smoother image uploads (fixes #8800)`
-  ← shared/dialogs/dialogs-images.component.html, users/users-update/users-update.component.html
-- `all: less vagrant is more (fixes #8786)`
-  ← .gitattributes, Style-Guide.md, Vagrantfile, design/courses/README.md, git-hooks/pre-push, +2 more
-- `all: smoother readme qlty badge (fixes #8766)`
-  ← README.md
-- `all: smoother landing page (fixes #8377)`
-  ← docker/planet/amd64-Dockerfile, docker/planet/arm-Dockerfile, docker/planet/arm64-Dockerfile, docker/planet/default.conf.template, docker/planet/nginx/credentials.sh, +58 more
-- `all: smoother navigation planet name (fixes #8617)`
-  ← home/home.scss
-- `all: smoother language dev (fixes #8709)`
-  ← README.md
-- `all: smoother style guide (fixes #8234)`
-  ← Style-Guide.md
-- `all: smoother navigation login (fixes #8463)`
-  ← home/home.component.html, home/home.component.ts
-- `all: bump `ramda` to 0.29.0`
-  ← (no files)
-- `all: smoother mobile breakpoint (fixes #8607)`
-  ← _variables.scss, courses/courses.component.html, courses/view-courses/courses-view.component.html, feedback/feedback.component.html, landing/landing-home/landing-home.component.html, +7 more
 
-## teams (93)
+## teams (91)
 
+- `teams: smoother join requests alerting (fixes #10307)`
+  ← dashboard/dashboard-tile.component.html, dashboard/dashboard-tile.component.ts, home/home.component.html, home/home.component.ts, teams/teams-view.component.html, +1 more
+- `teams: smoother meetups actions buttons hovering (fixes #10295)`
+  ← meetups/view-meetups/meetups-view.component.html
+- `teams: smoother resources removing (fixes #10280)`
+  ← teams/teams-view.component.html
+- `teams: smoother member profile cards styling (fixes #10182)`
+  ← _variables.scss, community/community.component.html, community/community.component.ts, community/community.scss, resources/resources-add.scss, +10 more
+- `teams: smoother member name formatting (fixes #10299)`
+  ← dashboard/dashboard.component.spec.ts, dashboard/dashboard.component.ts, dashboard/dashboard.scss, health/health.component.html, health/health.component.ts, +15 more
+- `teams: smoother surveys adopt view filtering (fixes #10239)`
+  ← surveys/surveys.component.spec.ts, surveys/surveys.component.ts
+- `teams: smoother names keyboard navigating (fixes #10249)`
+  ← teams/teams.component.html, teams/teams.scss
+- `teams: smoother calendar events handling (fixes #10223)`
+  ← meetups/meetups.component.html, meetups/view-meetups/meetups-view.component.html, shared/calendar.component.spec.ts, shared/calendar.component.ts
+- `teams: smoother calendar task closing (fixes #10219)`
+  ← shared/calendar.component.ts, shared/dialogs/dialogs-add-meetups.component.spec.ts, shared/dialogs/dialogs-add-meetups.component.ts
+- `teams: smoother surveys adopt button hovering (fixes #10212)`
+  ← surveys/surveys.component.html, surveys/surveys.component.ts
+- `teams: smoother tasks assignee avatar refreshing (fixes #4735)`
+  ← tasks/tasks.component.html, tasks/tasks.component.spec.ts, tasks/tasks.component.ts
+- `teams: smoother membership validating (fixes #10208)`
+  ← teams/teams-view.component.ts, teams/teams.component.ts, teams/teams.service.spec.ts, teams/teams.service.ts
 - `teams: smoother finances reports buttons hovering (fixes #10190)`
   ← teams/teams-reports.component.html, teams/teams-reports.component.ts, teams/teams-view-finances.component.html, teams/teams-view-finances.component.ts
 - `teams: smoother voices text hovering (fixes #10176)`
@@ -349,6 +406,9 @@ scope and noun-phrase precedent only, not the ending. —*
   ← teams/teams.scss
 - `teams: smoother surveys question options spacing (fixes #10049)`
   ← exams/exams-question.scss
+
+*— below here is older than the last 100 merges. —*
+
 - `teams: less submissions service import is more (fixes #10038)`
   ← submissions/submissions.service.ts
 - `teams: smoother header name button handling (fixes #10021)`
@@ -479,36 +539,8 @@ scope and noun-phrase precedent only, not the ending. —*
   ← news/news-list.component.html, news/news-list.component.ts
 - `teams: smoother survey choice other (fixes #8798)`
   ← exams/exams-view.component.html, exams/exams-view.component.ts, exams/exams-view.scss
-- `teams: smoother survey choice other input (fixes #8796)`
-  ← exams/exams-view.component.html, exams/exams-view.scss
-- `teams: smoother survey choice other (fixes #8801)`
-  ← exams/exams-view.component.ts
-- `teams: smoother surveys export pdf (fixes #8771)`
-  ← submissions/submissions.service.ts
-- `teams: smoother latest voice (fixes #8740)`
-  ← news/news-list-item.component.ts
-- `teams: smoother survey exports pdf charts (fixes #8713)`
-  ← submissions/submissions.service.ts
-- `teams: smoother voices labels (fixes #8690)`
-  ← news/news-list-item.component.html
-- `teams: smoother voices image preview (fixes #8714)`
-  ← shared/planet-markdown.component.ts
-- `teams: smoother list sorting priority (fixes #8635)`
-  ← teams/teams.component.html, teams/teams.component.ts
-- `teams: smoother voices replies navigation (fixes #8670)`
-  ← community/community.component.html, community/community.component.ts, news/news-list.component.ts
-- `teams: smoother tasks (fixes #7971)`
-  ← meetups/view-meetups/meetups-view.component.html, meetups/view-meetups/meetups-view.component.ts, meetups/view-meetups/meetups-view.scss, shared/calendar.component.ts, tasks/tasks.service.ts
-- `teams: smoother survey exports (fixes #8674)`
-  ← submissions/submissions.service.ts
-- `teams: smoother voices loading (fixes #8681)`
-  ← news/news-list.component.html, news/news-list.component.ts
-- `teams: smoother voices pagination (fixes #8671)(fixes #8672)`
-  ← news/news-list.component.ts
-- `teams: smoother voices shared info (fixes #8668)`
-  ← news/news-list-item.component.ts, news/news-list.component.html, news/news-list.component.ts, teams/teams-view.component.ts
 
-## manager (80)
+## manager (72)
 
 - `manager: smoother certifications search filtering (fixes #10080)`
   ← manager-dashboard/certifications/certifications.component.html, teams/teams.component.html, src/styles.scss
@@ -516,6 +548,9 @@ scope and noun-phrase precedent only, not the ending. —*
   ← manager-dashboard/reports/myplanet/myplanet-toolbar.component.html, manager-dashboard/reports/reports-detail.component.html, manager-dashboard/reports/reports-detail.scss, submissions/submissions.component.html
 - `manager: less reports chart button top margin is more (fixes #10131)`
   ← manager-dashboard/reports/reports-detail.scss
+
+*— below here is older than the last 100 merges. —*
+
 - `manager: smoother report date filtering (fixes #9956)`
   ← manager-dashboard/reports/myplanet/reports-myplanet.component.ts, manager-dashboard/reports/reports.utils.ts, teams/teams-view-finances.component.ts
 - `manager: less reports chart module is more (fixes #9946)`
@@ -658,25 +693,19 @@ scope and noun-phrase precedent only, not the ending. —*
   ← manager-dashboard/manager-fetch.component.html, manager-dashboard/manager-fetch.component.ts
 - `manager: smoother surveys submissions view (fixes #8816)`
   ← submissions/submissions.service.ts, surveys/surveys.component.ts
-- `manager: smoother surveys creation choices other option (fixes #8306)`
-  ← exams/exams-question.component.html, exams/exams-question.component.ts, exams/exams-view.component.html, exams/exams-view.component.ts, exams/exams.service.ts
-- `manager: smoother survey pdf exports chart (fixes #8779)`
-  ← submissions/submissions.service.ts
-- `manager: smoother reports voices added (fixes #8758)`
-  ← manager-dashboard/reports/reports-detail.component.html, manager-dashboard/reports/reports-detail.component.ts, manager-dashboard/reports/reports.service.ts, manager-dashboard/reports/reports.utils.ts
-- `manager: smoother survey pdf exports (fixes #8748)`
-  ← shared/ai-prompts.constants.ts, submissions/submissions.service.ts
-- `manager: smoother survey export bar chart (fixes #8746)`
-  ← manager-dashboard/reports/reports-detail-activities.component.ts, manager-dashboard/reports/reports-detail.component.ts, manager-dashboard/reports/reports-health.component.ts, shared/utils.ts, submissions/submissions.service.ts
-- `manager: smoother survey send icon (fixes #8723)`
-  ← surveys/surveys.component.html
-- `manager: smoother survey export formatting (fixes #8698)`
-  ← courses/step-view-courses/courses-step-view.component.ts, shared/ai-prompts.constants.ts, submissions/submissions.service.ts
-- `manager: smoother survey count (fixes #8707)`
-  ← exams/exams-view.component.ts, submissions/submissions.component.html, submissions/submissions.service.ts, surveys/surveys.component.ts
 
-## courses (53)
+## courses (57)
 
+- `courses: smoother buttons keyboard navigating (fixes #10288)`
+  ← courses/add-courses/courses-add.component.html, courses/add-courses/courses-add.component.ts, courses/courses.component.html, courses/progress-courses/courses-progress-leader.component.html, courses/progress-courses/courses-progress-leader.component.ts, +6 more
+- `courses: smoother shelf changes confirming (fixes #10217)`
+  ← courses/courses.component.spec.ts, courses/courses.component.ts, courses/courses.service.spec.ts, courses/courses.service.ts, courses/view-courses/courses-view-confirmation.spec.ts, +3 more
+- `courses: smoother steps submitting (fixes #10193)`
+  ← submissions/submissions.component.html, submissions/submissions.component.ts, submissions/submissions.service.ts
+- `courses: smoother exams answers saving (fixes #10181)`
+  ← courses/courses-router.module.ts, exams/exams-view.component.ts, shared/dialogs/dialogs-prompt.component.html, shared/dialogs/dialogs-prompt.component.ts, shared/unsaved-changes.component.ts, +2 more
+- `courses: smoother creation steps deleting (fixes #10188)`
+  ← courses/add-courses/courses-step.component.html, shared/forms/planet-step-list.component.spec.ts, shared/forms/planet-step-list.component.ts
 - `courses: smoother draft discarding (fixes #10152)`
   ← courses/add-courses/courses-add.component.spec.ts, courses/add-courses/courses-add.component.ts, shared/dialogs/dialogs-prompt.component.html
 - `courses: smoother steps survey adding (fixes #10047)`
@@ -685,6 +714,9 @@ scope and noun-phrase precedent only, not the ending. —*
   ← courses/courses.component.html, courses/courses.scss
 - `courses: smoother exams questions text handling (fixes #10053)`
   ← exams/exams-take/exams-take-widget.component.scss
+
+*— below here is older than the last 100 merges. —*
+
 - `courses: smoother cover image handling (fixes #10054)`
   ← courses/add-courses/courses-add.component.html, courses/add-courses/courses-add.component.ts, courses/add-courses/courses-add.scss, courses/view-courses/courses-view-detail.component.html, courses/view-courses/courses-view-detail.component.ts, +5 more
 - `courses: smoother exams survey creating (fixes #9662)`
@@ -785,10 +817,8 @@ scope and noun-phrase precedent only, not the ending. —*
   ← courses/add-courses/courses-add.component.html, courses/add-courses/courses-add.component.ts
 - `courses: smoother creation workflow (fixes #8952)`
   ← courses/add-courses/courses-add.component.html, courses/add-courses/courses-add.component.ts, courses/add-courses/courses-add.scss, courses/add-courses/courses-step.component.ts
-- `courses: smoother myprogress view (fixes #8639)`
-  ← courses/progress-courses/courses-progress-chart.component.ts
 
-## community (29)
+## community (25)
 
 - `community: smoother finances displaying (fixes #9916)`
   ← teams/teams-view-finances.component.html, teams/teams-view-finances.component.ts, teams/teams-view-finances.scss
@@ -844,19 +874,22 @@ scope and noun-phrase precedent only, not the ending. —*
   ← community/community.component.html, community/community.component.ts, community/community.scss
 - `community: smoother description editing (fixes #8848)`
   ← community/community.component.html
-- `community: smoother profile (fixes #8738)`
-  ← news/news-list-item.component.ts
-- `community: smoother voices shared team chats (fixes #8322)`
-  ← news/news-list-item.component.html, news/news-list-item.component.ts, news/news-list-item.scss, news/news-list.component.html, news/news-list.component.scss, +5 more
-- `community: smoother voices creation (fixes #8721)`
-  ← community/community.component.html, community/community.scss
-- `community: smoother logout (fixes #8547)`
-  ← community/community.component.html, community/community.component.ts, home/home.component.ts
 
-## dashboard (25)
+## dashboard (22)
 
+- `dashboard: smoother profile back button navigating (fixes #10287)`
+  ← users/users-profile/users-profile.component.html, users/users-profile/users-profile.component.spec.ts
+- `dashboard: smoother courses title shelfing (fixes #10257)`
+  ← dashboard/dashboard-tile.component.html, dashboard/dashboard-tile.component.spec.ts, dashboard/dashboard-tile.component.ts, dashboard/dashboard-tile.scss
+- `dashboard: smoother tiles keyboard handling (fixes #10248)`
+  ← dashboard/dashboard-tile.component.html, dashboard/dashboard-tile.component.ts, dashboard/dashboard-tile.scss
+- `dashboard: smoother unit testing (fixes #10235)`
+  ← dashboard/dashboard.component.spec.ts, dashboard/dashboard.component.ts, vite.config.mts
 - `dashboard: less grid is more (fixes #10084)`
   ← dashboard/dashboard.scss
+
+*— below here is older than the last 100 merges. —*
+
 - `dashboard: smoother chat linking (fixes #10014)`
   ← chat/chat.component.ts, dashboard/dashboard-tile.component.html, dashboard/dashboard.component.ts
 - `dashboard: smoother button background handling (fixes #10000)`
@@ -895,27 +928,22 @@ scope and noun-phrase precedent only, not the ending. —*
   ← users/users-update/users-update.component.html, users/users-update/users-update.component.ts
 - `dashboard: smoother layout accordion style (fixes #7417)`
   ← dashboard/dashboard-tile.component.html, dashboard/dashboard-tile.component.ts, dashboard/dashboard-tile.scss, dashboard/dashboard.component.ts, dashboard/dashboard.scss
-- `dashboard: smoother profile avatar buttons (fixes #8756)`
-  ← users/users-update/users-update.component.html, users/users-update/users-update.component.ts
-- `dashboard: smoother groups list (fixes #8677)`
-  ← teams/teams.component.html, teams/teams.scss
-- `dashboard: smoother profile avatar (fixes #8379)`
-  ← app.module.ts, users/users-update/users-update.component.html, users/users-update/users-update.component.ts, users/users.module.ts
-- `dashboard: smoother profile image height limits (fixes #8711)`
-  ← dashboard/dashboard.scss, src/styles.scss
-- `dashboard: smoother profile memberships (fixes #8693)`
-  ← users/users-profile/users-profile.component.ts, users/users-profile/users-profile.scss
-- `dashboard: smoother profile view (fixes #8660)`
-  ← users/users-profile/users-profile.scss
-- `dashboard: smoother list teams andor enterprises (fixes #8651)`
-  ← teams/teams.component.ts
 
-## actions (21)
+## actions (20)
 
+- `actions: smoother workflows base image checking (fixes #10362)`
+  ← .github/workflows/gateway.yml, .github/workflows/planet-db.yml, .github/workflows/planet.yml
+- `actions: smoother workflow gateway docker npm caching (fixes #10242)`
+  ← .github/workflows/gateway.yml, .github/workflows/planet-db.yml, .github/workflows/planet.yml, docker/gateway/Dockerfile
+- `actions: smoother workflow automerging (fixes #10312)`
+  ← .github/scripts/automerge.sh, .github/scripts/coauthors.sh, .github/scripts/version.sh, .github/workflows/automerge.yml
 - `actions: smoother testing (fixes #10117)`
   ← .github/workflows/planet.yml, karma.conf.js, src/test.ts
 - `actions: smoother workflows qemu node handling (fixes #10092)`
   ← .github/workflows/gateway.yml, .github/workflows/planet-db.yml, .github/workflows/planet.yml, AGENTS.md, README.md
+
+*— below here is older than the last 100 merges. —*
+
 - `actions: smoother docker gateway building (connects #9934)`
   ← .github/workflows/gateway.yml, CLAUDE.md, README.md, chatapi/README.md, chatapi/src/config/nano.config.ts, +27 more
 - `actions: less claude workflow is more (fixes #9139)`
@@ -950,16 +978,58 @@ scope and noun-phrase precedent only, not the ending. —*
   ← .github/workflows/claude.yml
 - `actions: smoother workflows for codex (fixes #8907)`
   ← .github/workflows/deploy.yml, .github/workflows/planet-chat.yml, .github/workflows/planet-db.yml, .github/workflows/planet.yml
-- `actions: smoother release prebuild (fixes #8732)`
-  ← .github/workflows/planet.yml, docker/planet/scripts/check_dependencies.sh
-- `actions: smoother prebuild for master (fixes #8717)`
-  ← .github/workflows/planet.yml
-- `actions: smoother release prebuild`
-  ← .github/workflows/planet.yml, docker/planet/scripts/check_dependencies.sh
-- `actions: smoother release prebuild on change (fixes #8529)`
-  ← .github/workflows/planet.yml, docker/planet/scripts/prebuild_planet.sh
 
-## chat (18)
+## resources (20)
+
+- `resources: smoother creation needs describing (fixes #10329)`
+  ← resources/resources-add.component.html, resources/resources-add.scss
+- `resources: smoother csv details previewing (fixes #10328)`
+  ← courses/step-view-courses/courses-step-view.scss, resources/view-resources/resources-view.component.html, resources/view-resources/resources-view.scss, resources/view-resources/resources-viewer.scss
+- `resources: smoother creation year validating (fixes #10314)`
+  ← resources/resources-add.component.html, resources/resources-add.component.ts, validators/custom-validators.spec.ts, validators/custom-validators.ts
+- `resources: smoother file size showing (fixes #10317)`
+  ← resources/resources.component.html, resources/resources.component.ts, resources/resources.utils.spec.ts, resources/resources.utils.ts, resources/view-resources/resources-view.component.html, +7 more
+- `resources: smoother shelf removal confirming (fixes #10236)`
+  ← dashboard/dashboard-tile.component.ts, resources/resources.component.ts, resources/view-resources/resources-view.component.ts
+- `resources: smoother viewer fullscreen button handling (fixes #10166)`
+  ← resources/view-resources/resources-viewer.component.html, resources/view-resources/resources-viewer.scss
+- `resources: smoother csv viewing (fixes #8368)`
+  ← resources/view-resources/resources-menu.component.ts, resources/view-resources/resources-viewer.component.html, resources/view-resources/resources-viewer.component.spec.ts, resources/view-resources/resources-viewer.component.ts, resources/view-resources/resources-viewer.scss, +4 more
+- `resources: smoother pdf making (fixes #10091)`
+  ← resources/resources-add.component.ts, shared/pdf.service.spec.ts, shared/pdf.service.ts, shared/zip-utils.ts, submissions/submissions.service.ts
+
+*— below here is older than the last 100 merges. —*
+
+- `resources: smoother downloading (fixes #10043)`
+  ← resources/view-resources/resources-view.component.html
+- `resources: smoother creating (fixes #9967)`
+  ← resources/resources-add.component.html, resources/resources-add.component.ts, resources/resources-add.scss, shared/forms/planet-tag-input.component.html, shared/forms/planet-tag-input.component.ts, +1 more
+- `resources: smoother file selecting (fixes #9972)`
+  ← resources/resources-add.component.html, resources/resources-add.component.ts, resources/resources.service.ts, shared/dialogs/dialogs-images.component.html, shared/dialogs/dialogs-images.component.scss, +11 more
+- `resources: smoother zip filename uploading (fixes #9923)`
+  ← resources/resources-add.component.ts
+- `resources: smoother markdown form previewing (fixes #9908)`
+  ← resources/resources-add.component.html, resources/resources-add.scss, shared/forms/planet-markdown-textbox.component.ts, shared/forms/planet-markdown-textbox.scss
+- `resources: smoother open level listing (fixes #9470)`
+  ← resources/resources-constants.ts, resources/resources.component.ts
+- `resources: smoother unzipping (fixes #9784)`
+  ← resources/resources-add.component.ts, shared/user.service.ts
+- `resources: smoother sass modules handling (fixes #9709)`
+  ← resources/_resources-shared.scss, resources/resources-add.scss, resources/resources.scss, resources/search-resources/resources-search.scss, resources/view-resources/resources-view.scss, +1 more
+- `resources: smoother icon downloading (fixes #9307)`
+  ← resources/resources-add.component.html, resources/resources-add.component.ts
+- `resources: smoother creation angular form handling (fixes #9370)`
+  ← resources/resources-add.component.ts
+
+*— below here predates the gerund era (2025-10-14); take
+scope and noun-phrase precedent only, not the ending. —*
+
+- `resources: smoother rating stars (fixes #9002)`
+  ← src/styles.scss
+- `resources: smoother creation (fixes #8852)`
+  ← resources/resources-add.scss
+
+## chat (16)
 
 - `chat: smoother api assistant mode providing (fixes #9924)`
   ← chat/chat-window/chat-window.component.ts
@@ -997,51 +1067,38 @@ scope and noun-phrase precedent only, not the ending. —*
   ← chat/chat.component.html, chat/chat.scss
 - `chat: smoother dev port (fixes #8760)`
   ← .gitignore, README.md, angular.json, chatapi/README.md, dev-env.sh, +2 more
-- `chat: smoother api docker builds (fixes #8762)`
-  ← chatapi/tsconfig.json, docker/chatapi/amd64-Dockerfile, docker/chatapi/arm-Dockerfile, docker/chatapi/arm64-Dockerfile, docker/chatapi/crosscompile_chatapi.sh
-- `chat: smoother navigation small screen left side (fixes #8788)`
-  ← chat/chat-sidebar/chat-sidebar.component.html
 
-## resources (16)
+## life (12)
 
-- `resources: smoother viewer fullscreen button handling (fixes #10166)`
-  ← resources/view-resources/resources-viewer.component.html, resources/view-resources/resources-viewer.scss
-- `resources: smoother csv viewing (fixes #8368)`
-  ← resources/view-resources/resources-menu.component.ts, resources/view-resources/resources-viewer.component.html, resources/view-resources/resources-viewer.component.spec.ts, resources/view-resources/resources-viewer.component.ts, resources/view-resources/resources-viewer.scss, +4 more
-- `resources: smoother pdf making (fixes #10091)`
-  ← resources/resources-add.component.ts, shared/pdf.service.spec.ts, shared/pdf.service.ts, shared/zip-utils.ts, submissions/submissions.service.ts
-- `resources: smoother downloading (fixes #10043)`
-  ← resources/view-resources/resources-view.component.html
-- `resources: smoother creating (fixes #9967)`
-  ← resources/resources-add.component.html, resources/resources-add.component.ts, resources/resources-add.scss, shared/forms/planet-tag-input.component.html, shared/forms/planet-tag-input.component.ts, +1 more
-- `resources: smoother file selecting (fixes #9972)`
-  ← resources/resources-add.component.html, resources/resources-add.component.ts, resources/resources.service.ts, shared/dialogs/dialogs-images.component.html, shared/dialogs/dialogs-images.component.scss, +11 more
-- `resources: smoother zip filename uploading (fixes #9923)`
-  ← resources/resources-add.component.ts
-- `resources: smoother markdown form previewing (fixes #9908)`
-  ← resources/resources-add.component.html, resources/resources-add.scss, shared/forms/planet-markdown-textbox.component.ts, shared/forms/planet-markdown-textbox.scss
-- `resources: smoother open level listing (fixes #9470)`
-  ← resources/resources-constants.ts, resources/resources.component.ts
-- `resources: smoother unzipping (fixes #9784)`
-  ← resources/resources-add.component.ts, shared/user.service.ts
-- `resources: smoother sass modules handling (fixes #9709)`
-  ← resources/_resources-shared.scss, resources/resources-add.scss, resources/resources.scss, resources/search-resources/resources-search.scss, resources/view-resources/resources-view.scss, +1 more
-- `resources: smoother icon downloading (fixes #9307)`
-  ← resources/resources-add.component.html, resources/resources-add.component.ts
-- `resources: smoother creation angular form handling (fixes #9370)`
-  ← resources/resources-add.component.ts
+- `life: smoother health blood pressuring (fixes #10305)`
+  ← health/health-event.component.html
+- `life: smoother health name overflow handling (fixes #10271)`
+  ← health/health.component.html, health/health.scss
+- `life: smoother achievements member date showing (fixes #10192)`
+  ← users/users-achievements/users-achievements.component.html, users/users-achievements/users-achievements.component.ts
+- `life: smoother achievements avatar handling (fixes #10238)`
+  ← shared/avatar.component.spec.ts, shared/avatar.component.ts, users/users-achievements/users-achievements.component.html, users/users-achievements/users-achievements.component.ts, users/users-profile/users-profile.component.html, +2 more
+- `life: smoother personals resources title padding (fixes #10137)`
+  ← resources/resources.component.html, resources/resources.scss
 
-*— below here predates the gerund era (2025-10-14); take
-scope and noun-phrase precedent only, not the ending. —*
+*— below here is older than the last 100 merges. —*
 
-- `resources: smoother rating stars (fixes #9002)`
-  ← src/styles.scss
-- `resources: smoother creation (fixes #8852)`
-  ← resources/resources-add.scss
-- `resources: smoother empty check (fixes #8705)`
-  ← shared/forms/planet-rating.component.html
+- `life: smoother achievements resume attaching (fixes #9782)`
+  ← shared/couchdb.service.ts, shared/forms/file-input.component.ts, users/users-achievements/users-achievements-update.component.html, users/users-achievements/users-achievements-update.component.ts, users/users-achievements/users-achievements-update.scss, +4 more
+- `life: smoother achievements loading (fixes #8937)`
+  ← users/users-achievements/users-achievements.component.ts, users/users-profile/users-profile.component.html
+- `life: smoother health profile showing (fixes #9859)`
+  ← health/health.scss
+- `life: smoother achievements username overflow handling (fixes #9681)`
+  ← users/users-achievements/users-achievements-update.component.html
+- `life: smoother achievements forms handling (fixes #9393)`
+  ← users/users-achievements/users-achievements-update.component.html, users/users-achievements/users-achievements-update.component.ts
+- `life: smoother achievements form array handling (fixes #9393)`
+  ← users/users-achievements/users-achievements-update.component.ts
+- `life: smoother health info form handling (fixes #9288)`
+  ← health/health-update.component.ts
 
-## login (12)
+## login (10)
 
 - `login: smoother profile form aligning (fixes #9944)`
   ← users/users-update/users-update.component.html, users/users-update/users-update.scss
@@ -1067,31 +1124,8 @@ scope and noun-phrase precedent only, not the ending. —*
 
 - `login: smoother typed forms (fixes #9059)`
   ← login/login-form.component.ts
-- `login: smoother first time check (fixes #8792)`
-  ← community/community.component.ts, login/login.component.ts, shared/configuration-check.service.ts
-- `login: smoother community voices (fixes #8702)`
-  ← news/news-list-item.component.ts
 
-## life (8)
-
-- `life: smoother personals resources title padding (fixes #10137)`
-  ← resources/resources.component.html, resources/resources.scss
-- `life: smoother achievements resume attaching (fixes #9782)`
-  ← shared/couchdb.service.ts, shared/forms/file-input.component.ts, users/users-achievements/users-achievements-update.component.html, users/users-achievements/users-achievements-update.component.ts, users/users-achievements/users-achievements-update.scss, +4 more
-- `life: smoother achievements loading (fixes #8937)`
-  ← users/users-achievements/users-achievements.component.ts, users/users-profile/users-profile.component.html
-- `life: smoother health profile showing (fixes #9859)`
-  ← health/health.scss
-- `life: smoother achievements username overflow handling (fixes #9681)`
-  ← users/users-achievements/users-achievements-update.component.html
-- `life: smoother achievements forms handling (fixes #9393)`
-  ← users/users-achievements/users-achievements-update.component.html, users/users-achievements/users-achievements-update.component.ts
-- `life: smoother achievements form array handling (fixes #9393)`
-  ← users/users-achievements/users-achievements-update.component.ts
-- `life: smoother health info form handling (fixes #9288)`
-  ← health/health-update.component.ts
-
-## mylife (6)
+## mylife (4)
 
 - `mylife: smoother myhealth emergency contact validating (fixes #9390)`
   ← health/health-update.component.ts
@@ -1105,12 +1139,15 @@ scope and noun-phrase precedent only, not the ending. —*
   ← submissions/submissions.component.html
 - `mylife: smoother achievement toolbar (fixes #8874)`
   ← users/users-achievements/users-achievements.component.ts
-- `mylife: smoother certifications list (fixes #8679)`
-  ← manager-dashboard/certifications/certifications.component.html, manager-dashboard/certifications/certifications.component.ts
-- `mylife: smoother achievements checkbox (fixes #8665)`
-  ← users/users-achievements/users-achievements-update.scss
 
-## enterprises (1)
+## enterprises (3)
+
+- `enterprises: smoother reports formatting (fixes #10301)`
+  ← teams/teams-reports.component.ts
+- `enterprises: smoother joining (fixes #10154)`
+  ← shared/dialogs/dialogs-prompt.component.html, shared/dialogs/dialogs-prompt.component.ts, teams/teams-view.component.ts, teams/teams.component.html, teams/teams.component.ts, +1 more
+
+*— below here is older than the last 100 merges. —*
 
 - `enterprises: smoother finances pictures attaching (fixes #9966)`
   ← shared/couchdb.service.ts, shared/dialogs/dialogs-form.component.html, shared/dialogs/dialogs-form.component.ts, shared/dialogs/dialogs-form.service.ts, teams/teams-attachments.service.ts, +9 more

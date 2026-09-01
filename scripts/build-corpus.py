@@ -39,6 +39,13 @@ def parse_args():
     p.add_argument("--repo", required=True, help="path to the repo checkout")
     p.add_argument("--name", required=True, help="repo name, for the heading")
     p.add_argument("--count", type=int, default=500, help="commits to read")
+    p.add_argument(
+        "--recent",
+        type=int,
+        default=100,
+        help="size of the recent sub-window reported alongside the full one, "
+        "so drift in scope and gerund usage is visible (0 to disable)",
+    )
     p.add_argument("--ref", default="HEAD", help="branch or ref to read")
     p.add_argument(
         "--skip",
@@ -113,11 +120,35 @@ def main():
         scope_counts[scope] += 1
         by_scope.setdefault(scope, []).append((idx, title, files))
 
-    gerunds = Counter()
-    for t in titles:
-        m = GERUND_WORD.search(t)
-        if m:
-            gerunds[m.group(1)] += 1
+    def gerund_counts(subset):
+        c = Counter()
+        for t in subset:
+            m = GERUND_WORD.search(t)
+            if m:
+                c[m.group(1)] += 1
+        return c
+
+    def scope_counts_of(subset):
+        c = Counter()
+        for t in subset:
+            m = SCOPE.match(t)
+            c[m.group(1) if m else "(no scope)"] += 1
+        return c
+
+    def phrase_lengths(subset):
+        """Words between `smoother` and the issue stamp, gerund included."""
+        c = Counter()
+        for t in subset:
+            m = re.match(
+                r"^[a-z0-9-]+: smoother (.+?) \((?:fixes|connects|closes)\b", t
+            )
+            if m:
+                c[len(m.group(1).split())] += 1
+        return c
+
+    gerunds = gerund_counts(titles)
+    recent_n = min(args.recent, n) if args.recent else 0
+    recent_titles = titles[:recent_n]
 
     n_fixes = sum(1 for t in titles if "(fixes #" in t)
     n_connects = sum(1 for t in titles if "(connects #" in t)
@@ -177,7 +208,9 @@ def main():
     w("")
     w("```")
     w("scripts/build-corpus.py --repo <checkout> --name " + args.name
+      + (f" --ref {args.ref}" if args.ref != "HEAD" else "")
       + (f" --count {args.count}" if args.count != 500 else "")
+      + (f" --recent {args.recent}" if args.recent != 100 else "")
       + "".join(f" --strip {s}" for s in args.strip)
       + "".join(f" --skip {s}" for s in args.skip))
     w("```")
@@ -191,6 +224,10 @@ def main():
       + " · ".join(f"`{s}` {c}" for s, c in scope_counts.most_common()) + ".")
     w("- **Gerund league table:** "
       + " · ".join(f"{g} {c}" for g, c in gerunds.most_common(24)) + ".")
+    w(f"- **Phrase length** (words between `smoother` and the stamp, gerund "
+      "included): "
+      + " · ".join(f"{k} word{'s' if k != 1 else ''} {v}"
+                   for k, v in sorted(phrase_lengths(titles).items())) + ".")
     w(f"- **Issue link:** `fixes` {n_fixes}, `connects` {n_connects}, "
       f"well-formed {n - len(malformed)}/{n}.")
     w(f"- **Diff size:** {single}/{n} diffs touch a single file beyond the "
@@ -205,6 +242,35 @@ def main():
           "half.** The older entries are kept because their scope and "
           "noun-phrase choices are still good evidence; their missing gerunds "
           "are not.")
+    if recent_n:
+        rg = gerund_counts(recent_titles)
+        rs = scope_counts_of(recent_titles)
+        rp = phrase_lengths(recent_titles)
+        w("")
+        w(f"### The last {recent_n} on their own")
+        w("")
+        w("Conventions drift. Where these tables disagree with the "
+          f"{n}-wide ones above, **the last {recent_n} win** — they are what "
+          "the maintainers are correcting titles *towards* right now.")
+        w("")
+        w(f"- **Scope, last {recent_n}:** "
+          + " · ".join(f"`{s_}` {c}" for s_, c in rs.most_common()) + ".")
+        w(f"- **Gerund, last {recent_n}:** "
+          + " · ".join(f"{g} {c}" for g, c in rg.most_common(24)) + ".")
+        w(f"- **Distinct gerunds:** {len(rg)} across {sum(rg.values())} "
+          f"titles here, against {len(gerunds)} across {sum(gerunds.values())} "
+          "over the whole window.")
+        w(f"- **Phrase length, last {recent_n}:** "
+          + " · ".join(f"{k} word{'s' if k != 1 else ''} {v}"
+                       for k, v in sorted(rp.items())) + ".")
+        gone = [s_ for s_ in scope_counts if s_ not in rs]
+        if gone:
+            w("- **Scopes absent from the recent window:** "
+              + " · ".join(f"`{s_}`" for s_ in gone)
+              + " — present earlier, not lately. Still valid; just not "
+                "evidence of current practice.")
+        w("")
+
     if malformed:
         w("- **Malformed or link-less titles in this window:**")
         for t in malformed[:10]:
@@ -215,7 +281,18 @@ def main():
         w(f"## {scope} ({len(entries)})")
         w("")
         crossed = False
+        left_recent = False
         for idx, title, files in entries:
+            if recent_n and idx >= recent_n and not left_recent:
+                left_recent = True
+                if entries[0][0] >= recent_n:
+                    # nothing in this scope is recent; the marker would be noise
+                    pass
+                else:
+                    w("")
+                    w(f"*— below here is older than the last {recent_n} "
+                      "merges. —*")
+                    w("")
             if split and idx > changeover and not crossed:
                 crossed = True
                 w("")
