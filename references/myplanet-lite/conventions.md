@@ -85,8 +85,7 @@ Two things to know about this table:
   `login` if it's about the screen and what the user sees.
 
 Scopes that exist on myplanet but have nothing to point at in lite: `life`,
-`chat`, `community`, `enterprises`. Don't reach for them. (`feedback:` is gone
-from myplanet's table too — one use in an older window, zero since.)
+`chat`, `community`, `enterprises`. Don't reach for them.
 `actions:` applies if a PR touches `.github/workflows/`, same as everywhere.
 
 ## Suffix → gerund: four deltas
@@ -147,14 +146,8 @@ The suffix counts for the rest, so you know what you will actually meet:
 `Dependencies` 3, `Provider` 2, `Mapper` 1, `Manager` 1, `Api` 1.
 
 `handling` stays the licensed fallback for `*Activity` and `*Fragment` with no
-sharper operation word — and myplanet has since widened it to *any* principal
-file without a sharper operation word, so it fits lite's `Utils` and `model/`
-files too. It is still a fallback, not a default: if the diff has an operation,
-name it.
-
-One inherited row moved: `*Adapter` row-binding work now lands as `binding` on
-myplanet (`teams: smoother members view binding`), not `adapting`. lite's five
-adapters follow it.
+sharper operation word — as on myplanet, where it covers any file without one.
+Still a fallback: if the diff has an operation, name it.
 
 ## Tests
 

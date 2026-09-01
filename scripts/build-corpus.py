@@ -246,9 +246,8 @@ def main():
     w(f"- **Bare-noun-chain discipline:** of the {len(prose)} non-`bump` titles, "
       f"{len(wordy)} contain a function word (preposition, article, `and`) and "
       f"{len(hyphenated)} contain a hyphenated compound.")
-    if wordy[:6] or hyphenated[:6]:
-        for t in (wordy + hyphenated)[:6]:
-            w(f"  - `{t}`")
+    for t in (wordy + hyphenated)[:6]:
+        w(f"  - `{t}`")
     if rare:
         w("- **Scopes used once or twice** (check each for a typo or a "
           "one-off invention): "

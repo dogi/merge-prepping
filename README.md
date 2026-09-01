@@ -72,10 +72,9 @@ offers to add a pack.
    ```
 
    It pairs each merged title with the files that produced it, groups by scope,
-   prints the shape / scope / gerund league tables, a scope ↔ directory
-   cross-tab and an anomaly scan (function words, hyphens, malformed links,
-   once-used scopes) — plus a warning if the log changed its mind about a
-   convention partway through the window, which planet's did in October 2025.
+   and prints the league tables, a scope ↔ directory cross-tab and an anomaly
+   scan — plus a warning if the log changed its mind about a convention partway
+   through the window, which planet's did in October 2025.
 
 2. Read those tables and write `references/<repo>/conventions.md` from what you
    actually see, not from what the other packs say.
@@ -149,13 +148,10 @@ already has:
 
 It picks the scope from where the diff's centre of gravity sits, walks the noun
 phrase across every changed area, and reads all of that off the file list rather
-than the old title. That is not a stylistic preference: across myplanet's last
-220 merges, 118 of 203 landed titles share **no content word at all** with the
-title the PR arrived with. The old title has one job: becoming the issue title
-when the PR arrived without an issue. Which happens often — 86% of myplanet's
-recent merges start as an agent PR — but not always: agents there are dispatched
-from the backlog, so most already carry a number in the title, the body, or the
-`<N>-slug` branch name. Look before creating one.
+than the old title. The old title has one job: becoming the issue title when the
+PR arrived without an issue, which is the usual case for agent-opened PRs. Human
+PRs — and agent PRs dispatched from the backlog — normally already have a number
+in the title, the body, or the `<N>-slug` branch name.
 
 `(fixes #N)` goes in the title **and** `Fixes #N` in the body: the title keeps
 the log traceable, the body is the only place GitHub reads the link from.

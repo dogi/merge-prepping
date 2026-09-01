@@ -16,9 +16,8 @@ Regenerate with:
 scripts/build-corpus.py --repo <checkout> --name myplanet --ref origin/master --strip app/src/main/java/org/ole/planet/myplanet/ --rename app/src/test/java/org/ole/planet/myplanet/=test/ --rename app/src/main/res/=res/ --skip app/build.gradle
 ```
 
-The narrative sections below were written by hand on top of that output; keep
-them when you refresh the entries — the three-stage analysis in particular is
-not reproducible from `git log` alone (see the method note in it).
+`## What a prep pass gets wrong` below was written by hand and is not
+reproducible from `git log` alone — keep it when you refresh the entries.
 
 ## Shape of the window
 
@@ -49,220 +48,71 @@ Where each scope's diffs actually live, counted over this window. This is the ev
 - **`chat`** (8) — ui/chat 11 · test/ui 6 · repository 2 · test/repository 2 · data/api 1 · test/data 1
 - **`lifel`** (1) — repository 1 · utils 1 · test/repository 1
 
-## How a title is actually made: init → prep → landed
+## What a prep pass gets wrong
 
-Every line in this corpus is the *third* version of its title. Reconstructing
-the first two — from `refs/pull/<n>/head` branch names and branch commits, for
-the 220 merges of 2026-08-25 … 2026-09-01 — is what the rest of this pack is
-built on, because it shows which moves the landed titles make and which ones a
-prep pass has to stop making.
-
-**Stage 1 — how the PR arrives.** Provenance, by branch name:
-
-| Branch shape | Count | Example |
-|---|---|---|
-| agent, task-id suffix | 101 | `drop-sharedprefmanager-lifeviewmodel-userid-15461683756249885456` |
-| `openhands/…` | 56 | `openhands/normalize-resource-search-query` |
-| `jules-…` | 28 | `jules-13182967188167027853-9bd88190` |
-| issue-first (GitHub's button) | 21 | `16640-identical-callback-interfaces` |
-| `claude/…` | 5 | `claude/versionutils-characterization-tests-lcdu90` |
-| `dependabot/…` | 1 | `dependabot/gradle/gradle-wrapper-9.7.1` |
-| hand-named branch | 1 | `coderabbit-label-gated-reviews` |
-| no merge commit, branch unknown | 7 | — |
-
-**190 of 220 merges (86%) start as an agent PR.** Human, issue-first PRs are
-21. That inverts the emphasis this skill used to carry: on myplanet the agent
-branch is the normal path, not the exception.
-
-Of the 203 initial titles recoverable from branch commits, **not one arrives in
-house style**. What they arrive as:
-
-- 77 carry a conventional-commit prefix — `refactor:`, `perf:`, `feat:`, `fix:`,
-  `chore:`, `ci:`, `test:`, even `perf(teams):`. None of those survive.
-- 103 open with a capitalised imperative verb: *Unify callback interfaces into
-  OnChangedListener*, *Hoist flatten calls in SyncTimeLogger buildSummary*.
-- 103 name a CamelCase class in the title itself.
-- Median length 8 words, against a landed median of 4 (scope + `smoother` +
-  noun phrase + gerund).
-
-**Stage 2 — the prep draft.** 29 of the 220 branches carry a commit that is
-itself a house-style title, i.e. someone had already composed one before merge.
-**27 of those 29 were still changed before landing.** Those 27 pairs are the
-single most useful thing in this corpus and they are listed below.
-
-**Stage 3 — the landed title**, which is what the entries in this file are.
-
-To reproduce the reconstruction (GitHub keeps a PR's head ref forever, so this
-works long after the branch is deleted — and it needs nothing but anonymous git
-access):
+Every landed title below is the *third* version of its title. The first two are
+recoverable — GitHub keeps `refs/pull/<n>/head` after a squash merge, so the
+branch name and the branch's own commits survive it:
 
 ```
-for n in $(git log --format=%s -220 origin/master | grep -oE '\(#[0-9]+\)$' | tr -d '(#)'); do
-    git fetch -q --depth=40 origin refs/pull/$n/head:refs/prs/$n
-done
-git log --format='%an :: %s' refs/prs/<n> --not origin/master   # per PR
+git fetch --depth=40 origin refs/pull/<n>/head:refs/prs/<n>
+git log --format='%an :: %s' refs/prs/<n> --not origin/master
 ```
 
-The branch name falls out of the `Merge remote-tracking branch 'origin/master'
-into <branch>` commits the automerge drain leaves behind.
+Done for the 220 merges of 2026-08-25 … 2026-09-01, that gives: how the PR
+arrived (203 recoverable titles — 190 of the 220 from agents, and **not one in
+house style**: 77 conventional-commit prefixes, 103 capitalised imperatives, 103
+CamelCase class names, median 8 words), what someone drafted in house style on
+the branch (29 branches), and what landed. **27 of those 29 drafts were still
+changed before merging.** Grouped, they are the mistakes to expect:
 
-The transformation is not a rewording, it is a re-derivation from the diff:
-**118 of 203 landed titles share no content word at all with the title the PR
-arrived with**, and across all 203 only 18% of a landed title's words were
-present in the init. That is the strongest evidence in either repo for the
-rule that the changed files, not the old title, are the input.
+**Scope invented rather than taken from the table — 13 of 27.**
 
-The issue number tells the other half of the story: 138 of 220 landed titles
-close an issue numbered *below* their PR (filed first, then dispatched to an
-agent), 82 an issue numbered *above* it (created during the prep pass, from
-the PR's own title). Both paths are routine — a higher issue number is not a
-mistake.
-
-## The 27 corrections a prep draft needed
-
-Grouped by what actually changed. Prep draft on the left, landed title on the
-right.
-
-**1. The scope vocabulary is closed — 13 of 27.** By far the most common
-correction, and the easiest to avoid: prep keeps inventing a scope out of the
-feature or layer word in front of it. Every invented scope in this window was
-replaced by one of the twelve real ones, and the invented word usually survived
-as a *noun* in the phrase.
-
-| Prep draft | Landed |
+| Draft | Landed |
 |---|---|
 | `retry: smoother dead queue api surface` | `sync: less retry repository reset all pending is more` |
-| `ui: smoother viewbinding for server address, life, and voices` | `all: smoother data binding` |
 | `notifications: smoother type classification in repository` | `all: smoother notifications repository view modelling` |
 | `voices: smoother image array size caching in adapter` | `teams: smoother voices image caching` |
-| `members: smoother last-visit date formatting via shared TimeUtils` | `teams: smoother members date formatting` |
 | `collections: smoother dead field cleanup` | `resources: smoother collections testing` |
 | `health: smoother patient search debouncing` | `life: smoother health search view modelling` |
-| `downloads: smoother file-not-found logging through diagnostics` | `sync: smoother download repository file handling` |
 | `model: smoother achievement json caching` | `life: smoother achievements model caching` |
-| `diagnostics: smoother log building in the batch path` | `all: smoother diagnostics repository log building` |
-| `docs: smoother overtaking skill locating` | `all: smoother skill branch overtaking` |
 | `ci: bump upload-artifact to v7 in test workflow` | ``actions: bump `actions/upload-artifact` to 7`` |
-| `submissions: smoother submissions landscape scrolling` | `courses: smoother submissions landscaping` |
 
-Two of them are worth reading twice. `notifications:` → `all:` is the trap the
-conventions file already documents, and prep walked into it anyway.
-`login: smoother edit achievement handling` → `life: smoother achievements
-editing` moved scope *and* found the operation word: achievements are `life`,
-not `login`.
+**Prose kept instead of compressed to a noun chain.** Drafts carry prepositions,
+`and`, commas and hyphenated compounds; landed titles carry none.
 
-**2. Compress to a bare chain of nouns.** No prepositions, no articles, no
-`and`, no commas, no hyphenated compounds — 0 out of the 492 non-`bump` titles
-in this window contain any of them, while prep drafts are full of them. The
-median landed title is `smoother` plus **three** words including the gerund,
-i.e. a two-word noun phrase — over the 454 `smoother` titles in this window:
-one word 9, two 50, three 195, four 142, five 55, six 3.
-
-| Prep draft | Landed |
+| Draft | Landed |
 |---|---|
-| `courses: smoother filtered-course sort without per-item lowercase` | `courses: smoother repository sorting` |
 | `dashboard: smoother fragment navigation and tab handling` | `dashboard: smoother navigating` |
-| `resources: smoother filter dialog duplicate close button removing` | `resources: less apply filter button is more` |
-| `members: smoother last-visit date formatting via shared TimeUtils` | `teams: smoother members date formatting` |
-
-**3. Put the layer word back.** Compression is not deletion of the layer. Where
-prep names the entity or the symptom, the landed title names the layer the diff
-sits in — `repository`, `dao`, `utils`, `model`, `view model`:
-
-| Prep draft | Landed |
-|---|---|
-| `courses: smoother filtered-course sort without per-item lowercase` | `courses: smoother repository sorting` |
+| `ui: smoother viewbinding for server address, life, and voices` | `all: smoother data binding` |
 | `diagnostics: smoother log building in the batch path` | `all: smoother diagnostics repository log building` |
-| `downloads: smoother file-not-found logging through diagnostics` | `sync: smoother download repository file handling` |
+| `courses: smoother filtered-course sort without per-item lowercase` | `courses: smoother repository sorting` |
 
-**4. `view modelling` wins over a descriptive gerund.** If a `*ViewModel` is in
-the diff, that is the gerund, however good the prep draft's verb was:
-`health: smoother patient search debouncing` → `life: smoother health search
-view modelling`; `notifications: smoother type classification in repository` →
-`all: smoother notifications repository view modelling`.
+The third row shows the other half of that move: compressing does not mean
+dropping the layer word. Where the draft names the entity or the symptom, the
+landed title names the layer — `repository`, `dao`, `utils`, `view model`.
 
-**5. A removal-flavoured gerund means the shape is wrong.** `removing`,
-`cleanup`, `encapsulation` in a `smoother` draft are the signal to switch:
+**The rest, one line each.**
 
-| Prep draft | Landed |
-|---|---|
-| `resources: smoother enriched-libraries encapsulation` | `resources: less repository enriched libraries is more` |
-| `resources: smoother filter dialog duplicate close button removing` | `resources: less apply filter button is more` |
-| `retry: smoother dead queue api surface` | `sync: less retry repository reset all pending is more` |
+- `*ViewModel` in the diff wins the gerund over a sharper verb (`patient search
+  debouncing` → `health search view modelling`).
+- A removal-flavoured ending means the `less` shape: `smoother enriched-libraries
+  encapsulation` → `less repository enriched libraries is more`. Both ways —
+  `smoother … log removing` landed as `… queue testing`, the diff being tests.
+- A test-only diff is `testing` whatever the prose said (`smoother dead field
+  cleanup` → `smoother collections testing`).
+- `handling` is a fallback: `login: smoother edit achievement handling` →
+  `life: smoother achievements editing`.
+- `bump` normalises to a backticked coordinate and `to <version>` — no `v`, no
+  dependabot `from A to B`, no trailing clause.
+- A branch of many house-style commits gets **one** title composed for the whole
+  branch. The workflow PRs here carried eight to eleven each and landed as one,
+  e.g. `actions: smoother workflows playstore automerge priority queuing`.
 
-The reverse also happened once: `sync: smoother retry repository log removing`
-landed as `sync: smoother retry repository queue testing`, because what the
-diff actually contained was tests.
-
-**6. A test-only diff is `testing`, whatever the prose said.**
-`collections: smoother dead field cleanup` → `resources: smoother collections
-testing`.
-
-**7. `bump` gets normalised.** Coordinate in backticks, `to <version>` only —
-no `v` prefix, no dependabot-style `from A to B`, no trailing "in the test
-workflow": `ci: bump upload-artifact to v7 in test workflow` →
-``actions: bump `actions/upload-artifact` to 7``, and
-``all: bump gradle-wrapper from 9.7.0 to 9.7.1`` →
-``all: bump `gradle-wrapper` to 9.7.1``.
-
-**8. A branch of many small commits gets one summary title.** The three
-`actions:` PRs in this window each carried eight to eleven house-style commit
-titles (`actions: smoother playstore quota estimating`, `actions: less
-playstore force is more`, …) and landed as a single title that walks across the
-whole branch: `actions: smoother workflows playstore automerge priority
-queuing`. Don't land the last commit's title; compose one for the branch.
-
-## What this window changed against the previous corpus
-
-The previous corpus covered PRs #14167 … #15448 up to 2026-08-09; this window
-(#15363 … #16641, 2026-08-10 … 2026-09-01) does not overlap it. The grammar
-held; the vocabulary moved.
-
-- **Nothing is malformed any more.** 500/500 titles carry a well-formed
-  `(fixes #N)`. The previous window had six broken links (`{fixes #14889)`,
-  `(fixes 14801)`, `(fixes: #9423)`). Those typos are now history rather than a
-  live hazard — but two *other* anomalies replaced them, below.
-- **`smoother` is up to 90%** (454/500) with `less … is more` at 38 and `bump`
-  at 8.
-- **Scopes moved a lot.** `sync` 55 → 71 (now second), `actions` 6 → **28**,
-  `enterprises` 5 → 14, `community` 3 → 8; `chat` 21 → 8, `dashboard` 23 → 17,
-  `resources` 51 → 41. `all` holds the top spot at 127. **`feedback:` is gone**
-  — zero uses; `feedback` now appears as a noun under `all:`.
-- **`actions:` grew a fifth of a scope table's worth of ground**, and it is no
-  longer only `.github/workflows/`: it covers `.github/scripts/` (19),
-  `CLAUDE.md` (8) and `docs/` (4). Repo-documentation PRs land as `actions:` or
-  `all:`, never `docs:`.
-- **Gerunds shifted with the codebase.** Up: `querying` 10 → 34, `caching`
-  15 → 33, `modelling` 40 → 65, `handling` 27 → 40. Down: `inserting` 17 → 4
-  (the Room migration is over), `testing` 27 → 17, `diffing` 11 → 6,
-  `adapting` 10 → **2**.
-- **`binding` replaced `adapting`** for adapter work: 7 uses, five of them the
-  pair `view binding` during the ViewBinding migration (`teams: smoother
-  members view binding` ← `MembersAdapter.kt`). Keep `diffing` for `DiffUtil` /
-  `ItemCallback` / payload changes — that split is intact.
-- **Three gerunds the old pack did not name at all:** `working` for `*Worker`
-  classes (`all: smoother network monitor working` ← `NetworkMonitorWorker.kt`),
-  `injecting` for Hilt/constructor-injection work (`all: smoother gson
-  injecting` ← `di/NetworkModule.kt` + 12 repositories), and `landscaping` for
-  landscape-orientation layout work (`courses: smoother submissions
-  landscaping` ← `res/layout-land/fragment_my_submission.xml`).
-- **`handling` widened.** The old rule licensed it for Fragments and Activities;
-  in this window it is the fallback for *any* principal file with no sharper
-  operation word — `utils/Utilities.kt` → `all: smoother utilities toast
-  handling`, `model/MyPlanet.kt` → `all: smoother myplanet context handling`.
-- **Tests now ride along with the change.** `test/…` paths appear in most
-  entries, so a diff containing tests no longer implies the `testing` gerund —
-  only a diff that is *nothing but* tests does.
-
-## Two titles in this window not to imitate
-
-- `lifel: smoother personals repository device name providing (fixes #16433)` —
-  `lifel:` is a typo for `life:`, and the only scope outside the table.
-- `community : smoother tab pager adapting (fixes #16308)` — a space before the
-  colon. Nothing downstream parses this, but the log reads it as noise.
-
-Both are caught by the anomaly lines in **Shape of the window** above; check
-them after every regeneration rather than reading 500 lines.
+The transformation is a re-derivation, not a rewording: **118 of the 203 landed
+titles share no content word at all with the title the PR arrived with**, and
+across all 203 only 18% of a landed title's words were present in the incoming
+one.
 
 ## all (127)
 
