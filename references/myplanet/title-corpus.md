@@ -1,11 +1,11 @@
 # Title corpus — myplanet, the last 500 merged PRs
 
-Regenerated 2026-09-01 from the 500 most recent squash commits on `origin/master` (`32f9562`, PR #16641 / issue #16640, back to `9113e26`, PR #15363 / issue #15490).
+Regenerated 2026-09-01 from the 500 most recent squash commits on `master` (`32f9562`, PR #16641 / issue #16640, back to `9113e26`, PR #15363 / issue #15490).
 Each line pairs the landed title with the changed files that produced it — **the changed files are the primary input to the title**. Skim for the nearest precedent by scope, then by the area of the files you changed.
 
-Path shorthand: bare paths are under `app/src/main/java/org/ole/planet/myplanet/`; everything else is written from the repo root.
-`test/` is `app/src/test/java/org/ole/planet/myplanet/`.
-`res/` is `app/src/main/res/`.
+Path shorthand: bare paths are under `app/src/main/java/org/ole/planet/myplanet/`;
+`test/` is `app/src/test/java/org/ole/planet/myplanet/`; `res/` is
+`app/src/main/res/`.
 Omitted from every entry: `app/build.gradle` — the per-PR version bump, present in nearly every diff.
 
 The trailing `(#NNNN)` GitHub appends at squash time is stripped: what you see here is what the PR title was.
@@ -13,40 +13,22 @@ The trailing `(#NNNN)` GitHub appends at squash time is stripped: what you see h
 Regenerate with:
 
 ```
-scripts/build-corpus.py --repo <checkout> --name myplanet --ref origin/master --strip app/src/main/java/org/ole/planet/myplanet/ --rename app/src/test/java/org/ole/planet/myplanet/=test/ --rename app/src/main/res/=res/ --skip app/build.gradle
+scripts/build-corpus.py --repo <checkout> --name myplanet \
+    --strip app/src/main/java/org/ole/planet/myplanet/ --skip app/build.gradle \
+  | sed -e 's#app/src/test/java/org/ole/planet/myplanet/#test/#g' \
+        -e 's#app/src/main/res/#res/#g'
 ```
-
-`## What a prep pass gets wrong` below was written by hand and is not
-reproducible from `git log` alone — keep it when you refresh the entries.
 
 ## Shape of the window
 
 - **Shape shares:** `smoother` 454/500 (90%), `less … is more` 38, `bump` 8, other 0.
-- **Scope league table:** `all` 127 · `sync` 71 · `teams` 69 · `courses` 67 · `resources` 41 · `actions` 28 · `life` 26 · `login` 23 · `dashboard` 17 · `enterprises` 14 · `community` 8 · `chat` 8 · `lifel` 1.
+- **Scope league table:** `all` 127 · `sync` 71 · `teams` 69 · `courses` 67 · `resources` 41 · `actions` 28 · `life` 26 · `login` 23 · `dashboard` 17 · `enterprises` 14 · `chat` 8 · `community` 7 · `lifel` 1 · `(no scope)` 1.
 - **Gerund league table:** modelling 65 · handling 40 · querying 34 · caching 33 · testing 17 · managing 16 · providing 12 · flowing 10 · filtering 8 · binding 7 · mapping 6 · uploading 6 · checking 6 · diffing 6 · landscaping 4 · inserting 4 · configuring 4 · importing 4 · injecting 4 · tagging 3 · selecting 3 · formatting 3 · deleting 3 · editing 3.
 - **Issue link:** `fixes` 500, `connects` 0, well-formed 500/500.
 - **Diff size:** 163/500 diffs touch a single file beyond the version bump, 363/500 touch three or fewer.
-- **Bare-noun-chain discipline:** of the 492 non-`bump` titles, 0 contain a function word (preposition, article, `and`) and 0 contain a hyphenated compound.
-- **Scopes used once or twice** (check each for a typo or a one-off invention): `lifel` 1.
-- **Space before the colon** (malformed): `community : smoother tab pager adapting (fixes #16308)`.
 
-## Scope ↔ directory
-
-Where each scope's diffs actually live, counted over this window. This is the evidence behind the pack's scope table — a directory that shows up under two scopes is a real border zone, not a mistake to iron out.
-
-- **`all`** (127) — repository 102 · test/utils 47 · utils 45 · test/repository 42 · test/ui 39 · model 27 · res/drawable 26 · ui/teams 24 · data/room 19 · test/services 18
-- **`sync`** (71) — repository 46 · test/services 37 · services/sync 25 · services 19 · test/repository 11 · di 11 · services/upload 9 · utils 8 · ui/sync 6 · ui/teams 4
-- **`teams`** (69) — repository 50 · ui/teams 30 · test/repository 25 · ui/voices 20 · test/ui 17 · data/room 8 · services 6 · ui/surveys 6 · base 5 · ui/events 5
-- **`courses`** (67) — ui/courses 49 · repository 39 · test/repository 20 · test/ui 18 · data/room 9 · model 8 · res/layout 7 · utils 6 · base 5 · ui/submissions 4
-- **`resources`** (41) — ui/resources 26 · repository 26 · test/repository 19 · test/ui 7 · res/layout 7 · utils 6 · data/room 5 · ui/viewer 5 · ui/settings 4 · res/values 4
-- **`actions`** (28) — .github/workflows 29 · .github/scripts 19 · CLAUDE.md 8 · docs 4 · test/services 3 · .coderabbit.yaml 1 · gradle.properties 1 · .github 1 · settings.gradle 1 · test/utils 1
-- **`life`** (26) — repository 15 · ui/health 12 · test/repository 10 · test/ui 6 · ui/life 5 · model 4 · data/room 3 · ui/user 2 · test/model 2 · base 2
-- **`login`** (23) — repository 7 · ui/sync 6 · ui/settings 5 · test/repository 4 · ui/user 4 · res/values 3 · test/data 2 · test/ui 1 · res/values-ar 1 · res/values-es 1
-- **`dashboard`** (17) — ui/dashboard 19 · res/layout 14 · test/ui 9 · res/values 6 · repository 5 · res/layout-sw600dp 5 · test/repository 3 · base 3 · res/layout-land 3 · res/values-ar 3
-- **`enterprises`** (14) — ui/enterprises 18 · repository 7 · test/ui 4 · res/layout 4 · test/repository 3 · di 1 · res/values-ar 1 · res/values-es 1 · res/values-fr 1 · res/values-ne 1
-- **`community`** (8) — ui/community 14 · repository 7 · test/ui 3 · test/repository 2 · ui/voices 2 · ui/enterprises 2 · ui/settings 1
-- **`chat`** (8) — ui/chat 11 · test/ui 6 · repository 2 · test/repository 2 · data/api 1 · test/data 1
-- **`lifel`** (1) — repository 1 · utils 1 · test/repository 1
+The section below was written by hand on top of that output; keep it when you
+refresh the entries.
 
 ## What a prep pass gets wrong
 
@@ -64,7 +46,7 @@ arrived (203 recoverable titles — 190 of the 220 from agents, and **not one in
 house style**: 77 conventional-commit prefixes, 103 capitalised imperatives, 103
 CamelCase class names, median 8 words), what someone drafted in house style on
 the branch (29 branches), and what landed. **27 of those 29 drafts were still
-changed before merging.** Grouped, they are the mistakes to expect:
+changed before merging.** Grouped, they are the mistakes to expect.
 
 **Scope invented rather than taken from the table — 13 of 27.**
 
@@ -113,6 +95,11 @@ The transformation is a re-derivation, not a rewording: **118 of the 203 landed
 titles share no content word at all with the title the PR arrived with**, and
 across all 203 only 18% of a landed title's words were present in the incoming
 one.
+
+Two entries in this window are typos, not precedent: `lifel:` for `life:`
+(`lifel: smoother personals repository device name providing`), and the one
+title the scope table above counts as `(no scope)`, `community : smoother tab
+pager adapting`, which has a space before the colon.
 
 ## all (127)
 
@@ -1110,25 +1097,6 @@ one.
 - `enterprises: smoother csv export date caching (fixes #15501)`
   ← ui/enterprises/EnterprisesReportsFragment.kt
 
-## community (8)
-
-- `community: smoother configurations repository tab views modelling (fixes #16326)`
-  ← repository/ConfigurationsRepository.kt, repository/ConfigurationsRepositoryImpl.kt, ui/community/CommunityTabViewModel.kt, ui/community/HomeCommunityDialogFragment.kt, ui/community/LeadersViewModel.kt, +5 more
-- `community : smoother tab pager adapting (fixes #16308)`
-  ← ui/community/CommunityPagerAdapter.kt, ui/community/CommunityTabFragment.kt, ui/community/HomeCommunityDialogFragment.kt
-- `community: smoother voices view modelling (fixes #16165)`
-  ← ui/voices/VoicesViewModel.kt
-- `community: smoother tab view modelling (fixes #16066)`
-  ← ui/community/CommunityTabFragment.kt, ui/community/CommunityTabViewModel.kt
-- `community: smoother leaders view modelling (fixes #16037)`
-  ← ui/community/LeadersFragment.kt, ui/community/LeadersViewModel.kt
-- `community: smoother home dialog handling (fixes #16024)`
-  ← ui/community/HomeCommunityDialogFragment.kt
-- `community: smoother voices showing (fixes #15695)`
-  ← repository/VoicesRepositoryImpl.kt, ui/voices/VoicesFragment.kt, test/repository/VoicesRepositoryImplTest.kt
-- `community: smoother type shared preferences handling (fixes #15474)`
-  ← repository/ConfigurationsRepository.kt, repository/ConfigurationsRepositoryImpl.kt, repository/TeamsRepository.kt, repository/TeamsRepositoryImpl.kt, ui/community/CommunityPagerAdapter.kt, +4 more
-
 ## chat (8)
 
 - `chat: smoother history caching (fixes #16448)`
@@ -1148,8 +1116,30 @@ one.
 - `chat: smoother detail ui state view modelling (fixes #15776)`
   ← ui/chat/ChatDetailFragment.kt, ui/chat/ChatViewModel.kt, test/ui/chat/ChatViewModelTest.kt
 
+## community (7)
+
+- `community: smoother configurations repository tab views modelling (fixes #16326)`
+  ← repository/ConfigurationsRepository.kt, repository/ConfigurationsRepositoryImpl.kt, ui/community/CommunityTabViewModel.kt, ui/community/HomeCommunityDialogFragment.kt, ui/community/LeadersViewModel.kt, +5 more
+- `community: smoother voices view modelling (fixes #16165)`
+  ← ui/voices/VoicesViewModel.kt
+- `community: smoother tab view modelling (fixes #16066)`
+  ← ui/community/CommunityTabFragment.kt, ui/community/CommunityTabViewModel.kt
+- `community: smoother leaders view modelling (fixes #16037)`
+  ← ui/community/LeadersFragment.kt, ui/community/LeadersViewModel.kt
+- `community: smoother home dialog handling (fixes #16024)`
+  ← ui/community/HomeCommunityDialogFragment.kt
+- `community: smoother voices showing (fixes #15695)`
+  ← repository/VoicesRepositoryImpl.kt, ui/voices/VoicesFragment.kt, test/repository/VoicesRepositoryImplTest.kt
+- `community: smoother type shared preferences handling (fixes #15474)`
+  ← repository/ConfigurationsRepository.kt, repository/ConfigurationsRepositoryImpl.kt, repository/TeamsRepository.kt, repository/TeamsRepositoryImpl.kt, ui/community/CommunityPagerAdapter.kt, +4 more
+
 ## lifel (1)
 
 - `lifel: smoother personals repository device name providing (fixes #16433)`
   ← repository/PersonalsRepositoryImpl.kt, utils/DeviceNameProvider.kt, test/repository/PersonalsRepositoryImplTest.kt
+
+## (no scope) (1)
+
+- `community : smoother tab pager adapting (fixes #16308)`
+  ← ui/community/CommunityPagerAdapter.kt, ui/community/CommunityTabFragment.kt, ui/community/HomeCommunityDialogFragment.kt
 

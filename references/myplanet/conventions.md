@@ -3,44 +3,27 @@
 `open-learning-exchange/myplanet`. Kotlin / Android, Gradle, sources under
 `app/src/main/java/org/ole/planet/myplanet/`.
 
-Read this together with the shared grammar in `SKILL.md`. Everything here is
-what myplanet does *differently* from planet; the shapes, the `smoother`
-default and the `(fixes #N)` rules are shared and live in `SKILL.md`.
+Read this with the shared grammar in `SKILL.md`; this file is only what myplanet
+does differently. Corpus: `references/myplanet/title-corpus.md` — the last 500
+landed titles with the files that produced them, and `## What a prep pass gets
+wrong`, the draft-versus-landed pairs. Read that section before composing.
 
-Corpus: `references/myplanet/title-corpus.md` — the last 500 merged titles with
-the files that produced them, plus what the last 220 of them looked like
-*before* they were prepped. Read that section (`## What a prep pass gets wrong`)
-before composing; it is the list of mistakes this repo actually corrects.
+The automerge drain (`.github/scripts/automerge.sh`, `link_title_issues`) mirrors
+a title's closing reference into the PR body just before squash-merging, so
+queued PRs are covered but hand-merged ones are not. Write the body line at prep
+time regardless; the drain is a safety net, and it is idempotent.
 
-One myplanet-specific note on the body line `SKILL.md` requires: the automerge
-drain (`.github/scripts/automerge.sh`, `link_title_issues`) mirrors a title's
-closing reference into the PR body just before it squash-merges, so PRs that go
-out through the queue are covered. **PRs merged by hand are not.** Write the
-body line at prep time regardless — the drain's pass is a safety net, not the
-mechanism, and it is idempotent about refs the body already links.
-
-## Who opens the PRs
-
-Most PRs here are agent-opened — task-id branch suffixes, `openhands/…`,
-`jules-…`, `claude/…` — arriving with prose titles, conventional-commit prefixes
-and CamelCase class names, none of which survive. Assume you are rewriting from
-scratch. But those agents are dispatched from the backlog, so most of their PRs
-already have an issue, usually numbered *below* the PR: check before creating
-one.
+Most PRs here are agent-opened (`openhands/…`, `jules-…`, `claude/…`, task-id
+branch suffixes) and arrive with prose titles that do not survive — but those
+agents are dispatched from the backlog, so most already carry an issue, numbered
+below the PR. Check before creating one.
 
 ## Scopes
 
-The scope vocabulary is **closed**: these eleven words and nothing else.
-Inventing a scope out of the feature or layer word in front of you is the most
-common way to get a title wrong here. The word is usually right — it belongs in
-the noun phrase.
-
-`all:` is the workhorse (127/500) and the right default whenever the change
-reaches shared layers — `model/`, `repository/`, `di/`, `base/`, `callback/`,
-`utils/`, `data/room/`, `MainApplication.kt` — or spans more than one feature.
-
-Reach for a feature scope only when the change sits squarely inside one domain,
-including that domain's own repository:
+The vocabulary is **closed**: these eleven words. `all:` is the workhorse
+(127/500) and the default whenever the change reaches shared layers — `model/`,
+`repository/`, `di/`, `base/`, `callback/`, `utils/`, `data/room/`,
+`MainApplication.kt` — or spans more than one feature.
 
 | Scope | Owns | Share |
 |---|---|---|
@@ -48,7 +31,7 @@ including that domain's own repository:
 | `teams` | `ui/teams/**`, `ui/voices/`, `ui/events/`, `ui/surveys/`, team tasks, members | 69 |
 | `courses` | `ui/courses/`, `ui/exam/`, `ui/submissions/`, `ui/ratings/`, progress, tags | 67 |
 | `resources` | `ui/resources/`, `ui/viewer/`, collections, webview, media playback | 41 |
-| `actions` | `.github/workflows/`, `.github/scripts/`, `CLAUDE.md`, `docs/`, `.coderabbit.yaml`, Gradle/CI config | 28 |
+| `actions` | `.github/workflows/`, `.github/scripts/`, `CLAUDE.md`, `docs/`, Gradle/CI config | 28 |
 | `life` | `ui/health/`, `ui/life/`, achievements, personals | 26 |
 | `login` | `ui/settings/`, `ui/user/`, onboarding; `ui/sync/` — see below | 23 |
 | `dashboard` | `ui/dashboard/` and the bell — but **not** `ui/notifications/` | 17 |
@@ -56,69 +39,49 @@ including that domain's own repository:
 | `community` | `ui/community/` | 8 |
 | `chat` | `ui/chat/` | 8 |
 
-When torn between a feature scope and `all:`, look at where the *centre of
-gravity* of the diff sits. A change to `TeamsRepositoryImpl` alone is `teams:`;
-the same change plus a shared `RealmRepository` tweak is `all:`.
+When torn between a feature scope and `all:`, follow the *centre of gravity* of
+the diff: `TeamsRepositoryImpl` alone is `teams:`; the same change plus a shared
+`RealmRepository` tweak is `all:`.
 
-For a directory that is not in the table, use the corpus's generated
-`## Scope ↔ directory` cross-tab — where each scope's diffs actually landed.
+Two border zones. `ui/notifications/` is always `all` — the bell *icon* on the
+dashboard is `dashboard`, but the package is surfaced app-wide. `ui/sync/` is
+genuinely split, six titles each way: `sync` for the sync or login *transaction*,
+`login` for the screen and what the user sees. Anything under `services/sync/` is
+`sync`.
 
-### The named traps
+Invented scopes are the most common way to get a title wrong — the word is
+usually right, it just belongs in the noun phrase:
 
-`ui/notifications/` is the classic: the bell *icon* on the dashboard is
-`dashboard`, but the notifications package itself is always `all` — notifications
-are surfaced across the app, not owned by one screen.
-
-`ui/sync/` is genuinely ambiguous, and stays that way: six diffs under it landed
-`sync:` and six landed `login:`. `sync` if the change is about the sync or login
-*transaction*, `login` if it's about the screen and what the user sees. Anything
-under `services/sync/` is unambiguously `sync`.
-
-Repo documentation — `CLAUDE.md`, `docs/`, skill files — is `actions:` or
-`all:`, never `docs:`.
-
-These are the invented scopes prep passes reach for, and the real ones they
-stand for. Read the pattern, not just the list:
-
-| Wrote | Should be | Because |
-|---|---|---|
-| `retry:`, `downloads:` | `sync:` | `services/retry/` and downloads are sync's |
-| `notifications:` | `all:` | surfaced app-wide |
-| `voices:`, `members:` | `teams:` | both live under teams |
-| `collections:` | `resources:` | a resources screen |
-| `health:`, achievements under `login:` | `life:` | `ui/health/` and achievements are life's |
-| `submissions:` | `courses:` | `ui/submissions/` is courses' |
-| `ui:`, `model:`, `diagnostics:` | `all:` | a shared layer is not a scope |
-| `docs:`, `ci:` | `actions:` | repo plumbing |
+| Wrote | Should be |
+|---|---|
+| `retry:`, `downloads:` | `sync:` |
+| `voices:`, `members:` | `teams:` |
+| `collections:` | `resources:` |
+| `health:`, achievements under `login:` | `life:` |
+| `submissions:` | `courses:` |
+| `notifications:`, `ui:`, `model:`, `diagnostics:` | `all:` |
+| `docs:`, `ci:` | `actions:` |
 
 ## Reading the phrase off the filenames
 
-myplanet titles are close to a **mechanical function of the changed files** —
-163/500 diffs touch a single file beyond the version bump, and 363/500 touch
-three or fewer. Once you see that, most titles write themselves:
-
-**The noun phrase is the principal changed file, de-CamelCased and lowercased,
-with its role suffix dropped. The gerund comes from that suffix.**
+Titles here are close to a **mechanical function of the changed files** —
+163/500 diffs touch one file beyond the version bump, 363/500 touch three or
+fewer. **The noun phrase is the principal changed file, de-CamelCased and
+lowercased with its role suffix dropped; the gerund comes from that suffix.**
 
 ```
-ui/dashboard/BellDashboardFragment.kt   → dashboard: smoother bell reminding
 services/upload/PhotoUploader.kt        → sync: smoother photo uploading
 utils/Utilities.kt                      → all: smoother utilities hex mapping
 services/NetworkMonitorWorker.kt        → all: smoother network monitor working
 ui/teams/members/MembersAdapter.kt      → teams: smoother members view binding
-repository/UserRepositoryImpl.kt        → sync: smoother user repository shelf batch uploading
 di/NetworkDependenciesEntryPoint.kt ✗   → all: less network dependencies entry point is more
 ```
 
-### Keep it a bare chain of nouns
-
-No prepositions, no articles, no `and`, no commas, no hyphenated compounds —
-zero of the 492 non-`bump` titles contain any. The median is `smoother` plus
-three words counting the gerund, i.e. a two-word noun phrase.
-
-Say the layer and the operation and drop everything that glues them together.
-Compression is not deletion of the layer word, though — where a draft names the
-entity or the symptom, the title names the layer the diff sits in:
+Keep it a **bare chain of nouns**: no prepositions, articles, `and`, commas or
+hyphenated compounds — zero of the 492 non-`bump` titles have any. The median is
+`smoother` plus three words counting the gerund. Say the layer and the operation
+and drop the glue, but don't drop the layer word itself — where a draft names
+the entity or the symptom, the title names the layer:
 
 ```
 courses: smoother filtered-course sort without per-item lowercase
@@ -132,7 +95,7 @@ members: smoother last-visit date formatting via shared TimeUtils
 | Principal file | Gerund |
 |---|---|
 | `*Provider`, `*Module`, `*Logger`, `*Interceptor` | providing |
-| `*ViewModel` | **view** modelling (always both words — 62 of 65, never bare `modelling`) |
+| `*ViewModel` | **view** modelling (both words — 62 of 65) |
 | `*Worker` | working |
 | `*Adapter` — `DiffUtil` / `ItemCallback` / payload changes | diffing |
 | `*Adapter` — row binding, holders, layout | binding, or `view binding` for a ViewBinding conversion |
@@ -147,152 +110,107 @@ members: smoother last-visit date formatting via shared TimeUtils
 | a diff that is **nothing but** `app/src/test/` | testing |
 | anything with no sharper operation word | handling |
 
-Gerund league table over the 454 `smoother` titles: modelling 65 · handling 40 ·
-querying 34 · caching 33 · testing 17 · managing 16 · providing 12 · flowing 10
-· filtering 8 · binding 7 · diffing 6 · landscaping 4 · injecting 4.
+Three of those get chosen wrongly most often:
 
-Three rows get chosen wrongly most often:
-
-- **`view modelling` outranks a better verb.** A diff over a search debounce and
-  its view model is `life: smoother health search view modelling`, not
-  `… debouncing`.
-- **`handling` is a fallback that happens to be the second most common gerund.**
-  If the diff has an operation, name it: `life: smoother achievements editing`,
-  not `… achievement handling`.
+- **`view modelling` outranks a better verb.** A search debounce plus its view
+  model is `life: smoother health search view modelling`, not `… debouncing`.
+- **`handling` is a fallback that happens to be the second most common gerund**
+  (40/500). If the diff has an operation, name it: `life: smoother achievements
+  editing`, not `… achievement handling`.
 - **`testing` needs a test-*only* diff.** Tests ship with the change they cover,
   so `test/…` paths appear in most entries without earning the gerund.
 
-Other gerunds in circulation, for when no suffix rule applies:
-
-> coloring · scoping · linking · loading · requesting · deleting · viewing ·
-> sorting · searching · marking · listing · joining · fetching · creating ·
-> configuring · syncing · validating · building · checking · finding · mapping ·
-> naming · notifying · posting · selecting · sharing · starting · updating ·
-> factoring · parsing · counting · indexing · listening · coordinating ·
-> picking · editing · exporting · serializing · initializing · normalizing ·
-> unifying · navigating · versioning · generating · tagging · formatting
-
-Note `modelling` and `coloring` — the log is inconsistent about doubling, but
-those two spellings are the established ones.
+The corpus's gerund league table is the full picture; `modelling` and `coloring`
+are the established spellings where the log is inconsistent about doubling.
 
 ### Layer words, not entity names
 
-When the diff spans two or three files, the noun phrase **walks across all of
-them** — each contributes a word or two, in diff order — and only the gerund is
-picked, from whichever file's suffix best describes the change.
+When the diff spans two or three files the noun phrase **walks across all of
+them**, each contributing a word or two in diff order, and only the gerund is
+picked — from whichever suffix best describes the change.
 
 What a file contributes is its **layer word** — `repository`, `dao`, `utils` —
-not the entity it happens to be named after. `VoicesRepositoryImpl.kt` +
-`NewsDao.kt` becomes **voices repository dao** — one feature word, then the two
-layers — not `voices news dao`. `News` is what the voices domain stores, so it
-adds nothing `voices` didn't already say.
+not the entity it is named after: `VoicesRepositoryImpl.kt` + `NewsDao.kt` is
+**voices repository dao**, not `voices news dao`. Those layers keep their noun
+because none has a natural gerund (nobody writes *repositorying*), so the
+operation supplies it and `repository` ends up the most common word in the
+corpus after the scopes (131 uses, plus 15 `repositories`, 37 `utils`, 25 `dao`).
 
-Those three layers keep their noun because none of them has a natural gerund —
-nobody writes *repositorying* — so the gerund comes from the operation instead
-(`querying`, `uploading`, `deleting`, `marking`) and the layer stays a noun.
-That makes `repository` the most common word in the corpus after the scopes:
-131 uses, plus 15 `repositories`, 37 `utils` and 25 `dao`.
-
-The opposite holds wherever the suffix *does* supply the gerund. `Adapter`,
-`ViewModel`, `Manager`, `Provider`, `Fragment`, `Activity` and `Worker` are
-converted, not repeated — `activity` and `viewmodel` appear as nouns **zero**
-times in 500 titles, `fragment`, `adapter`, `module` and `worker` two or three
-each. Don't write `smoother courses adapter adapting`; write `smoother courses
-binding`.
+Where the suffix *does* supply the gerund it is converted, not repeated:
+`activity` and `viewmodel` appear as nouns **zero** times in 500 titles,
+`fragment`, `adapter`, `module` and `worker` two or three each. Write `smoother
+courses binding`, never `smoother courses adapter adapting`.
 
 ```
 VoicesRepositoryImpl.kt + NewsDao.kt        → teams: smoother voices repository dao querying
 LoginSyncManager.kt + AuthUtils.kt          → sync: smoother login auth utils managing
-UploadManager.kt + DispatcherProvider.kt    → sync: smoother upload immediate dispatcher providing
-SharedPrefManager.kt + LoginActivity.kt     → login: smoother shared preferences credentials managing
 GuestLoginExtensions.kt + LoginActivity.kt  → login: smoother guest extensions validating
 ```
 
-Read the second one closely, since it's the whole rule in miniature:
-`LoginSyncManager` contributes **login** (drop `Sync`, drop the `Manager`
-suffix), `AuthUtils` contributes **auth utils**, and `Manager` supplies the
-gerund **managing**. Every changed file is represented and nothing is invented.
+The second is the rule in miniature: `LoginSyncManager` gives **login**,
+`AuthUtils` gives **auth utils**, `Manager` gives **managing**. Every changed
+file is represented and nothing is invented.
 
-Don't swerve away from a layer word just because a similar title already
-exists. Near-duplicates are fine and common here — the qualifier and the issue
-number distinguish them. `voices repository dao querying` sits happily
-alongside the earlier `voices repository querying`.
+Near-duplicates are fine — the qualifier and issue number distinguish them, and
+`voices repository dao querying` sits happily beside an earlier `voices
+repository querying`. Era vocabulary is fine too: `realm` ran through the
+Realm-to-Room migration and vanished, `view binding` is doing it now.
 
-Era vocabulary is fine: `realm` appears in titles from the Realm-to-Room
-migration and then disappears; `view binding` is doing the same now. Titles name
-what the diff touches *today*; don't sand off project-phase words.
+A branch of many small commits still gets **one** title for the whole branch,
+not the last commit's: `actions: smoother workflows playstore automerge priority
+queuing`.
 
-A branch of many small commits still gets **one** title composed for the whole
-branch, not the last commit's — the workflow PRs here carry eight to eleven
-house-style commit subjects each and land as one, e.g. `actions: smoother
-workflows playstore automerge priority queuing`.
+## `less … is more`
 
-## When `less … is more` is the right shape
-
-38 of 500. The `SKILL.md` rule — a named thing ceases to exist — holds, with a
-myplanet tell: **a removal-flavoured ending on a `smoother` draft means the
-shape is wrong.** `resources: smoother enriched-libraries encapsulation` is
-`resources: less repository enriched libraries is more`. Check the diff before
-switching, though: one draft ending in `log removing` landed as `sync: smoother
-retry repository queue testing`, because the diff was tests.
-
-`less` arrives in sweeps — a dozen of the 38 are the `UploadManager` teardown
-(`sync: less upload manager teams repository is more` and eight siblings). If
-your diff is one step of a sweep already in the log, match its phrasing.
+38 of 500. `SKILL.md` has the rule; the myplanet tell is that a
+removal-flavoured ending on a `smoother` draft means the shape is wrong —
+`smoother enriched-libraries encapsulation` is `less repository enriched
+libraries is more`. Check the diff first: one draft ending in `log removing`
+landed as `sync: smoother retry repository queue testing`, the diff being tests.
+`less` also arrives in sweeps — a dozen of the 38 are the `UploadManager`
+teardown — so match a sweep already in the log.
 
 ## Dependency bumps
 
-Backtick the full Gradle coordinate and use `*` for a family of artifacts.
-Version only — no `v` prefix, and never dependabot's `from A to B`:
+Backtick the full coordinate, `*` for an artifact family, version only — no `v`,
+never dependabot's `from A to B`. Gradle and Android coordinates are `all:`,
+GitHub Actions are `actions:`:
 
-> `` all: bump `gradle-wrapper` to 9.7.1 (fixes #16147) ``
-> `` all: bump `com.squareup.okhttp3:okhttp` to 5.5.0 (fixes #16017) ``
 > `` all: bump `androidx.media3:media3-*` to 1.11.0 (fixes #15548) ``
-
-Gradle and Android coordinates are `all:`; GitHub Actions are `actions:`:
-
 > `` actions: bump `actions/upload-artifact` to 7 (fixes #16240) ``
 
 ## Version bump to check
 
-Every merged PR bumps the app version by one patch in `app/build.gradle`
-(`versionCode = 6888` / `versionName = "0.68.88"` on 2026-09-01 → `6889` /
-`"0.68.89"`). If the PR touches app code and doesn't bump it, mention it — the
-release workflow tags off `versionName`, so a missing bump collides with the
-previous release. Read the current values off `master` rather than the branch,
-since a stale branch will have drifted behind. The automerge drain pushes the
-bump itself before merging, so an unbumped branch is normal mid-review and only
-worth raising for a PR going out by hand.
+Every merged PR bumps one patch in `app/build.gradle` (`versionCode = 6888` /
+`versionName = "0.68.88"` on 2026-09-01 → `6889` / `"0.68.89"`); the release
+workflow tags off `versionName`, so a missing bump collides with the previous
+release. Read the values off `master`, not the branch. The automerge drain
+pushes the bump itself, so an unbumped branch only matters for a PR going out by
+hand.
 
 ## Worked examples
 
-**Agent PR, verb in the incoming title.** Branch
-`16640-identical-callback-interfaces`, arriving as *Unify callback interfaces
-into OnChangedListener*. Diff is 14 files under `callback/` — a shared layer, so
-`all:`. No suffix rule fires on an interface, and the change genuinely is the
-verb, so the verb becomes the gerund.
+**Verb in the incoming title.** Branch `16640-identical-callback-interfaces`,
+arriving as *Unify callback interfaces into OnChangedListener*; 14 files under
+`callback/`, so `all:`. No suffix rule fires on an interface and the change is
+the verb, so the verb becomes the gerund.
 
 > `all: smoother callback listeners unifying (fixes #16640)`
 
-**Refactor that deletes a lot but removes nothing.** PR #15040,
-Jules-authored, titled `Optimize Dispatchers in LoginSyncManager`, no issue.
-Create the issue from that title, then read the diff:
-`services/sync/LoginSyncManager.kt` (71+/81−) and `utils/AuthUtils.kt`
-(18+/25−). `services/sync/` fixes the scope. Both files feed the noun phrase;
-`Manager` gives the gerund. Net-negative, but nothing named is gone — so
-`smoother`, not `less`.
+**Deletes a lot, removes nothing.** *Optimize Dispatchers in LoginSyncManager*
+over `services/sync/LoginSyncManager.kt` (71+/81−) and `utils/AuthUtils.kt`
+(18+/25−). Net-negative, but nothing named is gone — `smoother`, not `less`.
 
 > `sync: smoother login auth utils managing (fixes #15151)`
 
-**Deletion.** PR removes `NetworkDependenciesEntryPoint` and folds it into
-`ServiceDependenciesEntryPoint`; touches `di/` and `MainApplication.kt`, so
-`all`. Primarily a removal, so the `less` shape.
+**Deletion.** `NetworkDependenciesEntryPoint` folded into
+`ServiceDependenciesEntryPoint`, touching `di/` and `MainApplication.kt`.
 
 > `all: less network dependencies entry point is more (fixes #15143)`
 
 **Four mistakes in one draft.** `downloads: smoother file-not-found logging
-through diagnostics`, for a diff over `repository/DownloadRepositoryImpl.kt` and
-the diagnostics helper: invented scope, hyphenated compound, preposition, no
-layer word.
+through diagnostics`, over `repository/DownloadRepositoryImpl.kt` and the
+diagnostics helper: invented scope, hyphenated compound, preposition, no layer
+word.
 
 > `sync: smoother download repository file handling (fixes #16356)`

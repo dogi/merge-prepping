@@ -86,10 +86,9 @@ of lines and is still `smoother`. Ask what the PR is *for*. If its purpose is
 "get rid of X", use `less`; if its purpose is "make X work better" and deletion
 is a side effect, use `smoother`.
 
-There is a tell in the other direction: a draft ending in `removing`, `cleanup`,
-`removal` or `encapsulation` is usually a `less … is more` title wearing
-`smoother`. Re-read the diff before switching, though — one such draft was
-really about the tests it added.
+There is a tell in the other direction: a draft ending in `removing`, `cleanup`
+or `encapsulation` is usually a `less … is more` title wearing `smoother`.
+Re-read the diff before switching — one such draft was really about its tests.
 
 Worked failure (myplanet, but the trap is general): a PR converting
 `LoginSyncManager.login` to a `suspend` function was 89 additions against 106
@@ -132,11 +131,10 @@ myplanet; myplanet's `sync:` does not exist on planet; `life:` covers different
 ground in each. Each pack also lists its own traps — directories claimed by more
 than one scope, and scopes that have been renamed.
 
-**The vocabulary is closed**, and inventing a scope out of the feature or layer
-word in front of you is the most common way to get a title wrong. That word
-usually belongs in the noun phrase, not in front of the colon; when nothing in
-the table fits, the answer is the pack's default (`all:` in both repos). Each
-pack lists the invented scopes people reach for and their real replacements.
+**The vocabulary is closed.** Inventing a scope out of the feature or layer word
+in front of you is the most common way to get a title wrong; that word belongs
+in the noun phrase, and when nothing in the table fits the answer is the pack's
+default (`all:` in both repos). Each pack lists the ones people reach for.
 
 ## Building the phrase — read it off the diff, not the old title
 
@@ -169,11 +167,10 @@ What holds in both:
 - Prefer the **layer or concept word** over the entity name. The domain is
   already carried by the scope plus one feature word, so repeating the entity is
   noise.
-- **Keep it a bare chain of nouns.** No prepositions, no articles, no `and`, no
-  commas, no hyphenated compounds — outside the `bump` shape, near-zero titles in
-  either log contain any. `courses: smoother filtered-course sort without
-  per-item lowercase` is a draft; `courses: smoother repository sorting` is a
-  title.
+- **Keep it a bare chain of nouns.** No prepositions, articles, `and`, commas or
+  hyphenated compounds — outside the `bump` shape, near-zero titles in either log
+  have any. `courses: smoother filtered-course sort without per-item lowercase`
+  is a draft; `courses: smoother repository sorting` is a title.
 - Aim for **one to three words between the scope and the gerund**, median two in
   both logs. `all: smoother importing` is fine when the change genuinely is that
   broad; padding a narrow change with words it doesn't need is worse than being
@@ -191,11 +188,10 @@ What holds in both:
 
 This is the half that's easy to get wrong, because the right move depends on who
 opened the PR. The mechanics are the same everywhere; what differs is how often
-each branch fires. On myplanet most PRs are now agent-opened, and most of those
-were dispatched *from* an existing issue — so an agent PR is about as likely to
-carry a number as a human one. Look before you create. On myplanet-lite no PR
-has an issue — not one of the last 200 titles links one — so the create-an-issue
-branch is the normal path there.
+each branch fires. On myplanet most PRs are agent-opened, and most of those were
+dispatched *from* an existing issue. On myplanet-lite no PR has an issue — not
+one of the last 200 titles links one — so the create-an-issue branch is the
+normal path there.
 
 **A human contributor's PR usually already has an issue.** They filed it first,
 and it shows up in one of three places — check all three before concluding there
@@ -216,7 +212,8 @@ similar bots open PRs directly, with descriptive prose titles like `Refactor:
 Consolidate duplicate EntryPoints`. Branch names give them away: a task-id
 suffix (`consolidate-entrypoints-1618928943660463448`) or an agent prefix
 (`openhands/…`, `jules-…`, `claude/…`, `codex/…`). Check the three places above
-anyway — an agent dispatched from an issue usually quotes its number somewhere.
+anyway: an agent dispatched from an issue quotes its number somewhere, and on
+myplanet that is the common case.
 
 When there really is none, create the issue — and this is the key move: **the
 PR's current title becomes the issue title, verbatim.** That descriptive title
@@ -307,17 +304,14 @@ still diverged on scopes, four suffix rows and the version-bump file, and one of
 those — a `*ViewModel` rule for a codebase with no view models — would have
 produced confidently wrong titles on every PR.
 
-Build the corpus with `scripts/build-corpus.py`: it pairs each squash-merged
-title with the files that produced it, groups by scope, and prints the league
-tables, a scope ↔ directory cross-tab and an anomaly scan. Use `--skip` for the
-per-PR version-bump file, `--strip` for the source root and `--rename
-PREFIX=SHORT` for paths worth shortening rather than dropping. Then write
-`conventions.md` from what the output actually shows — scope table, how the noun
-phrase is derived, the gerund vocabulary, and any point where the log changed
-its mind partway through the window.
+Build the corpus from the repo's own log: pair each squash-merged title with the
+files that produced it, strip the trailing `(#NNNN)` GitHub appends, group by
+scope, and note the per-PR version-bump file so it can be omitted. Then read the
+result and write `conventions.md` from what you actually see — scope league
+table, how the noun phrase is derived, the gerund vocabulary, and any point
+where the log changed its mind about a convention partway through the window.
 
-Each corpus prints the window it came from; regenerate once the log has moved
-well past it, since scopes and gerunds turn over faster than the grammar does.
-On a squash-merged repo you can also recover what titles looked like *before*
-they were prepped — GitHub keeps `refs/pull/<n>/head` after the merge, and the
-method is in myplanet's corpus.
+On a squash-merged repo, go one step further and recover what those titles
+looked like *before* they were prepped: GitHub keeps `refs/pull/<n>/head` after
+the merge, so the draft-versus-landed pairs are still there. myplanet's corpus
+has the method and what it turned up.

@@ -66,15 +66,14 @@ offers to add a pack.
 
    ```
    scripts/build-corpus.py --repo ~/src/<repo> --name <repo> \
-       --strip <source root>/ --rename <test root>/=test/ \
-       --skip <version bump file> \
+       --strip <source root>/ --skip <version bump file> \
        > references/<repo>/title-corpus.md
    ```
 
    It pairs each merged title with the files that produced it, groups by scope,
-   and prints the league tables, a scope ↔ directory cross-tab and an anomaly
-   scan — plus a warning if the log changed its mind about a convention partway
-   through the window, which planet's did in October 2025.
+   and prints the shape / scope / gerund league tables — plus a warning if the
+   log changed its mind about a convention partway through the window, which
+   planet's did in October 2025.
 
 2. Read those tables and write `references/<repo>/conventions.md` from what you
    actually see, not from what the other packs say.

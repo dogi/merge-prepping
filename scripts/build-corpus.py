@@ -12,30 +12,19 @@ changed its mind about the trailing gerund partway through the window.
 
     scripts/build-corpus.py --repo ~/src/myplanet --name myplanet \
         --strip app/src/main/java/org/ole/planet/myplanet/ \
-        --rename app/src/test/java/org/ole/planet/myplanet/=test/ \
-        --rename app/src/main/res/=res/ \
         --skip app/build.gradle > references/myplanet/title-corpus.md
 
-Read the output before writing the pack's `conventions.md` — the league tables,
-the scope/directory cross-tab and the anomaly scan tell you what the repo
-actually does, which is rarely what you assumed.
+Read the output before writing the pack's `conventions.md` — the league tables
+tell you what the repo actually does, which is rarely what you assumed.
 """
 import argparse
-import datetime
 import re
 import subprocess
 import sys
 from collections import Counter, OrderedDict
 
 SQUASH_SUFFIX = re.compile(r"\s*\(#\d+\)\s*$")
-SCOPE = re.compile(r"^([a-z0-9-]+)\s*:")
-# House style is a bare chain of nouns plus a gerund: no prepositions, no
-# conjunctions, no articles. Coordinates inside backticks are exempt.
-FUNCTION_WORD = re.compile(
-    r"\b(a|an|and|by|for|from|in|into|of|on|or|per|the|through|to|via|with|without)\b"
-)
-HYPHENATED = re.compile(r"[a-z]-[a-z]")
-BACKTICKED = re.compile(r"`[^`]*`")
+SCOPE = re.compile(r"^([a-z0-9-]+):")
 # `closes #N` shows up occasionally but is not house style in either repo, so it
 # is reported alongside the real typos rather than counted as well-formed.
 LINK = re.compile(r"\((fixes|connects) #\d+\)$")
@@ -64,29 +53,13 @@ def parse_args():
         default=[],
         help="path prefix to drop for readability (repeatable, longest match wins)",
     )
-    p.add_argument(
-        "--rename",
-        action="append",
-        default=[],
-        metavar="PREFIX=SHORT",
-        help="path prefix to shorten rather than drop, e.g. "
-        "app/src/test/java/org/ole/planet/myplanet/=test/ (repeatable)",
-    )
     return p.parse_args()
 
 
 def main():
     args = parse_args()
     skip = set(args.skip)
-    renames = [tuple(r.split("=", 1)) for r in args.rename]
-    for r in args.rename:
-        if "=" not in r:
-            sys.exit(f"--rename wants PREFIX=SHORT, got {r!r}")
-    # A --strip is just a --rename to the empty string; one table, longest first,
-    # so a test-source prefix wins over the main-source prefix it nests under.
-    rewrites = sorted(
-        renames + [(p, "") for p in args.strip], key=lambda kv: -len(kv[0])
-    )
+    strips = sorted(args.strip, key=len, reverse=True)
 
     def git(*rest):
         return subprocess.run(
@@ -97,9 +70,9 @@ def main():
         ).stdout
 
     def shorten(path):
-        for prefix, short in rewrites:
+        for prefix in strips:
             if path.startswith(prefix):
-                return short + path[len(prefix):]
+                return path[len(prefix):]
         return path
 
     def clean(subject):
@@ -153,22 +126,6 @@ def main():
     single = sum(1 for _, _, _, f in commits if len(f) == 1)
     upto3 = sum(1 for _, _, _, f in commits if len(f) <= 3)
 
-    def phrase(title):
-        """The title with its scope, link and backticked coordinates removed."""
-        t = SCOPE.sub("", title, count=1)
-        t = re.sub(r"\((?:fixes|connects|closes)\W*#?\d+\)", "", t)
-        return BACKTICKED.sub("", t)
-
-    # The `bump` shape is the one place a preposition is house style ("to 9.7.1"),
-    # so it is excluded from both scans rather than reported forever.
-    prose = [t for t in titles if not re.match(r"^[a-z0-9-]+\s*: bump ", t)]
-    wordy = [t for t in prose if FUNCTION_WORD.search(phrase(t))]
-    hyphenated = [t for t in prose if HYPHENATED.search(phrase(t))]
-    # A scope used once or twice in a 500-title window is usually a typo for a
-    # real one (`lifel:` for `life:`) or a scope someone invented on the spot.
-    rare = [(s_, c) for s_, c in scope_counts.items() if c <= 2]
-    spaced = [t for t in titles if re.match(r"^[a-z0-9-]+\s+:", t)]
-
     # Find the oldest point from which the trailing gerund is near-universal, so
     # the pack can tell readers which half of the window to imitate.
     changeover = None
@@ -192,8 +149,7 @@ def main():
     w(f"# Title corpus — {args.name}, the last {n} merged PRs")
     w("")
     w(
-        f"Regenerated {datetime.date.today().isoformat()} from the {n} most "
-        f"recent squash commits on `{args.ref}` "
+        f"Generated from the {n} most recent squash commits on `{args.ref}` "
         f"(`{commits[0][0][:7]}`, PR #{(PR.search(commits[0][1]) or [None,'?'])[1]} "
         f"/ issue #{(ISSUE.search(commits[0][1]) or [None,'?'])[1]}, back to "
         f"`{commits[-1][0][:7]}`, PR #{(PR.search(commits[-1][1]) or [None,'?'])[1]} "
@@ -206,12 +162,10 @@ def main():
         "changed."
     )
     w("")
-    if args.strip:
+    if strips:
         w("Path shorthand: bare paths are under "
-          + " or ".join(f"`{s}`" for s in args.strip)
+          + " or ".join(f"`{s}`" for s in strips)
           + "; everything else is written from the repo root.")
-    for prefix, short in renames:
-        w(f"`{short}` is `{prefix}`.")
     if skip:
         w("Omitted from every entry: " + ", ".join(f"`{s}`" for s in sorted(skip))
           + " — the per-PR version bump, present in nearly every diff.")
@@ -224,9 +178,7 @@ def main():
     w("```")
     w("scripts/build-corpus.py --repo <checkout> --name " + args.name
       + (f" --count {args.count}" if args.count != 500 else "")
-      + (f" --ref {args.ref}" if args.ref != "HEAD" else "")
       + "".join(f" --strip {s}" for s in args.strip)
-      + "".join(f" --rename {s}" for s in args.rename)
       + "".join(f" --skip {s}" for s in args.skip))
     w("```")
     w("")
@@ -243,19 +195,6 @@ def main():
       f"well-formed {n - len(malformed)}/{n}.")
     w(f"- **Diff size:** {single}/{n} diffs touch a single file beyond the "
       f"version bump, {upto3}/{n} touch three or fewer.")
-    w(f"- **Bare-noun-chain discipline:** of the {len(prose)} non-`bump` titles, "
-      f"{len(wordy)} contain a function word (preposition, article, `and`) and "
-      f"{len(hyphenated)} contain a hyphenated compound.")
-    for t in (wordy + hyphenated)[:6]:
-        w(f"  - `{t}`")
-    if rare:
-        w("- **Scopes used once or twice** (check each for a typo or a "
-          "one-off invention): "
-          + " · ".join(f"`{s_}` {c}" for s_, c in sorted(rare, key=lambda kv: kv[0]))
-          + ".")
-    if spaced:
-        w("- **Space before the colon** (malformed): "
-          + " · ".join(f"`{t}`" for t in spaced[:5]) + ".")
     if split:
         w(f"- **⚠️ The gerund era starts {dates[changeover]}.** The trailing "
           f"gerund is not uniform across this window: of the {len(recent)} "
@@ -270,25 +209,6 @@ def main():
         w("- **Malformed or link-less titles in this window:**")
         for t in malformed[:10]:
             w(f"  - `{t}`")
-    w("")
-
-    def dirkey(path):
-        parts = shorten(path).split("/")
-        return "/".join(parts[:2]) if len(parts) > 2 else parts[0]
-
-    w("## Scope ↔ directory")
-    w("")
-    w("Where each scope's diffs actually live, counted over this window. This is "
-      "the evidence behind the pack's scope table — a directory that shows up "
-      "under two scopes is a real border zone, not a mistake to iron out.")
-    w("")
-    for scope, entries in sorted(by_scope.items(), key=lambda kv: -len(kv[1])):
-        dirs = Counter()
-        for _, _, files in entries:
-            for f in files:
-                dirs[dirkey(f)] += 1
-        w(f"- **`{scope}`** ({len(entries)}) — "
-          + " · ".join(f"{d} {c}" for d, c in dirs.most_common(10)))
     w("")
 
     for scope, entries in sorted(by_scope.items(), key=lambda kv: -len(kv[1])):

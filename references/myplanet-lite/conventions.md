@@ -85,7 +85,7 @@ Two things to know about this table:
   `login` if it's about the screen and what the user sees.
 
 Scopes that exist on myplanet but have nothing to point at in lite: `life`,
-`chat`, `community`, `enterprises`. Don't reach for them.
+`chat`, `community`, `enterprises`, `feedback`. Don't reach for them.
 `actions:` applies if a PR touches `.github/workflows/`, same as everywhere.
 
 ## Suffix → gerund: four deltas
@@ -93,9 +93,9 @@ Scopes that exist on myplanet but have nothing to point at in lite: `life`,
 myplanet's table applies as written, with these changes.
 
 **`*ViewModel` is dead here — delete that row.** It is myplanet's single most
-common gerund (`view modelling`, 65 of its last 500 titles), and lite contains
-**zero** `ViewModel` classes. If you find yourself writing `view modelling` in a
-lite title, you have pattern-matched the corpus instead of reading the diff. Same
+common gerund (`view modelling`, 40 of 500 titles), and lite contains **zero**
+`ViewModel` classes. If you find yourself writing `view modelling` in a lite
+title, you have pattern-matched the corpus instead of reading the diff. Same
 for `*Dao`, `*Uploader`, `*Worker` and `*Module` — none exist in lite.
 
 **`*Extensions` is the #1 suffix (32 files) and takes no gerund.** lite's
@@ -146,8 +146,7 @@ The suffix counts for the rest, so you know what you will actually meet:
 `Dependencies` 3, `Provider` 2, `Mapper` 1, `Manager` 1, `Api` 1.
 
 `handling` stays the licensed fallback for `*Activity` and `*Fragment` with no
-sharper operation word — as on myplanet, where it covers any file without one.
-Still a fallback: if the diff has an operation, name it.
+sharper operation word, same as myplanet.
 
 ## Tests
 
