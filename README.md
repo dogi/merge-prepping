@@ -150,8 +150,10 @@ phrase across every changed area, and reads all of that off the file list rather
 than the old title. The old title has one job: becoming the issue title when the
 PR arrived without an issue, which is the usual case for Jules- and
 Copilot-opened PRs. Human PRs normally already have a number in the title, the
-body, or the `<N>-slug` branch name. `(fixes #N)` goes in the title, not the
-body, because the squash commit message *is* the PR title.
+body, or the `<N>-slug` branch name.
+
+`(fixes #N)` goes in the title **and** `Fixes #N` in the body: the title keeps
+the log traceable, the body is the only place GitHub reads the link from.
 
 Where the repos differ — and why the packs exist:
 
@@ -163,7 +165,7 @@ Where the repos differ — and why the packs exist:
 | Top suffix | `*ViewModel` → view modelling, 40/500 | suffixes discarded | `*Extensions`, 32 files — takes **no** gerund; **zero** view models exist |
 | Test diffs | `app/src/test/`-only always ends in `testing` | no spec-only PRs exist; specs ride along | as myplanet, plus `androidTest/` |
 | Style diffs | rare | ~a fifth of PRs; own vocabulary (`aligning`, `spacing`, `padding`) | rare |
-| Issue link | `fixes` only | `fixes`, plus `connects` when the issue stays open | none practised yet — expect to open one per PR |
+| Issue link | `fixes` only | `fixes`, plus `connects` when the issue stays open (title only) | none practised yet — expect to open one per PR |
 | Version bump | `app/build.gradle` | `package.json` | `app/build.gradle.kts` |
 | Scopes absent | — | `sync` | `life`, `chat`, `community`, `enterprises`, `feedback` |
 

@@ -1,6 +1,6 @@
 ---
 name: prepping
-description: 'Rewrite a pull request title into the Open Learning Exchange house style (`scope: smoother thing doing (fixes #N)`) and make sure a tracking issue is attached, creating one from the PR''s current title when none exists. Carries per-repo reference packs — myplanet (Kotlin/Android) and planet (Angular/TypeScript) — and picks the right one from the repo it is invoked against. Use this whenever preparing, cleaning up, retitling, or getting a PR ready to merge in these repos — including when the user says "prep this PR", "fix the title", "massage the title", "does this need an issue?", or just points at a PR number or branch and asks to tidy it up. Also use it before opening a new PR, so the title is right the first time.'
+description: 'Rewrite a pull request title into the Open Learning Exchange house style (`scope: smoother thing doing (fixes #N)`) and make sure a tracking issue is attached and linked from the PR body so it closes on merge, creating one from the PR''s current title when none exists. Carries per-repo reference packs — myplanet (Kotlin/Android) and planet (Angular/TypeScript) — and picks the right one from the repo it is invoked against. Use this whenever preparing, cleaning up, retitling, or getting a PR ready to merge in these repos — including when the user says "prep this PR", "fix the title", "massage the title", "does this need an issue?", or just points at a PR number or branch and asks to tidy it up. Use it too when an issue stayed open after its PR merged, or when asked why a `(fixes #N)` title did not close anything. Also use it before opening a new PR, so the title is right the first time.'
 ---
 
 # PR Title massaging
@@ -96,13 +96,16 @@ restructured. The correct title was `sync: smoother login auth utils managing`.
 Never type the trailing `(#<pr>)` you see in the git log — GitHub appends that
 at squash-merge time. The PR title stops after `(fixes #N)`.
 
-`(fixes #N)` belongs in the **title**, not the body. GitHub only auto-closes
-from the body or the commit message, and the squash commit message *is* the PR
-title — so putting it in the title is what actually closes the issue on merge.
-Get the spelling exact: lowercase `fixes`, a space, `#`, the number, wrapped in
-round parens. Real typos in the logs (`{fixes #14889)`, `(fixes 14801)` and
-`(fixes 9105)` with no `#`, `(fixes: #9423)` with a stray colon) broke the link
-and the issue stayed open.
+`(fixes #N)` goes in the **title** — that is what makes the log traceable, since
+the squash commit subject is the PR title. It is not what closes the issue:
+**GitHub reads closing keywords from the PR description only**, and not from the
+squash subject it synthesises out of the title, which is the trap. So the title
+stamp gets mirrored into the body as `Fixes #N`. Both, every time.
+
+Get the title spelling exact: lowercase `fixes`, a space, `#`, the number,
+wrapped in round parens. Real typos in the logs (`{fixes #14889)`, `(fixes
+14801)` and `(fixes 9105)` with no `#`, `(fixes: #9423)` with a stray colon)
+broke even the cosmetic link.
 
 planet also uses `(connects #N)` for work that advances an issue without closing
 it; myplanet does not. See its pack.
@@ -212,6 +215,12 @@ Because the issue is created after the PR, its number will be *higher* than the
 PR number. That's expected and common in both repos; it is not a sign you picked
 the wrong number.
 
+Then write `Fixes #N` into the PR body as its own last line — that, not the
+title, is what closes the issue on merge. Skip it when the body already links
+**that** number with a closing keyword, so re-running the prep pass doesn't
+stack duplicate lines; anchor the number, since `Fixes #1234` does not link
+`#123` and a bare `#123` with no keyword links nothing.
+
 ## Procedure
 
 1. **Identify the repo and load its pack** (step 0). If the repo has no pack,
@@ -243,15 +252,18 @@ the wrong number.
    choices. When nothing is genuinely open, skip the menu and use the single
    title.
 7. Apply it with `mcp__github__update_pull_request`.
-8. Check the version bump the pack names (`app/build.gradle` on myplanet,
+8. Append `Fixes #N` to the body in the same call, unless it already links that
+   number. Without it the issue stays open when the PR merges.
+9. Check the version bump the pack names (`app/build.gradle` on myplanet,
    `app/build.gradle.kts` on myplanet-lite, `package.json` on planet) and
    mention it if the PR touches app code without bumping it.
-9. Report the before/after title and the issue number, saying which pack you
-   used and whether you reused an existing issue or opened a new one.
+10. Report the before/after title and the issue number, saying which pack you
+    used, whether you reused an existing issue or opened a new one, and that the
+    body now links it (or already did).
 
-Step 5 creates a public issue and step 7 renames someone's PR. Both are visible
-to the whole project, so when the PR isn't the user's own, show the proposed
-title and issue first and get a nod before writing.
+Step 5 creates a public issue and steps 7-8 rewrite someone's PR title and body.
+All of it is visible to the whole project, so when the PR isn't the user's own,
+show the proposed title, issue and body line first and get a nod before writing.
 
 ## Adding a repo
 
