@@ -70,9 +70,9 @@ conventional-commit types (`feat:`, `fix:`, `refactor:` never appear).
 
 | Shape | When | myplanet | planet |
 |---|---|---|---|
-| `<scope>: smoother <noun phrase> <gerund> (fixes #N)` | Anything that improves, fixes, adds, or reworks | 445/500 | 456/500 |
-| `<scope>: less <noun phrase> is more (fixes #N)` | A named thing *ceases to exist* | 37/500 | 33/500 |
-| ``all: bump `<coordinate>` to <version> (fixes #N)`` | Dependency version bumps only — always `all:` in both logs | 12/500 | 10/500 |
+| `<scope>: smoother <noun phrase> <gerund> (fixes #N)` | Anything that improves, fixes, adds, or reworks | 445/500 | 458/500 |
+| `<scope>: less <noun phrase> is more (fixes #N)` | A named thing *ceases to exist* | 37/500 | 32/500 |
+| ``all: bump `<coordinate>` to <version> (fixes #N)`` | Dependency version bumps only — always `all:` in both logs | 12/500 | 9/500 |
 
 myplanet-lite has no column because it has no house-style log yet — running this
 skill there **establishes** the style rather than matching it. Its pack covers
@@ -101,6 +101,11 @@ the squash commit subject is the PR title. It is not what closes the issue:
 **GitHub reads closing keywords from the PR description only**, and not from the
 squash subject it synthesises out of the title, which is the trap. So the title
 stamp gets mirrored into the body as `Fixes #N`. Both, every time.
+
+When a PR closes more than one issue, give each its own parenthesised stamp and
+**run them together with no space** — `(fixes #10199)(fixes #10200)`, and a
+third if needed — not a comma list inside one pair. Mirror each into the body as
+its own `Fixes #N` line.
 
 Get the title spelling exact: lowercase `fixes`, a space, `#`, the number,
 wrapped in round parens. Real typos in the logs (`{fixes #14889)`, `(fixes
@@ -157,9 +162,18 @@ What holds in both:
 - Prefer the **layer or concept word** over the entity name. The domain is
   already carried by the scope plus one feature word, so repeating the entity is
   noise.
-- Aim for **three to five words** between the scope and the gerund. `all:
-  smoother importing` is fine when the change genuinely is that broad; padding a
-  narrow change with words it doesn't need is worse than being terse.
+- Aim for **three to five words** between the scope and the gerund — but check
+  the pack, which measures its own log and may be tighter (planet's landed
+  phrases are three or four words including the gerund, and five is essentially
+  unattested). `all: smoother importing` is fine when the change genuinely is
+  that broad; padding a narrow change with words it doesn't need is worse than
+  being terse.
+- **Then cut a word.** A title that is correct is usually still one word too
+  long, and the maintainers' own edit histories show them going back a second
+  time to delete something: the widget noun the gerund already implies, a
+  generic adjective, a word that merely echoes the scope, or one half of an
+  `and` clause. Write the title, then read it again asking which word carries no
+  information; the pack names the words its repo keeps deleting.
 - Near-duplicates are fine and common. The qualifier and the issue number
   distinguish them; picking a less accurate word to look novel is the worse
   trade.
@@ -191,10 +205,14 @@ rather than a stale or cross-repo reference before you build the title around
 it. myplanet and planet issue numbers are in overlapping ranges, so a number
 copied from the sibling repo will look plausible and resolve to the wrong thing.
 
-**An agent-generated PR usually has no issue.** Jules, Copilot, and similar bots
-open PRs directly, with descriptive prose titles like `Refactor: Consolidate
-duplicate EntryPoints` and a body ending in *"PR created automatically by Jules
-for task …"*. Branch names look like `consolidate-entrypoints-1618928943660463448`.
+**An agent-generated PR usually has no issue.** Claude Code, Jules, Copilot and
+similar bots open PRs directly, with descriptive prose titles like `Refactor:
+Consolidate duplicate EntryPoints` or `Enable Docker layer caching for gateway
+builds`, often carrying a conventional-commit prefix, and a body ending in an
+automation footer (*"PR created automatically by Jules for task …"*). The branch
+name is the reliable tell: `claude/<slug>-<hash>` for Claude Code (e.g.
+`claude/docker-npm-cache-buildkit-ervz2o`), or a slug with a long numeric
+suffix like `consolidate-entrypoints-1618928943660463448`.
 
 In that case, create the issue — and this is the key move: **the PR's current
 title becomes the issue title, verbatim.** That descriptive title is a perfectly
@@ -236,7 +254,9 @@ stack duplicate lines; anchor the number, since `Fixes #1234` does not link
    (`method: "create"`) using the PR's current title.
 6. Compose the title using the pack's scope table and phrase mechanics. Skim the
    pack's `title-corpus.md` for the nearest precedent — matching an existing
-   line beats inventing a phrasing. When the diff leaves a real choice open,
+   line beats inventing a phrasing. Then **read your title back and cut a
+   word** before you propose it; correct-but-too-long is the normal failure.
+   When the diff leaves a real choice open,
    present **two to four candidate titles** with the AskUserQuestion tool, the
    diff-derived favourite first and marked "(Recommended)", varying only the
    genuinely open axes — one candidate per plausible value:
@@ -284,9 +304,20 @@ still diverged on scopes, four suffix rows and the version-bump file, and one of
 those — a `*ViewModel` rule for a codebase with no view models — would have
 produced confidently wrong titles on every PR.
 
-Build the corpus from the repo's own log: pair each squash-merged title with the
-files that produced it, strip the trailing `(#NNNN)` GitHub appends, group by
-scope, and note the per-PR version-bump file so it can be omitted. Then read the
-result and write `conventions.md` from what you actually see — scope league
+Build the corpus from the repo's own log with `scripts/build-corpus.py`: it
+pairs each squash-merged title with the files that produced it, strips the
+trailing `(#NNNN)` GitHub appends, groups by scope, and reports the league
+tables. Note the per-PR version-bump file so it can be `--skip`ped. Then read
+the result and write `conventions.md` from what you actually see — scope league
 table, how the noun phrase is derived, the gerund vocabulary, and any point
 where the log changed its mind about a convention partway through the window.
+Then measure the tail of the log separately and compare: **where a recent window
+disagrees with the whole one, the recent window is current practice.** On planet
+the corpus-wide gerund `handling` (91/500) had collapsed to 4 of the last 50.
+
+The landed log only records the answers, though. The rejected drafts live in
+each PR's "changed the title" timeline, and reading the last ~50 of those is
+what surfaces the rules a corpus cannot show you — which directory names are
+not scopes, which words get cut on a second pass, which endings are on their
+way out. Distil what you find into `conventions.md`; there is no need to keep
+the raw pairs.
