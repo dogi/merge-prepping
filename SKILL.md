@@ -70,9 +70,9 @@ conventional-commit types (`feat:`, `fix:`, `refactor:` never appear).
 
 | Shape | When | myplanet | planet |
 |---|---|---|---|
-| `<scope>: smoother <noun phrase> <gerund> (fixes #N)` | Anything that improves, fixes, adds, or reworks | 445/500 | 458/500 |
-| `<scope>: less <noun phrase> is more (fixes #N)` | A named thing *ceases to exist* | 37/500 | 32/500 |
-| ``all: bump `<coordinate>` to <version> (fixes #N)`` | Dependency version bumps only — always `all:` in both logs | 12/500 | 9/500 |
+| `<scope>: smoother <noun phrase> <gerund> (fixes #N)` | Anything that improves, fixes, adds, or reworks | 454/500 | 458/500 |
+| `<scope>: less <noun phrase> is more (fixes #N)` | A named thing *ceases to exist* | 38/500 | 32/500 |
+| ``<scope>: bump `<coordinate>` to <version> (fixes #N)`` | Dependency version bumps only — `all:`, except myplanet's GitHub Actions bumps, which take `actions:` | 8/500 | 9/500 |
 
 myplanet-lite has no column because it has no house-style log yet — running this
 skill there **establishes** the style rather than matching it. Its pack covers
@@ -85,6 +85,10 @@ the signal: a refactor that restructures code into a tidier shape deletes plenty
 of lines and is still `smoother`. Ask what the PR is *for*. If its purpose is
 "get rid of X", use `less`; if its purpose is "make X work better" and deletion
 is a side effect, use `smoother`.
+
+There is a tell in the other direction: a draft ending in `removing`, `cleanup`
+or `encapsulation` is usually a `less … is more` title wearing `smoother`.
+Re-read the diff before switching — one such draft was really about its tests.
 
 Worked failure (myplanet, but the trap is general): a PR converting
 `LoginSyncManager.login` to a `suspend` function was 89 additions against 106
@@ -132,19 +136,25 @@ myplanet; myplanet's `sync:` does not exist on planet; `life:` covers different
 ground in each. Each pack also lists its own traps — directories claimed by more
 than one scope, and scopes that have been renamed.
 
+**The vocabulary is closed.** Inventing a scope out of the feature or layer word
+in front of you is the most common way to get a title wrong; that word belongs
+in the noun phrase, and when nothing in the table fits the answer is the pack's
+default (`all:` in both repos). Each pack lists the ones people reach for.
+
 ## Building the phrase — read it off the diff, not the old title
 
 The single most important shared rule: **the changed files are the primary input
 to the title, and the old title is not.** Its only job is to become the issue
 title. Agent-written titles in particular are consistently vaguer than their
-diffs.
+diffs — on myplanet, over half of landed titles share no content word at all
+with the title the PR arrived with. You are re-deriving, not editing.
 
 Beyond that the two repos diverge, and this is where using the wrong pack does
 the most damage:
 
 - **The Kotlin repos are mechanical.** The noun phrase is the principal changed
   file, de-CamelCased and lowercased with its role suffix dropped; the gerund
-  comes from that suffix (`*Adapter` → diffing or adapting, `*Manager` →
+  comes from that suffix (`*Adapter` → diffing or binding, `*Manager` →
   managing). There is a full suffix table in myplanet's pack, and myplanet-lite
   amends four rows of it — including deleting `*ViewModel`, myplanet's single
   most common gerund, because lite has no such classes.
@@ -162,12 +172,14 @@ What holds in both:
 - Prefer the **layer or concept word** over the entity name. The domain is
   already carried by the scope plus one feature word, so repeating the entity is
   noise.
-- Aim for **three to five words** between the scope and the gerund — but check
-  the pack, which measures its own log and may be tighter (planet's landed
-  phrases are three or four words including the gerund, and five is essentially
-  unattested). `all: smoother importing` is fine when the change genuinely is
-  that broad; padding a narrow change with words it doesn't need is worse than
-  being terse.
+- **Keep it a bare chain of nouns.** No prepositions, articles, `and`, commas or
+  hyphenated compounds — outside the `bump` shape, near-zero titles in either log
+  have any. `courses: smoother filtered-course sort without per-item lowercase`
+  is a draft; `courses: smoother repository sorting` is a title.
+- Aim for **three or four words after `smoother`, counting the gerund** — median
+  three in both logs, five rare, six essentially unattested. `all: smoother
+  importing` is fine when the change genuinely is that broad; padding a narrow
+  change with words it doesn't need is worse than being terse.
 - **Then cut a word.** A title that is correct is usually still one word too
   long, and the maintainers' own edit histories show them going back a second
   time to delete something: the widget noun the gerund already implies, a
@@ -187,9 +199,10 @@ What holds in both:
 
 This is the half that's easy to get wrong, because the right move depends on who
 opened the PR. The mechanics are the same everywhere; what differs is how often
-each branch fires. On myplanet and planet most human PRs arrive with an issue.
-On myplanet-lite **none do** — not one of the last 200 titles links one — so the
-create-an-issue branch is the normal path there, not the exception.
+each branch fires. On myplanet most PRs are agent-opened, and most of those were
+dispatched *from* an existing issue. On myplanet-lite no PR has an issue — not
+one of the last 200 titles links one — so the create-an-issue branch is the
+normal path there.
 
 **A human contributor's PR usually already has an issue.** They filed it first,
 and it shows up in one of three places — check all three before concluding there
@@ -205,19 +218,23 @@ rather than a stale or cross-repo reference before you build the title around
 it. myplanet and planet issue numbers are in overlapping ranges, so a number
 copied from the sibling repo will look plausible and resolve to the wrong thing.
 
-**An agent-generated PR usually has no issue.** Claude Code, Jules, Copilot and
-similar bots open PRs directly, with descriptive prose titles like `Refactor:
-Consolidate duplicate EntryPoints` or `Enable Docker layer caching for gateway
-builds`, often carrying a conventional-commit prefix, and a body ending in an
-automation footer (*"PR created automatically by Jules for task …"*). The branch
-name is the reliable tell: `claude/<slug>-<hash>` for Claude Code (e.g.
-`claude/docker-npm-cache-buildkit-ervz2o`), or a slug with a long numeric
-suffix like `consolidate-entrypoints-1618928943660463448`.
+**An agent-generated PR often has no issue.** Claude Code, Jules, OpenHands,
+Copilot, Codex and similar bots open PRs directly, with descriptive prose titles
+like `Refactor: Consolidate duplicate EntryPoints` or `Enable Docker layer
+caching for gateway builds`, often carrying a conventional-commit prefix, and a
+body ending in an automation footer (*"PR created automatically by Jules for
+task …"*). The branch name is the reliable tell: an agent prefix —
+`claude/<slug>-<hash>` (e.g. `claude/docker-npm-cache-buildkit-ervz2o`),
+`openhands/…`, `jules-…`, `codex/…` — or a slug with a long numeric suffix like
+`consolidate-entrypoints-1618928943660463448`. Check the three places above
+anyway: an agent dispatched from an existing issue quotes its number somewhere,
+and on myplanet that is the common case.
 
-In that case, create the issue — and this is the key move: **the PR's current
-title becomes the issue title, verbatim.** That descriptive title is a perfectly
-good issue title and a poor commit subject, so it gets promoted rather than
-discarded. Nothing is lost when the PR title is then rewritten into house style.
+When there really is none, create the issue — and this is the key move: **the
+PR's current title becomes the issue title, verbatim.** That descriptive title
+is a perfectly good issue title and a poor commit subject, so it gets promoted
+rather than discarded. Nothing is lost when the PR title is then rewritten into
+house style.
 
 ```
 before  PR #15048  "Refactor: Consolidate duplicate EntryPoints"      (no issue)
@@ -262,7 +279,7 @@ stack duplicate lines; anchor the number, since `Fixes #1234` does not link
    genuinely open axes — one candidate per plausible value:
    - **scope** — torn between a feature scope and `all:`, or in one of the
      pack's named border zones: offer both
-   - **gerund** — where the pack lists a pair (myplanet's `diffing`/`adapting`
+   - **gerund** — where the pack lists a pair (myplanet's `diffing`/`binding`
      and `flowing`/`collecting`; planet's `handling` versus a sharper operation
      word): offer both
    - **shape** — a borderline removal: offer the `less … is more` form as an
@@ -319,5 +336,10 @@ The landed log only records the answers, though. The rejected drafts live in
 each PR's "changed the title" timeline, and reading the last ~50 of those is
 what surfaces the rules a corpus cannot show you — which directory names are
 not scopes, which words get cut on a second pass, which endings are on their
-way out. Distil what you find into `conventions.md`; there is no need to keep
-the raw pairs.
+way out. Where that timeline is out of reach, a squash-merged repo usually gives
+you the same thing from git alone: `refs/pull/<n>/head` is generally still
+fetchable after a merge — it is `refs/pull/<n>/merge` that GitHub drops — so the
+branch's own commits still carry the draft titles. It worked for 220 consecutive
+merges on myplanet, but it is a convention rather than a guarantee, so check the
+refs resolve before planning around them; the method is in myplanet's corpus.
+Distil what you find into `conventions.md`.
