@@ -28,7 +28,7 @@ references/
 │   └── conventions.md                   # borrowing pack: myplanet's corpus + the deltas
 └── planet/
     ├── conventions.md
-    └── title-corpus.md
+    └── title-corpus.md                   # 500 landed titles + their files
 scripts/
 └── build-corpus.py                      # regenerates a title-corpus.md from a repo's log
 .claude-plugin/marketplace.json          # marketplace catalog
@@ -75,9 +75,11 @@ offers to add a pack.
    log changed its mind about a convention partway through the window, which
    planet's did in October 2025.
 
-2. Read those tables and write `references/<repo>/conventions.md` from what you
+2. Read the last ~50 PRs' "changed the title" timelines. The landed log records
+   only the answers; the edits that got there are where the sharper rules are.
+3. Write `references/<repo>/conventions.md` from all of that — from what you
    actually see, not from what the other packs say.
-3. Add a row to the table in step 0 of `SKILL.md`.
+4. Add a row to the table in step 0 of `SKILL.md`.
 
 Nothing else in `SKILL.md` should need to change. If it does, what you are
 writing is probably shared grammar and belongs there rather than in the pack.
