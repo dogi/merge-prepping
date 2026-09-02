@@ -336,7 +336,10 @@ The landed log only records the answers, though. The rejected drafts live in
 each PR's "changed the title" timeline, and reading the last ~50 of those is
 what surfaces the rules a corpus cannot show you — which directory names are
 not scopes, which words get cut on a second pass, which endings are on their
-way out. Where that timeline is out of reach, a squash-merged repo gives you the
-same thing from git alone: GitHub keeps `refs/pull/<n>/head` after the merge, so
-the branch's own commits still carry the draft titles — the method is in
-myplanet's corpus. Distil what you find into `conventions.md`.
+way out. Where that timeline is out of reach, a squash-merged repo usually gives
+you the same thing from git alone: `refs/pull/<n>/head` is generally still
+fetchable after a merge — it is `refs/pull/<n>/merge` that GitHub drops — so the
+branch's own commits still carry the draft titles. It worked for 220 consecutive
+merges on myplanet, but it is a convention rather than a guarantee, so check the
+refs resolve before planning around them; the method is in myplanet's corpus.
+Distil what you find into `conventions.md`.

@@ -33,8 +33,10 @@ refresh the entries.
 ## What a prep pass gets wrong
 
 Every landed title below is the *third* version of its title. The first two are
-recoverable — GitHub keeps `refs/pull/<n>/head` after a squash merge, so the
-branch name and the branch's own commits survive it:
+recoverable — `refs/pull/<n>/head` stays fetchable after a squash merge (it is
+`refs/pull/<n>/merge` that GitHub drops), so the branch name and the branch's
+own commits survive it. That held for all 220 merges below; it is a convention,
+not a documented guarantee, so check the refs resolve first:
 
 ```
 git fetch --depth=40 origin refs/pull/<n>/head:refs/prs/<n>

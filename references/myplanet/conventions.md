@@ -20,8 +20,9 @@ below the PR. Check before creating one.
 
 ## Scopes
 
-The vocabulary is **closed**: these eleven words. `all:` is the workhorse
-(127/500) and the default whenever the change reaches shared layers — `model/`,
+The vocabulary is **closed**: these eleven words, which cover 499 of the last
+500 titles — the odd one out is `lifel:`, a typo for `life:`. `all:` is the
+workhorse (127/500) and the default whenever the change reaches shared layers — `model/`,
 `repository/`, `di/`, `base/`, `callback/`, `utils/`, `data/room/`,
 `MainApplication.kt` — or spans more than one feature.
 

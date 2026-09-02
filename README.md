@@ -150,9 +150,10 @@ already has:
 It picks the scope from where the diff's centre of gravity sits, walks the noun
 phrase across every changed area, and reads all of that off the file list rather
 than the old title. The old title has one job: becoming the issue title when the
-PR arrived without an issue, which is the usual case for agent-opened PRs. Human
-PRs — and agent PRs dispatched from the backlog — normally already have a number
-in the title, the body, or the `<N>-slug` branch name.
+PR arrived without an issue — the case for a bot that opened the PR by itself,
+though not for an agent dispatched from the backlog, which usually quotes its
+issue already. Check the title, the body and the `<N>-slug` branch name before
+creating one.
 
 `(fixes #N)` goes in the title **and** `Fixes #N` in the body: the title keeps
 the log traceable, the body is the only place GitHub reads the link from.
